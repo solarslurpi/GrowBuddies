@@ -1,0 +1,14 @@
+# Created by https://www.toptal.com/developers/gitignore/api/python
+# Edit at https://www.toptal.com/developers/gitignore?templates=python
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+code/__pycache__/
+code/python_env/
+docs/_build/
+docs/_static/
+docs/_templates/
+Makefile
+make.bat
+
+
