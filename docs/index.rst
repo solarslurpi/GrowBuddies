@@ -6,7 +6,7 @@
 =====================
 Welcome to GrowBuddy!
 =====================
-GrowBuddy is a DIY "smart gardening" environment where it's technology helps us maintain:
+GrowBuddy is a DIY "smart gardening" environment cobbled together with inexpensive hardware, 3D printed enclosures, software, and wifi to help us maintain:
 
 - the humidity / temperature in an ideal range (see VPD for more information).
 - a living soil bed at the ideal soil moisture (see Living Soil for more information).
@@ -21,46 +21,19 @@ and helps with diagnosing:
 - TBD
 
 
-The TBDs indicate that this project evolves as we learn more.  Please let me know what you think, especially what can be improved.
+The TBDs indicate that this project will continually evolve and (hopefully!) improve.  Please let me know what you think, especially what can be improved.
 
 You can reach me at happygrowbuddy@gmail.com
 
-Everyone is welcome.
-
-becomes smart enough to do useful tasks that improves the health of our plants grown indoors. It is an environment
-for the technically and scientifically curious.  For those of us who have a passion for our plants and want to continually evolve the quality of care we
-provide continual improvement.
-
-
-.. image:: images/wehavetechnology.jpg
-    :width: 200
-    :align: center
-    :alt: Alternate text
-well...of course...when we can get technology to actually work for us!
-
-
-
-I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness 
+Everyone is welcome. Perhaps most especially if you are a care giver of plants with an appreciation of DIY technology.  I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness 
 is gained by being a care taker to plants.  
 
-Goals
-*****
-I'm around if you need me 
-..happygrowbuddy@gmail.com
-
-GrowBuddy wants to be your best buddy in your Grow tent. The tasks GrowBuddy sensors and actuators currently perform include:
-- adjusting VPD to ideal conditions.
-- keeping the soil moisture at the ideal level.
-Future tasks could include:
-- adjusting additional CO2 to an ideal level.
-- trouble shooting disease, pests, and nutritional deficiencies.
-
-
-
+See you in the garden!
 
 .. toctree::
    :maxdepth: 1
 
+   overview
    install_growbuddy
    growbuddy
    snifferbuddy
