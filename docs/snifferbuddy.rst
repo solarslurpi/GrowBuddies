@@ -2,11 +2,7 @@
 SnifferBuddy
 ************
 
-Sends out an mqtt message to the GrowBuddy broker with values for the air temperature, CO2 level, humidity readings, 
-and whether the lights are on or off.
-
-Device
-######
+SnifferBuddy sniffs out values for the air temperature, CO2 level, humidity readings.I also put in a photoresiter on top to let me know when the LEDs are on or off.  The readings are sent out over wifi using mqtt to the GrowBuddy broker.
 
 The one I made looks like this:
 
@@ -19,6 +15,9 @@ Hardware
 -  `SCD30 sensor from Adafruit <https://www.adafruit.com/product/4867>`_ 
 -  `ESP826 D1 mini <https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1>`_ I had in my parts bin.
 -   Photoresistor and 10K resistor for light on/off detection.  I also had these parts in my parts bin.
+
+Software
+********
 
 Enclosure
 *********
