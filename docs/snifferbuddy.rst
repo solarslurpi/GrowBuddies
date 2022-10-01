@@ -1,3 +1,5 @@
+
+
 ************
 SnifferBuddy
 ************
@@ -50,16 +52,28 @@ Software
 
 Enclosure
 *********
-The enclosure was designed within F360 and printed on a Prusa MK3s.  Files within the enclosure folder include:
 
--  `GrowBuddyParams.csv <https://github.com/solarslurpi/GrowBuddy/blob/main/enclosure/GrowBuddyParams.csv>`_ : settings imported into F360.
--  `Fusion 360 and 3mf files <https://github.com/solarslurpi/GrowBuddy/tree/main/enclosure>`_ 
+The `SnifferBuddy enclosure <https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy>`_ was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension `Parameter I/O <https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64>`_ to import/export the parameters found in SnifferBuddyParams.csv. 
+
 
 Let's Make One!
 ***************
 
+- Step 1: Get the materials. See :ref:`Materials`.
+- Step 2: Install Tasmota onto the ESP8286.
+- Step 3: Wire the components together.
+
+
+
+.. _Materials:
+
 Materials
 ---------
-- `SCD30 sensor <https://www.adafruit.com/product/4867>`_ 
-- `ESP8286 <https://www.aliexpress.us/item/2251832645039000.html>`_
-- SnifferBuddy
+
+- `SCD30 sensor <https://www.adafruit.com/product/4867>`_ component.
+- `ESP8286 <https://www.aliexpress.us/item/2251832645039000.html>`_ component.
+- Photoresistor and 10K through hole resistor component.
+- Print out the `case top <https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/base%20and%20lid%20v14.f3d>`_.
+- print out the SCD30 enclosure `(case bottom) <https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure%20v1.f3d>`_.
+- USB chord to plug the ESP8286 to power.
+- USB power hub to plug the USB chord into the wall.
