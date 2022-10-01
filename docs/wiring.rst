@@ -31,4 +31,14 @@ Moving forward, I will stick to STEMMA and STEMMA QT connector types.
 Wiring GrowBuddy Components Together
 ====================================
 
-To wire an ESP286 to a STEMMA QT, I ordered a `pre-crimped JST SH/STEMMA QT/JST PH 2.0 (Confusing!!!) cable kit <https://amzn.to/3SLurIX>`_ .  I noticed at least one of the comments expressed outrage in the high price and we should just all crimp the wires ourselves.  I guess we could.  But it would take too much practice so in my equation, the extra money was well worth the time savings.
+To wire an ESP286 to a STEMMA QT, I ordered a `pre-crimped JST SH/STEMMA QT/JST PH 2.0 (Confusing!!!) cable kit <https://amzn.to/3SLurIX>`_ .  THese are very small connectors.  I noticed at least one of the comments expressed outrage in the high price and we should just all crimp the wires ourselves.  I guess we could.  But it would take too much practice so in my equation, the extra money was well worth the time savings.
+
+Example
++++++++
+Here's a wiring of a soil moisture sensor I recently did.
+
+.. image:: images/soil_moisture.jpg
+   :align: center
+   :scale: 60
+
+The enclosure has a connector area where the JST connector snuggly fits.
