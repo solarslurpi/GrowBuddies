@@ -27,7 +27,7 @@ if the grow lights were on or off.  I use this for knowing when to go into dayti
 
 Wiring
 ------
-
+What a mess.  I won't even try to make a pretty image.  There is no way...I have started to standardize on wiring between components.
 .. figure:: images/SnifferBuddy_innerds.jpg
    :align: center
    :height: 350
