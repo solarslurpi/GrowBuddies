@@ -54,3 +54,12 @@ The enclosure was designed within F360 and printed on a Prusa MK3s.  Files withi
 
 -  `GrowBuddyParams.csv <https://github.com/solarslurpi/GrowBuddy/blob/main/enclosure/GrowBuddyParams.csv>`_ : settings imported into F360.
 -  `Fusion 360 and 3mf files <https://github.com/solarslurpi/GrowBuddy/tree/main/enclosure>`_ 
+
+Let's Make One!
+***************
+
+Materials
+---------
+- `SCD30 sensor <https://www.adafruit.com/product/4867>`_ 
+- `ESP8286 <https://www.aliexpress.us/item/2251832645039000.html>`_
+- SnifferBuddy
