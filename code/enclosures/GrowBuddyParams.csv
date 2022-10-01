@@ -1,0 +1,25 @@
+LDO_length,mm,44 mm,
+LDO_width,mm,21 mm,
+LDO_depth,mm,12 mm,
+battery_length,mm,60 mm,
+battery_width,mm,39 mm,
+battery_depth,mm,10 mm,
+battery_holder_id,mm,battery_width+3*shell,
+shell,mm,1.5 mm,
+gap,mm,.2 mm,
+fillet,mm,2 mm,
+thread_height,mm,10 mm,
+thread_offset_fix,mm,.2 mm,
+scd30_width,mm,51 mm,
+scd30_length,mm,25.4 mm,
+scd30_depth,mm,8.8 mm,
+wemos_mini_width,mm,31 mm,
+wemos_mini_length,mm,39 mm,
+wemos_mini_depth,mm,4.15 mm,
+scd30_hole_diam,mm,3 mm,
+battery_connector_width,mm,5 mm,
+battery_connector_length,mm,6 mm,
+
+
+
+

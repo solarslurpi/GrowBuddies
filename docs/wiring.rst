@@ -17,8 +17,8 @@ Just Pick One
 =============
 
 I like the direction companies like Adafruit are going by standardizing on a specific connection.  I am picking up Adafruit's  `stemma <https://learn.adafruit.com/introducing-adafruit-stemma-qt>`_  sdtyle of connecting components.  
-- STEMMA connectors are 3 or 4 pin JST PH connectors.
-- STEMMA QT connectors are 3 or 4 pin JST SH connectors.
+- STEMMA connectors are 3 or 4 pin JST PH connectors.  The pins of these connectors are 2mm apart (i.e.: 2mm pitch)
+- STEMMA QT connectors are 3 or 4 pin JST SH connectors.  These connectors are quite small.  The pins are at a 1mm pitch.
 
 For some reason, I find JST connectors confusing.  I oddly found some relief to find out I'm not alone in my confusion.
 
@@ -33,7 +33,7 @@ Moving forward, I will stick to STEMMA and STEMMA QT connector types.
 Wiring GrowBuddy Components Together
 ====================================
 
-To wire an ESP286 to a STEMMA QT, I ordered a `pre-crimped JST SH/STEMMA QT/JST PH 2.0 (Confusing!!!) cable kit <https://amzn.to/3SLurIX>`_ .  THese are very small connectors.  I noticed at least one of the comments expressed outrage in the high price and we should just all crimp the wires ourselves.  I guess we could.  But it would take too much practice so in my equation, the extra money was well worth the time savings.
+To wire an ESP286 to a STEMMA QT, I ordered a `pre-crimped STEMMA/JST PH 2.0 cable kit <https://amzn.to/3SLurIX>`_ .  I noticed at least one of the comments expressed outrage in the high price and we should just all crimp the wires ourselves.  I guess we could.  But it would take too much practice so in my equation, the extra money was well worth the time savings.
 
 Example
 +++++++
