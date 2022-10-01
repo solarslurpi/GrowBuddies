@@ -27,7 +27,8 @@ if the grow lights were on or off.  I use this for knowing when to go into dayti
 
 Wiring
 ------
-What a mess.  I won't even try to make a pretty image.  There is no way...I have started to standardize on wiring between components.
+What a mess.  I won't even try to make a pretty image.  There is no way...I have started to  :ref:`standardize the wiring<wiring>`
+
 .. figure:: images/SnifferBuddy_innerds.jpg
    :align: center
    :height: 350
@@ -44,6 +45,7 @@ The good news is the wiring works.  Wiring is components together - like the ESP
 
 Software
 ********
+
 
 
 Enclosure
