@@ -37,4 +37,5 @@ See you in the garden!
    install_growbuddy
    growbuddy
    snifferbuddy
+   wiring
 
