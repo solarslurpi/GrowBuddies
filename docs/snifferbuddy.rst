@@ -45,6 +45,12 @@ What a mess.  I won't even try to make a pretty image.  There is no way... Thank
 
 The good news is the wiring works.  Wiring is components together - like the ESP286 and the SCD30 - is probably the hardest part of working with hardware for the DIYer.  Previously, I might have built a custom PCB but that takes time and besides the folks - like Adafruit - making components really know how to surround the component with robust circuits that typically don't start on fire. *Note: I haven't had an ESP286 catch on fire, but I've had a few get really warm*
 
+NEW and IMPROVED Wiring
+=======================
+Based on :ref:`my reflections on wiring,<wiring>` Here's how I would wire up a SnifferBuddy:
+
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vTti-YOi6nwRcg-8g3Vmx_ROomT53eQJBYswMb9qdIYzXsHxl7kxrKmMSvRkeA_-zBKq2Ys3_Plea7H/pub?w=480&amp;h=360">
+
 Software
 ********
 
