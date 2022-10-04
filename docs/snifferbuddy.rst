@@ -45,15 +45,31 @@ What a mess.  I won't even try to make a pretty image.  There is no way... Thank
 
 The good news is the wiring works.  Wiring is components together - like the ESP286 and the SCD30 - is probably the hardest part of working with hardware for the DIYer.  Previously, I might have built a custom PCB but that takes time and besides the folks - like Adafruit - making components really know how to surround the component with robust circuits that typically don't start on fire. *Note: I haven't had an ESP286 catch on fire, but I've had a few get really warm*
 
+NEW and IMPROVED Wiring
+=======================
+Based on :ref:`my reflections on wiring,<wiring>` Here's how I would wire up a SnifferBuddy:
+
+.. figure:: images/SnifferBuddy_wiring.jpg
+   :align: center
+   :scale: 100
+
+   SnifferBuddy Wiring
+
+The Photoresistor is "hard wired" to the ESP286's analog pin.  The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
+
 Software
 ********
+The ESP286 on SnifferBuddy runs `Tasmota <https://tasmota.github.io/docs/>`_ .  
 
+Thanks to Those That Went Before
+--------------------------------
+It is amazing what we can DIY riding on the backs of the incredible insight and work by people like `Theo Arends <https://github.com/arendst>`_ .  Tasmota is simple in one way - it is an extremely easy way to send mqtt readings from sensors attached to an ESP.  Can it get complex quickly, you bet.  Tasmota is very powerful.  And you may need to be prepared to bumble through Tasmota code to get an answer to your questions.  However, the Discord channel tends to be very helpful and there is documentation to get you started.  I say all this because, like other "programming environment", there is a culture, a way of life, associated with it.
 
 
 Enclosure
 *********
 
-The `SnifferBuddy enclosure <https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy>`_ was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension `Parameter I/O <https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64>`_ to import/export the parameters found in SnifferBuddyParams.csv. 
+The `SnifferBuddy enclosure <https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy>`_ was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension `Parameter I/O <https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64>`_ to import/export the parameters found in . `SnifferBuddyParams.csv enclosures/SnifferBuddy/SnifferBuddyParams.csv`_
 
 
 Let's Make One!
