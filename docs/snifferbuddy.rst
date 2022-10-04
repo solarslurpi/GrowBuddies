@@ -69,14 +69,14 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 Enclosure
 *********
 
-The `SnifferBuddy enclosure <https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy>`_ was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension `Parameter I/O <https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64>`_ to import/export the parameters found in . `SnifferBuddyParams.csv enclosures/SnifferBuddy/SnifferBuddyParams.csv`_
+The `SnifferBuddy enclosure <https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy>`_ was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension `Parameter I/O <https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64>`_ to import/export the parameters found in . `SnifferBuddyParams.csv <https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv>`_
 
 
 Let's Make One!
 ***************
 
 - Step 1: Get the materials. See :ref:`Materials`.
-- Step 2: Install Tasmota onto the ESP8286.
+- Step 2: Install Tasmota onto the ESP8286.  See :ref:`Tasmota`.
 - Step 3: Wire the components together.
 
 

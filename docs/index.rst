@@ -38,4 +38,5 @@ See you in the garden!
    growbuddy
    snifferbuddy
    wiring
+   tasmota
 
