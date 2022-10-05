@@ -39,4 +39,5 @@ See you in the garden!
    snifferbuddy
    wiring
    tasmota
+   systemd
 

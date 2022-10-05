@@ -25,7 +25,7 @@ class GrowBuddy(Thread):
         log_level (_type_, optional): _description_. Defaults to logging.DEBUG.
 
     """
-    def __init__(self,task:str,values_callback=None,settings_filename='growbuddy_settings.json',log_level=logging.DEBUG):
+    def __init__(self,task:str,values_callback=None,settings_filename='code/growbuddy_settings.json',log_level=logging.DEBUG):
         """_summary_
 
         Args:

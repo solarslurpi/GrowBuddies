@@ -1,0 +1,19 @@
+# soil_moisture_buddy.service
+#
+# found in /lib/systemd/system/soil_moisture_buddy.service
+
+# after saving, enable with the command:
+# sudo systemctl enable soil_moisture_buddy.service
+
+# You can test if a service is running with:
+# sudo systemctl is-active soil_moisture_buddy.service
+[Unit]
+Description=GrowBuddy Soil Moisture Service
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/growbuddy/py_env/bin/python3.7  /home/pi/growbuddy/code/soil_moisture_buddy.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

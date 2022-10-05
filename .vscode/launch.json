@@ -1,6 +1,13 @@
 {
     "configurations": [
         {
+            "name": "Python: Current File (Integrated Terminal)",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
             "type": "pwa-chrome",
             "name": "http://127.0.0.1:3001/docs/_build/html/index.html",
             "request": "launch",
