@@ -26,7 +26,7 @@ extensions = [
     'sphinx.ext.autodoc',
 ]
 
-autodoc_mock_imports = ['influxdb']
+autodoc_mock_imports = ['influxdb','paho']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']

@@ -11,31 +11,29 @@ from influxdb import InfluxDBClient
 
 
 class GrowBuddy(Thread):
-    """Children classes of the GrowBuddy class inherit:
+    """The GrowBuddy Parent Class and children classes run on a Raspberry Pi as the GrowBuddy Service.
+    Children classes of the GrowBuddy class inherit:
         * logging for debugging and auditing.
         * handling of `mqtt <https://mqtt.org/>`_ messages.
         * writing readings to an InfluxDB measurement (which is what Influx seems to call a Table within a database).
 
-    
-
-
-    The GrowBuddy Class and children classes run on a Raspberry Pi as the GrowBuddy Service.
-
-    The sensors and actuators use an ESP286 chip flashed with `Tasmota <https://tasmota.github.io/docs/>`_ to get readings from sensors or 
-    activate switches and such on the actuators.  
- 
-    GrowBuddy assumes the environment includes 
-    devices in which the sensors are sending readings at a sampling rate defined by the 
-    `teleperiod <https://tasmota.github.io/docs/Commands/>`_
 
     Args:
-        values_callback (function, optional): GrowBuddy Sensors send readings using mqtt to the GrowBuddy broker running on a Rasp Pi. 
-        The callback will be called and the readings sent back when they are received.  Defaults to None.
-
-        log_level (_type_, optional): Based on log levels as defined in Python's logging library. Defaults to logging.DEBUG.
+        task (str): _description_
+        values_callback (_type_, optional): _description_. Defaults to None.
+        settings_filename (str, optional): _description_. Defaults to 'growbuddy_settings.json'.
+        log_level (_type_, optional): _description_. Defaults to logging.DEBUG.
 
     """
     def __init__(self,task:str,values_callback=None,settings_filename='growbuddy_settings.json',log_level=logging.DEBUG):
+        """_summary_
+
+        Args:
+            task (str): _description_
+            values_callback (_type_, optional): _description_. Defaults to None.
+            settings_filename (str, optional): _description_. Defaults to 'growbuddy_settings.json'.
+            log_level (_type_, optional): _description_. Defaults to logging.DEBUG.
+        """
     
         # Initialize a Thread so that each instance has it's own mqtt session on loop_start().
         Thread.__init__(self,name=task)
