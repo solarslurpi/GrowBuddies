@@ -18,15 +18,40 @@ I found the following info useful to figure out how to get systemd to do what I 
 Setting Up A Python Script to run as a Systemd service
 ======================================================
 1. Set permissions so systemd can execute the script: ``sudo chmod +x {python script}``.  For example, set permissions on  ``soil_moisture_buddy.py`` by ``sudo chmod +x soil_moisture_buddy.py``.
-2. Create the systemd service file.
+2. Create the systemd service file.  I'm no expert.  So you may want to research using the above learning resources. Here's a service file that works for the ``soil_moisture_buddy.py`` script.
+
+.. literalinclude:: ../code/soil_moisture_buddy.service
+   :language: python
+   :linenos:
+
+
 3. Copy the systemd service file to ``/lib/systemd/system``.  ``sudo`` priviledges are need.  For example, ``sudo cp soil_moisture_buddy.service /lib/systemd/system/.``
+4. Enable the service with ``sudo systemctl enable soil_moisture_buddy.service``.
+5. Check to make sure the service has been enabled with ``systemctl is-enabled soil_moisture_buddy.service``.
+6. Start the service with ``sudo systemctl start soil_moisture_buddy.service``.
+7. Check to make sure the service has been started with ``systemctl is-active soil_moisture_buddy.service``.  In this example, starting the service failed.  To find out why, try ``journalctl -u soil_moisture_buddy.service``.  In this case we have:
+   
+.. code-block:: python    
 
+    Oct 05 14:32:14 growbuddy python3.7[1286]: 2022-10-05 14:32:14,464:DEBUG:\[\]/home/pi/growbuddy/code/growbuddy.py:44  __init__   ...-> Initializing GrowBuddy class for task readSoilMoisture
+    Oct 05 14:32:14 growbuddy python3.7[1286]: 2022-10-05 14:32:14,465:DEBUG:\[\]/home/pi/growbuddy/code/growbuddy.py:120  _read_settings   ...-> Reading in settings from growbuddy_settings.json file.
+    Oct 05 14:32:14 growbuddy python3.7[1286]: 2022-10-05 14:32:14,466:ERROR:\[\]/home/pi/growbuddy/code/growbuddy.py:50  __init__   ......Exiting due to Error: Could not open the settings file named growbuddy_settings.json
+    Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Main process exited, code=exited, status=1/FAILURE
+    Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Failed with result 'exit-code'.
+    Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Service RestartSec=100ms expired, scheduling restart.
+    Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Scheduled restart job, restart counter is at 5.
+    Oct 05 14:32:14 growbuddy systemd[1]: Stopped GrowBuddy Soil Moisture Service.
 
+Because I started the service with the logging level set to DEBUG, the info in the journal file gives us what we need to fix the problem.  The ``growbuddy_settings.json`` is not found.  Checking out the current directory the script is in we see: ``Oct 05 14:39:33 growbuddy python3.7[1832]: 2022-10-05 14:39:33,709:DEBUG:\[\]/home/pi/growbuddy/code/growbuddy.py:47  __init__   ...--> Current Directory is /``  
 
+This is fixed by adding the code in ``growbuddy.py`` to change to the directory where ``growbuddy.py`` is located.
 
-* copy service file to where systemd expects it to be.  systemd service files are located at ```/lib/systemd/system```.  Once I created my .service file, I copied it there and tried out some of the commands. e.g.: ```sudo happyday-collect.service /lib/systemd/system/.```
-* enable the service with ```sudo systemctl enable happyday-collect.service```.
-* check to make sure the service has been enabled with ```systemctl is-enabled happyday-collect.service```
-* start the service with ```sudo systemctl start happyday-collect.service```.
-* check to make sure the service has been started with ```systemctl is-active happyday-collect.service```
-See the ```systemd status``` command info below to debug why your service did not start.
+.. code:: python
+
+        # Set the working directory to where the Python files are located.
+        self.logger.debug(f'--> Current Directory prior to setting to the file location is {os.getcwd()}')
+        cfd = os.path.dirname(os.path.realpath(__file__))
+        os.chdir(cfd)
+        self.logger.debug(f'--> Current Directory is {os.getcwd()}')
+
+The reason for the above example is to give a little detail on the approach I take when I can't get the service to start.  I hope it is helpful.

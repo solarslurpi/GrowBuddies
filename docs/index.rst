@@ -40,4 +40,5 @@ See you in the garden!
    wiring
    tasmota
    systemd
+   vpdbuddy
 
