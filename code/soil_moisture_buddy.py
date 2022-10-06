@@ -1,16 +1,16 @@
-
+import logging
 from growbuddy import GrowBuddy
 
 current_soil_moisture_reading = 0
 
 class SoilMoistureBuddy(GrowBuddy):
     def __init__(self):
-        super().__init__("readSoilMoisture",self.values_callback) # See growbuddy_settings.json to see the "readSoilMoisture" task.
+        super().__init__("readSoilMoisture",values_callback=self.values_callback,log_level=logging.INFO) # See growbuddy_settings.json to see the "readSoilMoisture" task.
 
     def values_callback(self,dict):
         global current_soil_moisture_reading
         current_soil_moisture_reading = soil_moisture_reading = dict['ANALOG']['A0']
-        self.logger.debug(f'Moisture sensor value is {soil_moisture_reading}')
+        self.logger.info(f'Moisture sensor value is {soil_moisture_reading}')
         if soil_moisture_reading == self.logger.Error_Bad_Soil_Moisture_Reading:
             self.logger.error(f'ERROR! bad moisture sensor reading!')
         # Name of measurement table in InfluxDB.  Data is the json formatted reading that will be stored in influxDB.
@@ -28,7 +28,7 @@ class SoilMoistureBuddy(GrowBuddy):
 
 class CalibrateCapacitiveTouchSensor(GrowBuddy):
     def __init__(self):
-        super().__init__("calibrateSoilMoisture",self.values_callback)
+        super().__init__("calibrateSoilMoisture",values_callback=self.values_callback,log_level=logging.INFO)
 
     def values_callback(self,tensiometer_reading):
         global current_soil_moisture_reading
@@ -50,7 +50,7 @@ class CalibrateCapacitiveTouchSensor(GrowBuddy):
         ]
         self.db_write(influx_data)
     
-        self.logger.info(tensiometer_reading)
+        self.logger.info(f'Calibration data point.  Moisture Sensor value is {current_soil_moisture_reading}. Tensiometer value is {tensiometer_reading}.')
 
 if __name__ == '__main__':
     # Start Getting Soil Moisture Readings

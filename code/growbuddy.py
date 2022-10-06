@@ -25,7 +25,7 @@ class GrowBuddy(Thread):
         log_level (_type_, optional): _description_. Defaults to logging.DEBUG.
 
     """
-    def __init__(self,task:str,values_callback=None,settings_filename='code/growbuddy_settings.json',log_level=logging.DEBUG):
+    def __init__(self,task:str,values_callback=None,settings_filename='growbuddy_settings.json',log_level=logging.DEBUG):
         """_summary_
 
         Args:
@@ -34,14 +34,22 @@ class GrowBuddy(Thread):
             settings_filename (str, optional): _description_. Defaults to 'growbuddy_settings.json'.
             log_level (_type_, optional): _description_. Defaults to logging.DEBUG.
         """
-    
+
         # Initialize a Thread so that each instance has it's own mqtt session on loop_start().
         Thread.__init__(self,name=task)
         self.task = task
         self.values_callback = values_callback
+
+        
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler(log_level)
         self.logger.debug(f"-> Initializing GrowBuddy class for task {self.task}")
+        # Set the working directory to where the Python files are located.
+        self.logger.debug(f'--> Current Directory prior to setting to the file location is {os.getcwd()}')
+        cfd = os.path.dirname(os.path.realpath(__file__))
+        os.chdir(cfd)
+        self.logger.debug(f'--> Current Directory is {os.getcwd()}')
+
         # Get settings out of JSON file.
         try:
             self.settings = self._read_settings(settings_filename)
@@ -82,7 +90,7 @@ class GrowBuddy(Thread):
         """
         self.logger.debug(f"-> Mqtt connection returned {rc}")
         client.subscribe(self.settings[self.task])
-        self.logger.debug(f'-> Subscribed to {self.settings[self.task]}')
+        self.logger.info(f'-> Subscribed to {self.settings[self.task]}')
 
 
     def _on_message(self, client, userdata, msg) :
@@ -95,7 +103,7 @@ class GrowBuddy(Thread):
             it is sent by the soil moisture sensor every twenty seconds.
         """
         message = msg.payload.decode(encoding='UTF-8')
-        self.logger.debug(f'mqtt received message...{message}')
+        self.logger.info(f'mqtt received message...{message}')
      
         try:
             dict = json.loads(message)
@@ -138,12 +146,12 @@ class GrowBuddy(Thread):
                 data = [
                     {
                     "measurement": measurement,
-                        "tags": {
-                            "location": location,
+                    "tags": {
+                        "location": location,
                         },
-                        "fields": {
-                            "temperature" : temperature,
-                            "humidity": humidity
+                    "fields": {
+                        "temperature" : temperature,
+                        "humidity": humidity
                         }
                     }
                 ]

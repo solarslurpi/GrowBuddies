@@ -1,4 +1,5 @@
 {
+    "debug_level": "debug",
     "mqtt_broker": "growbuddy",
     "readSnifferBuddy": "tele/snifferbuddy/SENSOR",
     "readSoilMoisture": "tele/soil_moisture/SENSOR",
