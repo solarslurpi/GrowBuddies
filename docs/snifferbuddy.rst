@@ -19,6 +19,14 @@ The one I made looks like this:
 
 Hardware
 **********
+
+.. figure:: images/SnifferBuddy_wiring.jpg
+   :align: center
+   :scale: 100
+
+   SnifferBuddy Wiring
+
+   
 The star of SnifferBuddy is the `SCD30 sensor from Adafruit <https://www.adafruit.com/product/4867>`_ .  I had one in my parts bin.  The SCD30 is wired to  an
 `ESP826 D1 mini <https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1>`_ I had 
 in my parts bin.  I settled on the ESP826 because I settled on `Tasmota  <https://tasmota.github.io/docs/>`_  as the way to send sensor readings over mqtt.  
@@ -49,11 +57,7 @@ NEW and IMPROVED Wiring
 =======================
 Based on :ref:`my reflections on wiring,<wiring>` Here's how I would wire up a SnifferBuddy:
 
-.. figure:: images/SnifferBuddy_wiring.jpg
-   :align: center
-   :scale: 100
 
-   SnifferBuddy Wiring
 
 The Photoresistor is "hard wired" to the ESP286's analog pin.  The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
 
