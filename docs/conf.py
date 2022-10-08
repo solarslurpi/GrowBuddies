@@ -24,7 +24,10 @@ exclude_patterns = ["python_env/*"]
 
 extensions = [
     'sphinx.ext.autodoc',
+    'sphinxcontrib.napoleon',
+    'sphinx_autodoc_typehints'
 ]
+napoleon_include_private_with_doc = True
 
 autodoc_mock_imports = ['influxdb','paho']
 

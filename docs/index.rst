@@ -20,6 +20,10 @@ and helps with diagnosing:
 - virus probems ( TODO )
 - TBD
 
+and adds analysis tools:
+- 3D Printed Microscope to view microbes ( TODO )
+- TBD
+
 
 The TBDs indicate that this project will continually evolve and (hopefully!) improve.  Please let me know what you think, especially what can be improved.
 
@@ -40,5 +44,6 @@ See you in the garden!
    wiring
    tasmota
    systemd
-   vpdbuddy
+   VPDbuddy
+   modules
 

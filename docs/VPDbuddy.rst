@@ -11,6 +11,8 @@ VPDBuddy works to make sure the `Vapor Pressure Deficit (VPD) <https://en.wikipe
 - vegetative state is 0.8 to 0.95
 - flower state is 0.96 to 1.15
 
+From Germination until ready for the vegetative state, I put the plants under a humidity dome.  Once I take off the dome the plants are in a vegetative state.  This is when VPDBuddy starts.
+
 If the ideal VPD values are maintained during vegetative and flowering state, VPDBuddy is doing it's job!
 
 Resources
@@ -23,5 +25,14 @@ Resources
 System Overview
 ===============
 
+
+.. figure:: images/vpdbuddy_system_overview.jpg
+   :align: center
+   :scale: 100
+
+   VPDBuddy System Overview
+
+
+:ref:`SnifferBuddy <snifferbuddy>` sends it's readings to the GrowBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController
     
 
