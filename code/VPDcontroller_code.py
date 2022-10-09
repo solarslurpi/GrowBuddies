@@ -33,7 +33,7 @@ class VPDcontroller():
         Exception: There are a few exception states to check to make sure the code knows what is going on and can alert the caller.
     """
 
-    def __init__(self, growth_stage = growthStage.VEG, values_callback=None,log_level=logging.DEBUG):
+    def __init__(self, growth_stage: int = growthStage.VEG, values_callback = None, log_level = logging.DEBUG):
 
         # Used for initialization of PID controller when the first mqtt message from SnifferBuddy comes in.
         self.first_message = True
@@ -82,10 +82,9 @@ class VPDcontroller():
 
 
     def _read_settings(self) -> dict:
-        """INTERNAL METHOD Opens the JSON file identified in settings_file and reads in the settings as a dict.
-
+        """INTERNAL METHOD.  Opens the JSON file identified in `settings_filename` and reads in the settings as a dict.
         Raises:
-            Exception: When it can't find the file named by the settings_filename attribute.  
+            Exception: When it can't find the file named by the `settings_filename` attribute.  
 
         Returns:
             dict: including values for the mqtt broker, topic, and vpd setpoints.
@@ -141,7 +140,7 @@ class VPDcontroller():
 
 
     
-    def _calc_vpd(self, msg_str) -> (float):
+    def _calc_vpd(self, msg_str:str) -> (float):
 
         """ INTERNAL METHOD. I decided at this point not to measure the leaf temperature but take the much simpler approach of assuming
         2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for my purposes "good enough."
@@ -168,15 +167,17 @@ class VPDcontroller():
         vpd = 3.386*(math.exp(17.863-9621/(leaf_T+460))-((RH/100)*math.exp(17.863-9621/(air_T+460))))
         return(time,air_T,RH,vpd)
 
-    def _pid(self, setpoint, reading) -> int:
-        """INTERNAL METHOD.  This is the code for the PID.
+    def _pid(self, setpoint:float, reading:float) -> int:
+        """INTERNAL METHOD.  This is the code for the `PID controller <https://en.wikipedia.org/wiki/PID_controller>`_
+
+        The PID controller is at the heart of determining how many seconds to turn on the humidifier.  
 
         Args:
-            setpoint (_type_): _description_
-            reading (_type_): _description_
+            setpoint (float): The ideal value for the VPD.
+            reading (float):  The most recent reading.
 
         Returns:
-            int: _description_
+            int: how many seconds to turn on the humidifier
         """
         Kp = self.settings['Kp']
         Ki = self.settings['Ki']

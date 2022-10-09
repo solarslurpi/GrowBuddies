@@ -10,7 +10,6 @@ GrowBuddy is a DIY "smart gardening" environment cobbled together with inexpensi
 - the humidity / temperature in an ideal range (see VPD for more information).
 - a living soil bed at the ideal soil moisture (see Living Soil for more information).
 - a level of CO2 that is higher than is in the air ( TODO ).
-- distance light is from canopy based on PPFD ( TODO )
 - TBD
 
 and helps with diagnosing:
@@ -18,11 +17,12 @@ and helps with diagnosing:
 - nutrition deficits ( TODO )
 - pest probems ( TODO )
 - virus probems ( TODO )
+- distance light is from canopy based on PPFD ( TODO )
 - TBD
 
 and adds analysis tools:
-- 3D Printed Microscope to view microbes ( TODO )
-- TBD
+\- 3D Printed Microscope to view microbes ( TODO )
+\- TBD
 
 The TBDs indicate that this project will continually evolve and (hopefully!) improve.  Please let me know what you think, especially what can be improved.
 
@@ -45,5 +45,4 @@ tasmota
 systemd
 VPDbuddy
 modules
-sphinxLearnings
 ```
