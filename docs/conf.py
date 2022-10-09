@@ -25,10 +25,16 @@ exclude_patterns = ["python_env/*"]
 extensions = [
     'sphinx.ext.autodoc',
     'sphinxcontrib.napoleon',
-    'sphinx_autodoc_typehints'
+    'sphinx_autodoc_typehints',
+    'myst_parser'
 ]
+# Include methods that start with an _
 napoleon_include_private_with_doc = True
 
+# Add Myst extensions
+myst_enable_extensions = ["colon_fence"]
+
+# Ignore documentating these files.
 autodoc_mock_imports = ['influxdb','paho']
 
 templates_path = ['_templates']

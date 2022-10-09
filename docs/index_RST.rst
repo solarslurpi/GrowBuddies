@@ -18,6 +18,7 @@ and helps with diagnosing:
 - nutrition deficits ( TODO )
 - pest probems ( TODO )
 - virus probems ( TODO )
+- distance light is from canopy based on PPFD ( TODO )
 - TBD
 
 and adds analysis tools:

@@ -12,7 +12,7 @@ from enum import Enum
 settings_filename = 'growbuddy_settings.json'
 
 class growthStage(Enum):
-    """An enumeration to determine the stage of growth the plant is in.  Whether in vegetative of flower is an input from the user.  The code then converts this to a growthStage enum and passes the value when instantiating an instance of the VPDcontroller() class.
+    """An enumeration to set the stage of plant growth.  Whether in vegetative of flower is an input from the user.  The code then converts this to a growthStage enum and passes the value when instantiating an instance of the VPDcontroller() class.
 
     Args:
         Enum (int): Either VEG for Vegetative of FLOWER for when the plant is in flowering.
@@ -22,7 +22,7 @@ class growthStage(Enum):
 
 class VPDcontroller():
 
-    """Keeps the humidity at the ideal VPD level.  If we get this right, it should be set and forget.  We set a values_callback if we want to get to the data. For example, if we wish to store the data into influxdb.
+    """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the data into influxdb.
 
     Args:
         growth_stage (class growthStage (which is an Enum), optional): Entered by the user. Defaults to growthStage.VEG.
@@ -53,9 +53,7 @@ class VPDcontroller():
  
         # Set up the setpoint to the ideal vpd value.ds
         self.setpoint = 0.0
-        if growth_stage == growthStage.BABY:
-            self.setpoint = self.settings['baby_setpoint']
-        elif growth_stage == growthStage.VEG:
+        if growth_stage == growthStage.VEG:
             self.setpoint = self.settings['veg_setpoint']
         else:
             self.setpoint = self.settings['flower_setpoint']
@@ -84,14 +82,13 @@ class VPDcontroller():
 
 
     def _read_settings(self) -> dict:
-        """Opens the JSON file identified in settings_file and reads in the settings as a dict.
+        """INTERNAL METHOD Opens the JSON file identified in settings_file and reads in the settings as a dict.
 
         Raises:
-            Exception: When it can't find the file named by the settings_filename attribute.  Most likely this file is named vpd_settings.json.
+            Exception: When it can't find the file named by the settings_filename attribute.  
 
         Returns:
-            dict: including values for the mqtt broker, topic, and vpd setpoints at the different 
-            growth stages.
+            dict: including values for the mqtt broker, topic, and vpd setpoints.
         """
         self.logger.debug(f'-> Reading in settings from {settings_filename} file.')
         dict_of_settings = {}
@@ -103,11 +100,10 @@ class VPDcontroller():
         return dict_of_settings
 
     def _on_connect(self,client, userdata, flags, rc) :
-        """Called back by the mqtt library once the code has connected with the broker.  Now we can subscribe to SensorBuddy readings.
+        """INTERNAL METHOD.  Called back by the mqtt library once the code has connected with the broker.  Now we can subscribe to SensorBuddy readings.
 
         Args:
-            client (opaque structure passed along through the mqtt library. It maintains the mqtt client connection to the broker): We got here because the mqtt library found the broker we want to work with and has assigned our
-            session to this client.
+            client (opaque structure passed along through the mqtt library. It maintains the mqtt client connection to the broker): We got here because the mqtt library found the broker we want to work with and has assigned a session to this client.
             userdata (_type_): Not used.
             flags (_type_): Not used.
             rc (int): return code from the mqtt library connecting with the broker.
@@ -120,13 +116,16 @@ class VPDcontroller():
 
 
     def _on_message(self, client, userdata, msg) :
-        """Received a `tele/snifferbuddy/SENSOR` msg (sensor reading) from SnifferBuddy (obtained through the growbuddy broker).  
+        """ INTERNAL METHOD. Received a `tele/snifferbuddy/SENSOR` msg (sensor reading) from SnifferBuddy (obtained through the growbuddy broker).  Next, a new value for the VPD is calculated and the values are sent to the caller if a callback function was provided. 
 
         Args:
-            userdata (_type_): Not used.
-            msg (str):The message is something like
-         {"Time":"2022-09-06T08:52:59","ANALOG":{"A0":542},"SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}.  It
-         is sent by SnifferBuddy every twenty seconds.
+            msg (str):The message is a JSON string sent by SnifferBuddy that looks something like
+
+
+                {"Time":"2022-09-06T08:52:59",
+                "ANALOG":{"A0":542},
+                "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}  
+             
         """
         message = msg.payload.decode(encoding='UTF-8')
         self.logger.debug(f'mqtt received message...{message}')
@@ -141,25 +140,25 @@ class VPDcontroller():
 
 
 
-        #             """
-        # """ """
-
     
     def _calc_vpd(self, msg_str) -> (float):
 
         """ INTERNAL METHOD. I decided at this point not to measure the leaf temperature but take the much simpler approach of assuming
         2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for my purposes "good enough."
 
-        Once an mqtt message is received from the GrowBuddy broker that a SnifferBuddy reading is available, _calc_vpd() is called to calculate the VPD.  The mqtt message comes in as a JSON string.  The JSON string is converted to a dictionary and then the values needed for the VPD calculation are read into variables.
+        Once an mqtt message is received from the GrowBuddy broker that a SnifferBuddy reading is available, _calc_vpd() is called to calculate the VPD.  The mqtt message comes in as a JSON string.  The JSON string is converted to a dictionary.  The dictionary contains the values needed for the VPD calculation.
+
+        The VPD equation comes `from a Quest website <https://www.questclimate.com/vapor-pressure-deficit-indoor-growing-part-3-different-stages-vpd/>`_
 
         Args:
             msg_str (JSON str): mqtt message in JSON string format.
         Raises:
-            Exception: _description_
+            Exception: If one of the values needed to calculate the VPD is of a type or value that won't work.
 
         Returns the calculated VPD value.
         """
         dict = json.loads(msg_str)
+        # TODO: Make usable for at least the SCD30 or SCD40
         air_T = dict["SCD30"]["Temperature"]
         RH = dict["SCD30"]["Humidity"]
         time = dict["Time"]
