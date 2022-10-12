@@ -170,14 +170,16 @@ class VPDcontroller():
     def _pid(self, setpoint:float, reading:float) -> int:
         """INTERNAL METHOD.  This is the code for the `PID controller <https://en.wikipedia.org/wiki/PID_controller>`_
 
-        The PID controller is at the heart of determining how many seconds to turn on the humidifier.  
+        The PID controller is at the heart of determining how many seconds to turn on the humidifier.  I expect this method to be evolved over time.
+        1. I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature is in the 70's F.  The relative humidity is typically around 40-50%.
+        2. I am new to PID controllers.  I have to start somewhere, but I am quite sure I will cringe at this code a year from now!
 
         Args:
             setpoint (float): The ideal value for the VPD.
             reading (float):  The most recent reading.
 
         Returns:
-            int: how many seconds to turn on the humidifier
+            int: How many seconds to turn on the humidifier on.
         """
         Kp = self.settings['Kp']
         Ki = self.settings['Ki']

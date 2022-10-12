@@ -38,12 +38,15 @@ See you in the garden!
 
 overview
 install_growbuddy
+flash_Tasmota_sonoff
 growbuddy
 snifferbuddy
+vaporbuddy
 wiring
 tasmota
 systemd
 VPDbuddy
 modules
 sphinxLearnings
+SoilMoistureBuddy
 ```
