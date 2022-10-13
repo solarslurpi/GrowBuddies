@@ -2,7 +2,7 @@
 
 # SnifferBuddy
 
-SnifferBuddy sniffs out values for the air temperature, CO2 level, and humidity. I also put in a photoresiter on top to let me know when
+SnifferBuddy sniffs out values for the air temperature, CO2 level, and humidity. I also put in a photoresister on top to let me know when
 the LEDs are on or off.  The readings are sent out over wifi using mqtt to the GrowBuddy broker.
 
 Putting a SnifferBuddy together is easy. The hardest part is soldering the wires to the pins!
