@@ -5,38 +5,32 @@
 
 # Welcome to GrowBuddy!
 
-GrowBuddy is a DIY "smart gardening" environment cobbled together with inexpensive hardware, 3D printed enclosures, software, and wifi to help us maintain:
+GrowBuddy is an Open DIY project that monitors and adjusts environment variables that affect plant growth within a grow tent.  Currently, GrowBuddy focuses on controlling an indoor plant's water needs.  Helping plants get the right amount of water - whether the water is in the form of vapor when in the air or liquid in the soil - is difficult to get right.  Besides, watering requires constant - usually daily - attention.  How does that work when I want to go on vacation?  Since I grow in Living Soil (I recommend [KIS BioChar](https://www.kisorganics.com/products/kis-organics-biochar-soil-mix)), GrowBuddy's solutions focus on growing in soil, but of course aren't constrained to soil based grows.
+## Current Solutions
+The current solutions (given the focus is on water) are:
+- [Vapor Pressure Deficit (VPD)](VPDbuddy.md)
+- [Soil Moisture](SoilMoistureBuddy.md)
 
-- the humidity / temperature in an ideal range (see VPD for more information).
-- a living soil bed at the ideal soil moisture (see Living Soil for more information).
-- a level of CO2 that is higher than is in the air ( TODO ).
+
+Everyone is welcome. I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness there can be gained by taking care of plants. I find doing programming and hardware projects a wonderful hobby.  I also love learning and it seems to me there is A LOT I can learn.  So [Contact me](mailto:happygrowbuddy@gmail.com) with thoughts, questions, interests.
+
+Once the water needs are dialed in, other areas that will be explored to automate include:
+- adjusting the CO2 level to maxima level of CO2 that is higher than is in the air ( TODO ).
 - distance light is from canopy based on PPFD ( TODO )
-- TBD
-
-and helps with diagnosing:
-
 - nutrition deficits ( TODO )
 - pest probems ( TODO )
 - virus probems ( TODO )
-- TBD
-
-and adds analysis tools:
 - 3D Printed Microscope to view microbes ( TODO )
 - TBD
 
-The TBDs indicate that this project will continually evolve and (hopefully!) improve.  Please let me know what you think, especially what can be improved.
 
-You can reach me at <mailto:happygrowbuddy@gmail.com>
-
-Everyone is welcome. Perhaps most especially if you are a care giver of plants with an appreciation of DIY technology.  I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness
-is gained by being a care taker to plants.
-
+```{note} Please [Contact me](mailto:happygrowbuddy@gmail.com) with thoughts, questions, interests.
+```
 See you in the garden!
 
 ```{toctree}
 :maxdepth: 1
 
-overview
 install_growbuddy
 flash_Tasmota_sonoff
 growbuddy
