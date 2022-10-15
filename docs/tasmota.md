@@ -29,6 +29,23 @@ A tool like [Angry IP](https://angryip.org/) shows the IP address.
 Angry IP Scan Shows Tasmota
 :::
 Now Visit the Device.  Go into Configure Module and choose Generic(18) and then Save.
+### i2cscan
+`i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to show you if the i2c sensor is wired correctly.  It is useful right after an install to see if the wiring to the ESP286 is correct.
+```
+21:41:54.158 CMD: i2cscan
+21:41:54.179 MQT: growbuddy/snifferbuddy/RESULT = {"I2CScan":"Device(s) found at 0x62"}
+```
+The above is a verification that the wiring works for the ESP286/SCD40 I built since 0x62 is the SCD40's I2C address.
+
+### i2cdriver
+`i2cdriver` shows the list of drivers that were loaded by the Tasmota build.
+```
+21:40:49.852 CMD: i2cdriver
+21:40:49.861 MQT: growbuddy/snifferbuddy/RESULT = {"I2CDriver":"7,8,9,10,11,12,13,14,15,17,18,20,24,29,31,36,41,42,44,46,48,62"}
+```
+From the results of i2cdriver, I can see the SCD40 (which sits on i2c address 0x62) is in this build.
+
+## Configuration
 ### Configure Host Name
 I like to configure the Host Name as soon as possible so I can get to the device with a name.
 
@@ -72,20 +89,13 @@ MQTT Explorer
 :::
 We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
 
-
-
-
-## Setup
-Setup is for things like setting the time between sending mqtt messages, setting the clock to the correct date, time, and timezone, etc.
-### Teleperiod
+### Set the Teleperiod
 Set up the period between sending the sensor readings over mqtt using the `teleperiod` command.  e.g.:
 ```
 teleperiod 100
 ```
 sets sending readings via mqtt to occur every 100 seconds.
-### Local Time
-
-
+### set Local Time
 This command set the correct timezone stuff for PST:
 
 Use the web console to configure the Timezone (this shows Pacific time):
@@ -97,11 +107,23 @@ The 99 says to use TimeDST and TimeSTD. Use "time" to check.
 [Thank you Craig's Tasmota page](https://xse.com/leres/tasmota/)
 
 Or Keep It Simple and just change the timezone with the command `timezone -8` (see [Tasmota commands](https://tasmota.github.io/docs/Commands/#management)
-### i2cscan
-Executing `i2cscan` from the console is useful to show you if the i2c sensor is wired correctly.
+### Set Temperature Readings to F or C
+Typing in the command without an option returns the current setting.
+```
+21:45:11.776 CMD: setoption8
+21:45:11.782 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"ON"}
+```
+Weirdly, "ON" means temperature readings will be in Fahrenheit.  
+```
+21:46:30.756 CMD: so8 0
+21:46:30.761 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"OFF"}
+```
+The temperature is set to celsius with the command `so8 0`.  To Fahrenheit with the command `so8 1`.
+
+
 
 ### Switchmode
-The [Tasmota command `switchmode`](https://tasmota.github.io/docs/Buttons-and-Switches/#switchmode) commands Tasmota to send an mqtt message when there is a change in state.  
+The [Tasmota command `switchmode`](https://tasmota.github.io/docs/Buttons-and-Switches/#switchmode) commands Tasmota to send an mqtt message when there is a change in state.  This command came in handy when I had an actuator that just needed on/off (like a power switch as the name implies).
 ```
 switchmode1 15
 switchmode2 15
