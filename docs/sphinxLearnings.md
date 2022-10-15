@@ -59,6 +59,11 @@ In this example, we start with a file in rst format and convert to markdown.  To
 ```
 rst2myst convert ../rst-test-files/* .
 ```
+## Cross-Linking Between Sphinx Docs
 
-## Link To Another Doc Page
-To link to another doc page, use `{doc}`<pagename>`  for example, {doc}`snifferbuddy`.  This directive is from the Myst-Parser. **NOTE: This directive does not work in autodocumented code using 
+Where the link is use \{ref\}\`Custom title \<anchor name\>\`.  Before the m(H1, H2...) Heading, use `(anchor name)=` .
+
+For example, {ref}`Let's make a SnifferBuddy <make-snifferbuddy>` is a cross reference link to the section in SnifferBuddy with the steps to make a SnifferBuddy.
+
+
+

@@ -41,6 +41,7 @@ tasmota
 systemd
 VPDbuddy
 modules
+raspPi_learnings
 sphinxLearnings
 SoilMoistureBuddy
 ```

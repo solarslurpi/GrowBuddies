@@ -26,7 +26,8 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinxcontrib.napoleon',
     'sphinx_autodoc_typehints',
-    'myst_parser'
+    'myst_parser',
+    'sphinx.ext.autosectionlabel'
 ]
 # Show (True) or Hide (False) ToDo's
 todo_include_todos = True
