@@ -31,9 +31,10 @@ See you in the garden!
 ```{toctree}
 :maxdepth: 1
 
-install_growbuddy
-flash_Tasmota_sonoff
+
+getting_started
 growbuddy
+mygrowtent
 snifferbuddy
 vaporbuddy
 wiring

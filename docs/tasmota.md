@@ -89,7 +89,7 @@ MQTT Explorer
 :::
 We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
 
-### Set the Teleperiod
+### Set Time Between Readings
 Set up the period between sending the sensor readings over mqtt using the `teleperiod` command.  e.g.:
 ```
 teleperiod 100
@@ -128,26 +128,12 @@ The [Tasmota command `switchmode`](https://tasmota.github.io/docs/Buttons-and-Sw
 switchmode1 15
 switchmode2 15
 ```
-
-## Creating a Tasmota Binary
-This is something you might want to do for example to add a sensor or fix something that isn't working.  I have had to do both.  I fixed a problem with the SCD30 + ESP286 (Wemos D1) not working without a restart.  I couldn't get the team to look at it at the time it happened so I fixed it and submitted a PR.  A bit later on, another person had the same challenge.  Wonderfully, arendst pointed out _From the datasheet it needs 2 seconds to power up. The current code doesn't allow this._ (see [PR 15438](https://github.com/arendst/Tasmota/issues/15438)).  He tried a fix, this didn't seem to work. 
-
-Subsequently, the Tasmota team had an opportunity to look at this problem.  I'll discuss that and then get back to building the binary.
-
-(wemos_challenges)=
-### SCD 30 + Wemos D1 ESP286 
-After further investigating the Wemos D1 powering and communication with the SCD 30, Arends notes: _As I thought. The Wemos D1 is flakey at power on._ (That's what $1.50 buys us!). _In latest dev there is a new command called SetOption46 0..255 allowing you to stall initialization for 0..255 * 10 milliseconds to let stabilize the local Wemos power. You might want to experiment with values like SO46 10 os SO46 20 for a 100mSec or 200mSec delay. If you own the Adafruit SCD30 you might also want to power the device from 5V as it draws a lot of power when measuring (notice the fainting power led because the wemos LDO just cannot provide enough power for the device. YMMV._
-
-I have not had a challenge running on 3.3V.  Obviously, Arendst knows ALOT so his advice should be kept in mind.
-
-The `SetOptions46` is avalailable in Tasmota 12.1.1
-
 (github_compile)=
 ### Compile Tasmota with GitPod
 
-- This video will get you started compiling using GitPod [Compiling your own custom Tasmota on the web - No installs, no coding!](https://www.youtube.com/watch?v=vod3Woj_vrs)
+To add a sensor to the build or debug, you'll want to get into VS Code and play around with the code.
 
-Here is what I did to change the ESP286 to add the SCD40.
+- This video will get you started compiling using GitPod [Compiling your own custom Tasmota on the web - No installs, no coding!](https://www.youtube.com/watch?v=vod3Woj_vrs).
 - follow the directions on the [Tasmota Compiling page](https://tasmota.github.io/docs/Compile-your-build/).  Assume GitPod.
 - After building, go into the build_output directory, right-click on `tasmota-sensors.bin.gz` and click to download.
 :::{figure} images/tasmota_build_output.jpg
@@ -160,8 +146,19 @@ Tasmota Sensors Build Location
 - Go to the main Tasmota screen and select Firmware Upgrade.
 - Upload the sensor binary and click on Start Upgrade.
 
+(wemos_challenges)=
 ### ESP286/SCD30 Modifications
+
+_I added this section to maintain what I learned with the Wemos D1 + SCD30 Setup_
+
+I fixed a problem with the SCD30 + ESP286 (Wemos D1) not working without a restart.  I couldn't get the Tasmota team to look at it at the time it happened so I fixed it and submitted a PR.  A bit later on, another person had the same challenge.  Wonderfully, arendst pointed out _From the datasheet it needs 2 seconds to power up. The current code doesn't allow this._ (see [PR 15438](https://github.com/arendst/Tasmota/issues/15438)).
 This may be unique to the Wemos mini D1 ESP286 (noisy power...?).  
+
+After further investigating the Wemos D1 powering and communication with the SCD 30, Arends notes: _As I thought. The Wemos D1 is flakey at power on._ (That's what $1.50 buys us!). _In latest dev there is a new command called SetOption46 0..255 allowing you to stall initialization for 0..255 * 10 milliseconds to let stabilize the local Wemos power. You might want to experiment with values like SO46 10 os SO46 20 for a 100mSec or 200mSec delay. If you own the Adafruit SCD30 you might also want to power the device from 5V as it draws a lot of power when measuring (notice the fainting power led because the wemos LDO just cannot provide enough power for the device. YMMV._
+
+I have not had a challenge running on 3.3V.  Obviously, Arendst knows ALOT so his advice should be kept in mind.
+
+The `SetOptions46` is avalailable in Tasmota 12.1.1
 
 The files I modified include:
 - [xsns_42_scd30.ino](https://github.com/arendst/Tasmota/blob/d157b1c5e0639f8ff29eba01fa3c181a01ae211c/tasmota/xsns_42_scd30.ino).  From what I can tell, Tasmota started as an Arduino project.  The interface into (3rd party) sensor code is a .ino file like this one for the scd30.  The current code:

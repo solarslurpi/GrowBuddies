@@ -35,26 +35,21 @@ if the grow lights were on or off.  I use this for knowing when to go into dayti
 
 
 ## Wiring
+__[Caution...Wiring ahead..take care!](wiring)__
 
-<!-- What a mess.  I won't even try to make a pretty image.  There is no way...I have started to  {ref}`standardize the wiring<wiring>`
-
+Wiring components together is my biggest source of frustration with projects.  Besides the confusing ugliness of my thoughtless wiring,
 :::{figure} images/SnifferBuddy_innerds.jpg
 :align: center
-:height: 350
+:scale: 100
 
 SnifferBuddy Wiring
 :::
 
-What a mess.  I won't even try to make a pretty image.  There is no way... Thank goodness I am not a professional like this person.
 
-```{image} images/wiring_pole.jpg
-:align: center
-:scale: 60
-```
+The haphazard wiring is prone to lose connection or cause a short.
 
-The good news is the wiring works.  Wiring components together - like the ESP286 and the SCD30 - is probably the hardest part of working with these breakout boards for the DIYer.  Previously, I might have built a custom PCB but that takes time and besides the folks - like Adafruit - making components really know how to surround the component with robust circuits that typically don't start on fire. *Note: I haven't had an ESP286 catch on fire, but I've had a few get really warm* -->
 
-### NEW and IMPROVED Wiring
+
 
 Based on {ref}`my reflections on wiring,<wiring>` Here's how I would wire up a SnifferBuddy:
 
@@ -70,7 +65,9 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 
 ## Enclosure
 
-The SnifferBuddy enclosure ([3 files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)) was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
+- download and print the ([3 files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)).
+
+The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
 
 :::{figure} images/snifferbuddy_enclosure.jpg
 :align: center
@@ -92,10 +89,9 @@ SnifferBuddy Enclosure Ready for Halloween!
 
 ### Materials
 
-- [SCD30 sensor](https://www.adafruit.com/product/4867) component.
+- [SCD30 sensor](https://www.adafruit.com/product/4867) component. _Note: I have successfully used and SCD40 sensor.  The challenge is it is not by default in the Tasmota Sensors build.  Other sensors can be added if needed._
 - [ESP8286](https://www.aliexpress.us/item/2251832645039000.html) component.
-- Photoresistor and 10K through hole resistor.
-- Print out the [case top](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/base%20and%20lid%20v14.f3d).
-- print out the SCD30 enclosure [(case bottom)](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure%20v1.f3d).
-- USB chord to plug the ESP8286 to power.
-- USB power hub to plug the USB chord into the wall.
+- Photoresistor and 10K through hole resistor.  I had alot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
+- 3D printer and PLA filament for printing out the enclosure.
+- USB chord and to plug the ESP8286 to power.
+
