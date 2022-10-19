@@ -5,7 +5,7 @@
 SnifferBuddy sniffs out values for the air temperature, CO2 level, and humidity. I also put in a photoresister on top to let me know when
 the LEDs are on or off.  The readings are sent out over wifi using mqtt to the GrowBuddy broker.
 
-Putting a SnifferBuddy together is easy. The hardest part is soldering the wires to the pins!
+
 
 ## Outside View
 The one I made looks like this:
@@ -34,16 +34,11 @@ inexpensive and work.  I ordered some from [Aliexpress](https://www.aliexpress.u
 if the grow lights were on or off.  I use this for knowing when to go into daytime or nightime care.
 
 
-## Wiring
-__[Caution...Wiring ahead..take care!](wiring)__
+### Wiring
 
-Wiring components together is my biggest source of frustration with projects.  Besides the confusing ugliness of my thoughtless wiring,
-:::{figure} images/SnifferBuddy_innerds.jpg
-:align: center
-:scale: 100
+Now that vendors are providing us with extremely useful Breakout Boards that we can connect together to do powerful things, 
 
-SnifferBuddy Wiring
-:::
+
 
 
 The haphazard wiring is prone to lose connection or cause a short.
@@ -51,7 +46,6 @@ The haphazard wiring is prone to lose connection or cause a short.
 
 
 
-Based on {ref}`my reflections on wiring,<wiring>` Here's how I would wire up a SnifferBuddy:
 
 The Photoresistor is "hard wired" to the ESP286's analog pin.  The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
 
@@ -63,20 +57,7 @@ The ESP286 on SnifferBuddy runs [Tasmota](https://tasmota.github.io/docs/) .
 
 It is amazing what we can DIY riding on the backs of the incredible insight and work by people like [Theo Arends](https://github.com/arendst) .  Tasmota is simple in one way - it is an extremely easy way to send mqtt readings from sensors attached to an ESP.  Can it get complex quickly, you bet.  Tasmota is very powerful.  And you may need to be prepared to bumble through Tasmota code to get an answer to your questions.  However, the Discord channel tends to be very helpful and there is documentation to get you started.  I say all this because, like other "programming environment", there is a culture, a way of life, associated with it.
 
-## Enclosure
-
-- download and print the ([4 files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)).
-
-The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
-
-:::{figure} images/snifferbuddy_enclosure.jpg
-:align: center
-:height: 350
-
-SnifferBuddy Enclosure Ready for Halloween!
-:::
-
-(make-snifferbuddy)=
+<!-- (make-snifferbuddy)= -->
 ## Let's Make One!
 
 - Step 1: Get the materials. See {ref}`Materials`.
@@ -84,6 +65,28 @@ SnifferBuddy Enclosure Ready for Halloween!
 - Step 3: {ref}`Wire <wiring>` the components together.
 - Step 4: Plug the ESP286 into the USB port of your PC/Mac. __Make sure to use a USB cable that handles data i/o.__
 - Step 5: Install Tasmota onto the ESP8286.  See {ref}`Tasmota Installation <tasmota_installation>`.
+
+## Enclosure
+
+The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
+
+To make the enclosure, download and print the ([4 files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)).
+
+:::{figure} images/snifferbuddy_parts_on_printer_plate.jpg
+:align: center
+:height: 350
+
+SnifferBuddy Enclosure Parts
+:::
+Additional files include:
+- _Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d - A well done model for Fusion 360 of the Wemos mini D1.  It is used to build the enclosure around it's dimensions.
+- SnifferBuddyParams.csv - dimensions used while making the enclosure.
+- scd 30 enclosure v1.f3d - the F360 file for scd30 enclosure.stl.
+- scd enclosure.stl
+- esp286mini_top_enclosure.stl and espmini_bottom_enclosure.stl encloses the Wemos D1.
+- base and lid v14 v4.f3z is the F360 file containing the designs for the two esp286mini components.
+
+
 
 
 
