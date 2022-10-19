@@ -2,7 +2,7 @@
 Welcome to my grow tent! A place to relax and smile.
 
 ## Living Soil
-After watching soil microbes under a microscope, I became convinced Living Soil is the way to go.  The next decision was individual containers, or a bed of soil.  I opted for the bed of soil.  This way, the roots, soil, and microbes have a vast expanse to thrive in.  The con for me was having a significant amount of soil in my kitchen.  I hope to be using the same soil for 5 years.  We'll see about that!
+After watching soil microbes under a microscope, I became convinced Living Soil is the way to go.  The next decision was individual containers, or a bed of soil.  I opted for the bed of soil.  This way, the roots, soil, and microbes have a vast expanse to thrive in.  The con for me was having a significant amount of soil in my kitchen.  Also, a bed of soil adds more moisture in the air.  This actually is a positive.  I hope to be using the same soil for 5 years.  We'll see about that!
 
 My soil of choice is [KIS Organic's BIOCHAR](https://www.kisorganics.com/products/kis-organics-biochar-soil-mix).  The folks at KIS Organics truly care about the quality of their product as well as the quality of our grows.  Besides, [Tad and team are at the forefront of plant research as well as providing us with quality growing content](https://www.kisorganics.com/pages/learn-1).
 
