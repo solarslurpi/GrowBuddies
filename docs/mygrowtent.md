@@ -2,7 +2,7 @@
 Welcome to my grow tent! A place to relax and smile.
 
 ## Living Soil
-After watching soil microbes under a microscope, I became convinced Living Soil is the way to go.  The next decision was individual containers, or a bed of soil.  I opted for the bed of soil.  This way, the roots, soil, and microbes have a vast expanse to thrive in.  The con for me was having a significant amount of soil in my kitchen.  Also, a bed of soil adds more moisture in the air.  This actually is a positive.  I hope to be using the same soil for 5 years.  We'll see about that!
+After watching soil microbes under a microscope, I became convinced Living Soil is the way to go.  The next decision was individual containers, or a raised bed.  I opted for the rasied bed.  This way, the roots, soil, and microbes have a vast expanse to thrive in.  The con for me was having a significant amount of soil in my kitchen.  Also, a bed of soil adds more moisture in the air.  This actually is a positive.  I hope to be using the same soil for 5 years.  We'll see about that!
 
 My soil of choice is [KIS Organic's BIOCHAR](https://www.kisorganics.com/products/kis-organics-biochar-soil-mix).  The folks at KIS Organics truly care about the quality of their product as well as the quality of our grows.  Besides, [Tad and team are at the forefront of plant research as well as providing us with quality growing content](https://www.kisorganics.com/pages/learn-1).
 
@@ -44,7 +44,14 @@ Add 1 cup per yard of potassium sulfate to bring your cations into a better bala
 ```
 ### Adding Back
 Based on Brandon's advice, I'm adding:
-- 7 cups of bone meal (bovine not fish) per yard. 7 x .35 = 2.45 cups
-- 5 cups Soft rock phosphate per yard. 5 x .35 = 1.75 cups 
-- 10 cups of alfalfa per yard. 10 x .35 = 3.5 cups
-- 1 cup of potassium sulfate per yard. 1 x .35 = .35 cups (it is easier to add to water, pH and water in such a small amount)
+- 7 cups of bone meal (bovine not fish) per yard. 7 x .35 = **2.45 cups**
+- 5 cups Soft rock phosphate per yard. 5 x .35 = **1.75 cups** 
+- 10 cups of alfalfa per yard. 10 x .35 = **3.5 cups**
+- 1 cup of potassium sulfate per yard. 1 x .35 = **.35 cups** (it is easier to add to water, pH and water in such a small amount)
+
+:::{figure} images/after_grow_additives.jpg
+:align: center
+:scale: 100
+
+Additives
+:::

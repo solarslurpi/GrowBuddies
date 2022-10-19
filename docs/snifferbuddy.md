@@ -34,9 +34,17 @@ inexpensive and work.  I ordered some from [Aliexpress](https://www.aliexpress.u
 if the grow lights were on or off.  I use this for knowing when to go into daytime or nightime care.
 
 
-### Wiring
+### WemosD1 to SCD30 Wiring
 
 Now that vendors are providing us with extremely useful Breakout Boards that we can connect together to do powerful things, 
+
+:::{figure} images/wemosd1_wiring.jpg
+:align: center
+:scale: 100
+
+Wemos D1 Wiring
+:::
+
 
 
 
