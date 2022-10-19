@@ -65,7 +65,7 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 
 ## Enclosure
 
-- download and print the ([3 files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)).
+- download and print the ([4 files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)).
 
 The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
 
@@ -93,5 +93,6 @@ SnifferBuddy Enclosure Ready for Halloween!
 - [ESP8286](https://www.aliexpress.us/item/2251832645039000.html) component.
 - Photoresistor and 10K through hole resistor.  I had alot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
 - 3D printer and PLA filament for printing out the enclosure.
+- Superglue for gluing the top Wemos part of the enclosure to the cap part of the enclosure.
 - USB chord and to plug the ESP8286 to power.
 
