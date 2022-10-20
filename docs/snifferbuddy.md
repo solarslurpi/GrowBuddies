@@ -79,7 +79,12 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
 
 To make the enclosure, download and print the ([4 mesh files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)).
-- [WemosD1_top.stl]()
+- [WemosD1_top.stl](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/WemosD1_top.stl)
+- [WemosD1_base.3mf](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/wemosD1_base.3mf)
+- [scd_cap.3mf](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/scd_cap.3mf)
+- [scd30 enclosure.stl](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure.stl)
+
+[The directory](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy) also includes the Fusion 360 files, including [a Fusion 360 file of a Wemos D1](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/_Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d) for modeling.
 
 :::{figure} images/snifferbuddy_parts_on_printer_plate.jpg
 :align: center
@@ -87,15 +92,6 @@ To make the enclosure, download and print the ([4 mesh files](https://github.com
 
 SnifferBuddy Enclosure Parts
 :::
-Additional files include:
-- _Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d - A well done model for Fusion 360 of the Wemos mini D1.  It is used to build the enclosure around it's dimensions.
-- SnifferBuddyParams.csv - dimensions used while making the enclosure.
-- scd 30 enclosure v1.f3d - the F360 file for scd30 enclosure.stl.
-- scd enclosure.stl
-- esp286mini_top_enclosure.stl and espmini_bottom_enclosure.stl encloses the Wemos D1.
-- base and lid v14 v4.f3z is the F360 file containing the designs for the two esp286mini components.
-
-
 
 
 
