@@ -34,12 +34,8 @@ I ended up getting pre-crimped JST PH (2mm between pins...small but not that sma
 - [pre-crimped STEMMA/JST PH 2.0 cable kit](https://amzn.to/3SLurIX) from Amazon.
 - [Pre-crimped STEMMA QT/JST PH 1.0 cable kit](https://amzn.to/3MyOCrV) from Amazon.
 
-## Wiring the ESP286 to the SCD40
-While I recommend using the SCD30 (and the code assumes that for now), I was exploring how Tasmota worked with the SCD40 and Wemos D1.  Turns out I learned the SCD40 is not in the sensor build for the ESP286 which led me to [having to compile a build of Tasmota with the SCD40 driver included](github_compile).  Awesome!  One more thing we know how to do.
 
-
-
-### Example
+### STEMMA QT/JST PH 1.0 Wiring Example
 
 Here's a wiring of a soil moisture sensor I recently did.
 
@@ -48,4 +44,4 @@ Here's a wiring of a soil moisture sensor I recently did.
 :scale: 60
 ```
 
-The enclosure has a connector area where the JST connector snuggly fits.
+The enclosure has a connector area to place the JST connector.
