@@ -7,8 +7,11 @@
 Before you begin installation, check to see if the sensor you are using is included in the binary.  There is not much space on an ESP286 so it is especially relevant for this chip.  To check, go to [Tasmota's BUILDS documentation](https://tasmota.github.io/docs/BUILDS/).  Here we have a table listing which sensors are included.  The column to look at is labeled t.  The cells in this column let us know if the sensor build contains either, both, or none of the (ESP286/ESP32) drivers for the sensor.  An x means the sensor code is include.   For example, search for SCD40. The t entry has -/x.  This is saying __the SCD40 sensor code is not in the ESP286 build but is in the ESP32 build__.  If you want to add support for a sensor, follow the steps outlined in the [Compiling using GitPod](github_compile).
 
 (tasmota_installation)=
-## Installation
-The easiest way to install Tasmota is using either the Edge or Chrome browser (web install doesn't work using the Brave browser) and go to [Tasmota Install URL](https://tasmota.github.io/install/).  
+## Install Tasmota
+### Easy Way
+The easiest way requires you have the same ESP286 [(the Wemos D1)](https://www.aliexpress.us/item/2251832645039000.html) and the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867).  I have backed up my configuration which you can restore when you are installing Tasmota.
+
+- Install Tasmota using either the Edge or Chrome browser (web install doesn't work using the Brave browser).  Go to [Tasmota Install URL](https://tasmota.github.io/install/).  
 _Note:  If the USB/COM port can't be identified, the first thing to do is to change cables.  The USB cable might not support data i/o.  If that doesn't work, check the USB driver.  The ESP286 or ESP32 may be using a driver that isn't installed on your Windows PC or Mac._
 
 There are many Tasmota binaries that could be installed.  We want to install the Tasmota Sensors binary for the ESP286.
@@ -18,17 +21,109 @@ There are many Tasmota binaries that could be installed.  We want to install the
 
 Tasmota Install
 :::
-
+#### Connect to WiFi
 The install includes connecting to the home wifi.
 
-A tool like [Angry IP](https://angryip.org/) shows the IP address.
+If you want to be sure the ESP286 has been "Tasmotized" correctly, you can use a tool like [Angry IP](https://angryip.org/) to show the IP address.
 :::{figure} images/angry_ip_tasmota.jpg
 :align: center
 :scale: 70
 
 Angry IP Scan Shows Tasmota
 :::
+#### Restore Config File
+
+Choose **Restore Configuration**
+
+:::{figure} images/tasmota_restore.jpg
+:align: center
+:scale: 60
+
+Restore Configuration UI
+:::
+Tasmota config files have the .dmp extension.  The backup config file is /bin/Config_snifferbuddy_11.1.0.1.dmp.  Choose the file and then start the restore.  When completed, SnifferBuddy is setup!
+
+
+
+### Not As Easy Way But Not Too Bad 
 Now Visit the Device.  Go into Configure Module and choose Generic(18) and then Save.
+#### Configure Host Name
+I like to configure the Host Name as soon as possible so I can get to the device with a name.
+
+:::{figure} images/tasmota_wifi_snifferbuddy.jpg
+:align: center
+:scale: 70
+
+SnifferBuddy Host Name
+:::
+
+Here I chose the name SnifferBuddy-SCD40 to note this is a SnifferBuddy using the SCD40 sensor.  Click on Save.  Wait for the Main Menu to come back.
+#### Configure GPIO pins
+Go back into Configure, choose Configure Module.  From here set up the GPIO pins as shown in the image below.
+
+:::{figure} images/tasmota_config_gpio_pins.jpg
+:align: center
+:scale: 70
+
+Tasmota Setting GPIO pins
+:::
+#### Configure mqtt
+Go to Configure MQTT.  
+- Set the Host to growbuddy (assuming the mqtt broker is named growbuddy).  
+- Set the topic to the Buddy being enabled (in this case SnifferBuddy).
+- Change the prefix part of the Full Topic to start with growbuddy.
+
+:::{figure} images/tasmota_mqtt_config.jpg
+:align: center
+:scale: 70
+
+Tasmota mqtt Settings
+:::
+Save and go back to the main menu.
+#### Check mqtt
+Using a tool like [MQTT Explorer](http://mqtt-explorer.com/)
+:::{figure} images/tasmota_mqtt_explorer.jpg
+:align: center
+:scale: 70
+
+MQTT Explorer
+:::
+We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
+
+#### Set Time Between Readings
+Set up the period between sending the sensor readings over mqtt using the `teleperiod` command.  e.g.:
+```
+teleperiod 100
+```
+sets sending readings via mqtt to occur every 100 seconds.
+#### set Local Time
+This command set the correct timezone stuff for PST:
+
+Use the web console to configure the Timezone (this shows Pacific time):
+```
+Backlog Timezone 99 ; TimeDST 0,2,03,1,3,-420 ; TimeSTD 0,1,11,1,2,-480
+```
+The 99 says to use TimeDST and TimeSTD. Use "time" to check.
+
+[Thank you Craig's Tasmota page](https://xse.com/leres/tasmota/)
+
+Or Keep It Simple and just change the timezone with the command `timezone -8` (see [Tasmota commands](https://tasmota.github.io/docs/Commands/#management)
+#### Set Temperature Readings to F or C
+Typing in the command without an option returns the current setting.
+```
+21:45:11.776 CMD: setoption8
+21:45:11.782 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"ON"}
+```
+Weirdly, "ON" means temperature readings will be in Fahrenheit.  
+```
+21:46:30.756 CMD: so8 0
+21:46:30.761 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"OFF"}
+```
+The temperature is set to celsius with the command `so8 0`.  To Fahrenheit with the command `so8 1`.
+
+## Commands To Verify the Install
+Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if the software and wiring are correct.
+
 ### i2cscan
 `i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to show you if the i2c sensor is wired correctly.  It is useful right after an install to see if the wiring to the ESP286 is correct.
 ```
@@ -43,83 +138,7 @@ The above is a verification that the wiring works for the ESP286/SCD40 I built s
 21:40:49.852 CMD: i2cdriver
 21:40:49.861 MQT: growbuddy/snifferbuddy/RESULT = {"I2CDriver":"7,8,9,10,11,12,13,14,15,17,18,20,24,29,31,36,41,42,44,46,48,62"}
 ```
-From the results of i2cdriver, I can see the SCD40 (which sits on i2c address 0x62) is in this build.
-
-## Configuration
-### Configure Host Name
-I like to configure the Host Name as soon as possible so I can get to the device with a name.
-
-:::{figure} images/tasmota_wifi_snifferbuddy.jpg
-:align: center
-:scale: 70
-
-SnifferBuddy Host Name
-:::
-
-Here I chose the name SnifferBuddy-SCD40 to note this is a SnifferBuddy using the SCD40 sensor.  Click on Save.  Wait for the Main Menu to come back.
-### Configure GPIO pins
-Go back into Configure, choose Configure Module.  From here set up the GPIO pins as shown in the image below.
-
-:::{figure} images/tasmota_config_gpio_pins.jpg
-:align: center
-:scale: 70
-
-Tasmota Setting GPIO pins
-:::
-### Configure mqtt
-Go to Configure MQTT.  
-- Set the Host to growbuddy (assuming the mqtt broker is named growbuddy).  
-- Set the topic to the Buddy being enabled (in this case SnifferBuddy).
-- Change the prefix part of the Full Topic to start with growbuddy.
-
-:::{figure} images/tasmota_mqtt_config.jpg
-:align: center
-:scale: 70
-
-Tasmota mqtt Settings
-:::
-Save and go back to the main menu.
-### Check mqtt
-Using a tool like [MQTT Explorer](http://mqtt-explorer.com/)
-:::{figure} images/tasmota_mqtt_explorer.jpg
-:align: center
-:scale: 70
-
-MQTT Explorer
-:::
-We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
-
-### Set Time Between Readings
-Set up the period between sending the sensor readings over mqtt using the `teleperiod` command.  e.g.:
-```
-teleperiod 100
-```
-sets sending readings via mqtt to occur every 100 seconds.
-### set Local Time
-This command set the correct timezone stuff for PST:
-
-Use the web console to configure the Timezone (this shows Pacific time):
-```
-Backlog Timezone 99 ; TimeDST 0,2,03,1,3,-420 ; TimeSTD 0,1,11,1,2,-480
-```
-The 99 says to use TimeDST and TimeSTD. Use "time" to check.
-
-[Thank you Craig's Tasmota page](https://xse.com/leres/tasmota/)
-
-Or Keep It Simple and just change the timezone with the command `timezone -8` (see [Tasmota commands](https://tasmota.github.io/docs/Commands/#management)
-### Set Temperature Readings to F or C
-Typing in the command without an option returns the current setting.
-```
-21:45:11.776 CMD: setoption8
-21:45:11.782 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"ON"}
-```
-Weirdly, "ON" means temperature readings will be in Fahrenheit.  
-```
-21:46:30.756 CMD: so8 0
-21:46:30.761 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"OFF"}
-```
-The temperature is set to celsius with the command `so8 0`.  To Fahrenheit with the command `so8 1`.
-
+From the results of i2cdriver, I can see the SCD40 (which sits on i2c address 0x62) is in this build.  I created a [custom build](github_compile) in order to include the SCD40 in the set of software drivers shown by `i2cdriver`.
 
 
 ### Switchmode

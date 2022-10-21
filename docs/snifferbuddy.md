@@ -66,7 +66,7 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 - Step 2: Print out the [enclosure](enclosure). 
 - Step 3: [Wire](scd30_wiring) the components together.
 - Step 4: Plug the ESP286 into the USB port of your PC/Mac. __Make sure to use a USB cable that handles data i/o.__
-- Step 5: Install Tasmota onto the ESP8286.  See {ref}`Tasmota Installation <tasmota_installation>`.
+- Step 5: Install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_installation).
 
 ## Enclosure
 

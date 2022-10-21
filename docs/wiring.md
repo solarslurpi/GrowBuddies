@@ -1,6 +1,6 @@
 (wiring)=
 
-# Wiring
+# Wiring Components Together
 
 Wiring components together is my biggest source of frustration.  
 
