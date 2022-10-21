@@ -207,13 +207,13 @@ class VPDcontroller():
 
 
 
-    def _turn_on_humidifier(self,nSecondsON):
+    def _turn_on_vaporbuddy(self,nSecondsON:int) -> None:
         """Send mqtt messages to the plug_humidifier_fan and plug_humidifier_mister
 
         Args:
             nSecondsON (int): The number of seconds to turn the mister and fan on.
         """
-       
+    #    Sonoff can be sent TOGGLE, ON, OFF in the form of cmnd/vaporbuddy_mister/POWER  how that is done is shown below....
         # Set up a callback to send an OFF message after the humidifier has been on nSecondsON
         timer = threading.Timer(nSecondsON,self._turn_off_humidifier)
         self.client.publish("cmnd/plug_humidifier_fan/POWER","ON")
@@ -221,7 +221,7 @@ class VPDcontroller():
         self.logger.debug(f'-> humidifier turned on for {nSecondsON} seconds.')
         timer.start()
 
-    def _turn_off_humidifier(self):
+    def _turn_off_vaporbuddy(self):
         """Send mqtt messages to the plug_humidifier_fan and plug_humidifier_mister to turn them off.
         """
         self.client.publish('cmnd/plug_humidifier_fan/POWER',"OFF")

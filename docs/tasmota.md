@@ -8,18 +8,20 @@ Before you begin installation, check to see if the sensor you are using is inclu
 
 (tasmota_installation)=
 ## Install Tasmota
-### Easy Way
-The easiest way requires you have the same ESP286 [(the Wemos D1)](https://www.aliexpress.us/item/2251832645039000.html) and the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867).  I have backed up my configuration which you can restore when you are installing Tasmota.
 
-- Install Tasmota using either the Edge or Chrome browser (web install doesn't work using the Brave browser).  Go to [Tasmota Install URL](https://tasmota.github.io/install/).  
-_Note:  If the USB/COM port can't be identified, the first thing to do is to change cables.  The USB cable might not support data i/o.  If that doesn't work, check the USB driver.  The ESP286 or ESP32 may be using a driver that isn't installed on your Windows PC or Mac._
+The easiest way requires you have the same ESP286 [the Wemos D1](https://www.aliexpress.us/item/2251832645039000.html) and **if you are building SnifferBuddy**, the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867).  I have backed up my configuration which you restore onto your WemosD1 when you are installing Tasmota.
+
+_Note: There is also a config file for a **[Tasmotized Sonoff plug](flash_tasmota)**_.
+### Web Install
+Install Tasmota using either the Edge or Chrome browser (web install doesn't work using the Brave browser).  Go to [Tasmota Install URL](https://tasmota.github.io/install/).  
+_Note:  If the USB/COM port can't be identified, the first thing to do is to check the cable.  The USB cable might not support data i/o.  If that doesn't work, check the USB driver.  The ESP286 or ESP32 may be using a driver that isn't installed on your Windows PC or Mac._
 
 There are many Tasmota binaries that could be installed.  We want to install the Tasmota Sensors binary for the ESP286.
 :::{figure} images/install_tasmota.jpg
 :align: center
 :scale: 100
 
-Tasmota Install
+Tasmota Web Install
 :::
 #### Connect to WiFi
 The install includes connecting to the home wifi.
@@ -31,6 +33,14 @@ If you want to be sure the ESP286 has been "Tasmotized" correctly, you can use a
 
 Angry IP Scan Shows Tasmota
 :::
+
+Choose your adventure for the rest of install:
+- [Restore Configuration](restore_config) if:
+  - you are building a SnifferBuddy with [the Wemos D1](https://www.aliexpress.us/item/2251832645039000.html) and the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867). 
+  - you are building a [Tasmotized Plug](flash_tasmota).
+- [Install Without a Configuration File](install_without_config) if you do not want to use the configuration file or a configuration file does not exist for your hardware configuration.
+
+(restore_config)=
 #### Restore Config File
 
 Choose **Restore Configuration**
@@ -41,12 +51,19 @@ Choose **Restore Configuration**
 
 Restore Configuration UI
 :::
-Tasmota config files have the .dmp extension.  The backup config file is /bin/Config_snifferbuddy_11.1.0.1.dmp.  Choose the file and then start the restore.  When completed, SnifferBuddy is setup!
+Tasmota config files have the .dmp extension.  The backup config file is:
+- `/bin/Config_snifferbuddy_11.1.0.1.dmp` for SnifferBuddy.
+- `/bin/Config_vaporbuddy_fan_10.1.0.dmp` for the Tasmotized plug designated for VaporBuddy's fan.
+- `/bin/Config_vaporbuddy_mister_10.1.0.dmp` for the Tasmotized plug designated for VaporBuddy's mister Power Supply.
+  
+Choose the file for the component you are building and start the restore.  
 
 
-
-### Not As Easy Way But Not Too Bad 
-Now Visit the Device.  Go into Configure Module and choose Generic(18) and then Save.
+(install_without_config)=
+### Install Without Config File
+Now Visit the Device.  Go into Configure Module and choose:
+- if you are building a sensor like SnifferBuddy, choose Generic(18) and then Save.
+- if you are building a Tasmotized Sonoff plug, choose
 #### Configure Host Name
 I like to configure the Host Name as soon as possible so I can get to the device with a name.
 
@@ -67,6 +84,7 @@ Go back into Configure, choose Configure Module.  From here set up the GPIO pins
 
 Tasmota Setting GPIO pins
 :::
+(configure_mqtt)=
 #### Configure mqtt
 Go to Configure MQTT.  
 - Set the Host to growbuddy (assuming the mqtt broker is named growbuddy).  
@@ -96,6 +114,7 @@ Set up the period between sending the sensor readings over mqtt using the `telep
 teleperiod 100
 ```
 sets sending readings via mqtt to occur every 100 seconds.
+(set_date_time)=
 #### set Local Time
 This command set the correct timezone stuff for PST:
 
@@ -120,6 +139,9 @@ Weirdly, "ON" means temperature readings will be in Fahrenheit.
 21:46:30.761 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"OFF"}
 ```
 The temperature is set to celsius with the command `so8 0`.  To Fahrenheit with the command `so8 1`.
+
+#### Accomodate SCD30 Slow To Discover
+The first time I used the SCD30 with Tasmota on a Wemos D1, it didn't work.  The reason is [discussed below](wemos_challenges).  `SetOption46` was added in Tasmota 12.1.1.  `SetOption46 0..255` stalls I2C component discovery for 0..255 * 10 milliseconds to let stabilize the local Wemos power. You might want to experiment with values like SO46 10 os SO46 20 for a 100mSec or 200mSec delay.
 
 ## Commands To Verify the Install
 Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if the software and wiring are correct.
@@ -165,8 +187,30 @@ Tasmota Sensors Build Location
 - Go to the main Tasmota screen and select Firmware Upgrade.
 - Upload the sensor binary and click on Start Upgrade.
 
+(flash_tasmota)=
+## Flash Tasmota Onto a Sonoff Plug
+We need a way to turn a plug on or off.  For example, VaporBuddy uses two Tasmotized plugs.  One turns VaporBuddy's fan on and off.  The other turns VaporBuddy's Mister on and off.  By Tasmotizing the plugs, other Buddies can send mqtt messages to turn a plug on or off.
+
+
+The Sonoff S31 (or S31 Lite) can be flashed so that Tasmota is running on our local network. [This YouTube video gives instructions on how to flash Tosmota](https://www.youtube.com/watch?v=9N58uy3ezvA).
+
+ooh! Extra care when soldering.  If not, well...it is way too easy to rip off one of the pads...
+
+Once flashed and rebooted:
+- Put the plug back together.
+- Set the Module type to Sonoff S31.
+
+:::{figure} images/Tasmota_S31_Config.jpg
+:align: center
+:scale: 80
+
+Tasmota Sonoff Configuration
+:::
+- [Configure mqtt](configure_mqtt).  I change the topic to match the Buddy.  E.g.: if it is VaporBuddy's fan plug, vaporbuddy_fan.  The mister, vaperbuddy_mister.  Snifferbuddy, snifferbuddy.
+- [Set the date/time to your date/time](set_date_time).
+
 (wemos_challenges)=
-### ESP286/SCD30 Modifications
+## ESP286/SCD30 Modifications
 
 _I added this section to maintain what I learned with the Wemos D1 + SCD30 Setup_
 
