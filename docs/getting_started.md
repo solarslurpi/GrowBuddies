@@ -1,7 +1,7 @@
 # Getting Started
 Let's start with the core components:
 - the Raspberry Pi running the backend services including the mqtt broker.
-- [SnifferBuddy](snifferbuddy)
+- [SnifferBuddy](snifferbuddy_page)
 
 Once these are up and running, we can add the components of [VPD Buddy](vpdbuddy) and Soil Moisture Buddy.
 

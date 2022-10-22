@@ -1,7 +1,7 @@
-VPDcontroller\_code module
+vpdController\_code module
 ==========================
 
-.. automodule:: VPDcontroller_code
+.. automodule:: vpdController_code
    :members:
    :undoc-members:
    :show-inheritance:

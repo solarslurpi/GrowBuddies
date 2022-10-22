@@ -11,8 +11,9 @@ from influxdb import InfluxDBClient
 
 
 class GrowBuddy(Thread):
-    """The GrowBuddy Parent Class and children classes run on a Raspberry Pi as the GrowBuddy Service.  Children classes of the GrowBuddy class inherit:
-    - logging for debugging and auditing.
+    """The GrowBuddy Parent Class and children classes run on a Raspberry Pi as the GrowBuddy Service.  Children 
+    classes of the GrowBuddy class inherit:
+        * logging for debugging and auditing.
         * handling of `mqtt <https://mqtt.org/>`_ messages.
         * writing readings to an InfluxDB measurement (which is what Influx seems to call a Table within a database).
 

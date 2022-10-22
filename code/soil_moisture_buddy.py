@@ -3,11 +3,14 @@ from GrowBuddy_code import GrowBuddy
 
 current_soil_moisture_reading = 0
 
+
 class SoilMoistureBuddy(GrowBuddy):
     def __init__(self):
-        super().__init__("readSoilMoisture",values_callback=self.values_callback,log_level=logging.INFO) # See growbuddy_settings.json to see the "readSoilMoisture" task.
+        super().__init__("readSoilMoisture",
+                         values_callback=self.values_callback,
+                         log_level=logging.INFO)
 
-    def values_callback(self,dict):
+    def values_callback(self, dict):
         global current_soil_moisture_reading
         current_soil_moisture_reading = soil_moisture_reading = dict['ANALOG']['A0']
         self.logger.info(f'Moisture sensor value is {soil_moisture_reading}')

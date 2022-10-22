@@ -1,14 +1,13 @@
 {
-    "debug_level": "debug",
     "mqtt_broker": "growbuddy",
-    "readSnifferBuddy": "tele/snifferbuddy/SENSOR",
+    "mqtt_snifferbuddy_topic": "tele/snifferbuddy/SENSOR",
     "readSoilMoisture": "tele/soil_moisture/SENSOR",
     "calibrateSoilMoisture": "calibrate",
     "startVPDBuddy": " TODO ",
     "baby_setpoint": 0.8,
-    "veg_setoint": 1.0,
+    "veg_setpoint": 1.0,
     "flower_setpoint": 1.4,
-    "Kp":0.1,
-    "Ki":0.1,
-    "Kd":0.1
+    "Kp": 0.1,
+    "Ki": 0.1,
+    "Kd": 0.1
 }

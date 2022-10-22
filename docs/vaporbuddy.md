@@ -1,12 +1,10 @@
 # VaporBuddy
-VaporBuddy is a DIY "Smart" Humidifier for a grow tent with optimized features for automation.  It serves as the actuator for VPD Buddy.  When VPD Buddy decides more water vapor is needed, it sends a command to VaporBuddy to start pumping out water vapor.  When VPD Buddy feels there is enough water vaper (based on the ideal VPD), it sends VaporBuddy a command to turn off.
+VaporBuddy is a DIY "Smart" Humidifier.  I built one because I couldn't find anything that worked as well.  Things that make me happy about VaporBuddy:
+- it can be told to be turned on or off over a home's wifi. 
+- it can be automatically refilled.
+- it supplies a lot of vapor.
+- it is fun and simple to make.
 
-The VaperBuddy Humidifier:
-- has a float valve so a water line can be run to the bucket and autofill.
-- blasts a significant amount of vapor into the air.
-- can be turned on and off by sending mqtt messages over a home's wifi.
-
-I couldn't find anything on the market that fit my needs, hence VaperBuddy.
 
 
 ## Humidifier

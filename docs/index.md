@@ -35,6 +35,7 @@ See you in the garden!
 getting_started
 growbuddy
 mygrowtent
+mqtt
 snifferbuddy
 vaporbuddy
 wiring

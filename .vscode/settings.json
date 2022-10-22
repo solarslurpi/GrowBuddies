@@ -1,4 +1,12 @@
 {
-    "esbonio.sphinx.buildDir" : "${workspaceFolder}/docs/_build",
-    "esbonio.sphinx.confDir"  : "${workspaceFolder}/docs"
+    "esbonio.sphinx.buildDir": "${workspaceFolder}/docs/_build",
+    "esbonio.sphinx.confDir": "${workspaceFolder}/docs",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true
+    },
+    "python.linting.flake8Args": [
+        "--max-line-length=130",
+        "--ignore=W605",
+    ],
 }
