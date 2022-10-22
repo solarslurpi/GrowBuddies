@@ -60,7 +60,9 @@ class GrowBuddy(Thread):
         except Exception as e:
             self.logger.error(f"...Exiting due to Error: {e}")
             os._exit(1)
-        # Set up a connection to the grpwbuddy database that has already been created.
+  
+    def start(self):
+        # Set up a connection to the growbuddy database that has already been created.
         try:
             self.influx_client = InfluxDBClient(host="growbuddy", database="growbuddy")
         except ValueError as e:
@@ -76,7 +78,7 @@ class GrowBuddy(Thread):
             self.mqtt_client.connect(self.settings["mqtt_broker"])
             # At this point, mqtt drives the code.
             self.logger.debug("Done with initialization. Handing over to mqtt.")
-            self.mqtt_client.loop_start()
+            self.mqtt_client.loop_forever()
 
         except Exception as e:
             self.logger.error(
@@ -98,7 +100,7 @@ class GrowBuddy(Thread):
         """
         self.logger.debug(f"-> Mqtt connection returned {rc}")
         client.subscribe(self.settings[self.topic_key])
-        self.logger.info(f"-> Subscribed to {self.settings[self.topic_key]}")
+        self.logger.info(f"-> Subscribed to -->{self.settings[self.topic_key]}<--")
 
     def _on_message(self, client, userdata, msg):
         """INTERNAL METHOD. Received a `tele/snifferbuddy/SENSOR` msg (sensor reading) from SnifferBuddy (obtained

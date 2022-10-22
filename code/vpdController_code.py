@@ -1,9 +1,5 @@
-import json
 import math
-import os
 import logging
-
-import paho.mqtt.client as mqtt
 from enum import Enum
 from growbuddy_code import GrowBuddy
 
@@ -41,10 +37,9 @@ class vpdController(GrowBuddy):
     """
 
     def __init__(self, snifferbuddy_values_callback=None, growth_stage=growthStage.VEG):
-        super().__init__(values_callback=self._values_callback,
-                         log_level=logging.DEBUG)
+        super().__init__(values_callback=self._values_callback, log_level=logging.DEBUG)
         self.snifferbuddy_values_callback = snifferbuddy_values_callback
-        # Set up the setpoint to the ideal vpd value.ds
+        # Set up the setpoint to the ideal vpd value.
         self.setpoint = 0.0
         if growth_stage == growthStage.VEG:
             self.setpoint = self.settings["veg_setpoint"]
@@ -61,12 +56,13 @@ class vpdController(GrowBuddy):
         self.pid_last_error = 0.0
 
     def _values_callback(self, dict):
-        """ GrowBuddy calls this method when it receives a reading from SnifferBuddy
+        """GrowBuddy calls this method when it receives a reading from the requested sensor.
+
         Args:
-        dict (Dictionary): The JSON string sent by SnifferBuddy.  It looks something like:
-            {"Time":"2022-09-06T08:52:59",
-            "ANALOG":{"A0":542},
-            "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
+            dict (Dictionary): For example, a SnifferBuddy dict looks something like:
+             {"Time":"2022-09-06T08:52:59",
+              "ANALOG":{"A0":542},
+              "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
         """
 
         self.logger.debug(f"vpdControler's values_callback. Dict:{dict}")
@@ -81,7 +77,7 @@ class vpdController(GrowBuddy):
         if nSecondsON > 0:
             self._turn_on_humidifier(nSecondsON)
 
-    def _calc_vpd(self, msg_str: str) -> (float):
+    def _calc_vpd(self, dict: dict) -> (float):
 
         """INTERNAL METHOD. I decided at this point not to measure the leaf temperature but take the much simpler
         approach of assuming 2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for
@@ -95,24 +91,29 @@ class vpdController(GrowBuddy):
         `from a Quest website <https://www.questclimate.com/vapor-pressure-deficit-indoor-growing-part-3-different-stages-vpd/>`_
 
         Args:
-            msg_str (JSON str): mqtt message in JSON string format.
+            dict (dict): Dictionary of values returned from an mqtt message.
         Raises:
             Exception: If one of the values needed to calculate the VPD is of a type or value that won't work.
 
         Returns the calculated VPD value.
         """
-        dict = json.loads(msg_str)
         # TODO: Make usable for at least the SCD30 or SCD40
         air_T = dict["SCD30"]["Temperature"]
         RH = dict["SCD30"]["Humidity"]
         time = dict["Time"]
-        if (not isinstance(air_T, float) or not isinstance(RH, float) or air_T <= 0.0 or RH <= 0.0):
+        if (
+            not isinstance(air_T, float)
+            or not isinstance(RH, float)
+            or air_T <= 0.0
+            or RH <= 0.0
+        ):
             raise Exception(
                 f"Received unexpected values for either the temperature ({air_T}) or humidity ({RH}) or both"
             )
         leaf_T = air_T - 2
         vpd = 3.386 * (
-            math.exp(17.863 - 9621 / (leaf_T + 460)) - ((RH / 100) * math.exp(17.863 - 9621 / (air_T + 460)))
+            math.exp(17.863 - 9621 / (leaf_T + 460))
+            - ((RH / 100) * math.exp(17.863 - 9621 / (air_T + 460)))
         )
         return (time, air_T, RH, vpd)
 

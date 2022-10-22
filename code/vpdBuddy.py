@@ -13,12 +13,13 @@ def snifferbuddy_values_callback(time: str, air_T: float, RH: float, vpd: float)
         RH (float): Relative Humidity readings that originate from SnifferBuddy.
         vpd (float): calculated Vapor Pressure Deficit based on SnifferBuddy readings.
     """
-    pass
+    print(f"time: {time}, air temp: {air_T}, humidity: {RH}, vpd: {vpd}")
 
 
 def main():
     # Create an instance of the vpdController
     myController = vpdController(snifferbuddy_values_callback=snifferbuddy_values_callback)
+    myController.start()
 
 
 if __name__ == "__main__":

@@ -23,8 +23,8 @@ exclude_patterns = ["py_env/*"]
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinx.ext.autodoc',
     'sphinxcontrib.napoleon',
+    'sphinx.ext.autodoc',
     'sphinx_autodoc_typehints',
     'myst_parser',
     'sphinx.ext.autosectionlabel'
