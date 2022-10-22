@@ -1,7 +1,7 @@
 from vpdController_code import vpdController
 
 
-def values_callback(time: str, air_T: float, RH: float, vpd: float):
+def snifferbuddy_values_callback(time: str, air_T: float, RH: float, vpd: float):
     """Returns date/time, air temperature, and relative humidity values vpdController().
     vpdController() recieves mqtt messages from a SnifferBuddy.  It then uses the values
     to calculate the vpd.  Now that we have the values, we can store them into an influxdb
@@ -18,7 +18,7 @@ def values_callback(time: str, air_T: float, RH: float, vpd: float):
 
 def main():
     # Create an instance of the vpdController
-    myController = vpdController(values_callback=values_callback)
+    myController = vpdController(snifferbuddy_values_callback=snifferbuddy_values_callback)
 
 
 if __name__ == "__main__":

@@ -29,8 +29,9 @@ extensions = [
     'myst_parser',
     'sphinx.ext.autosectionlabel'
 ]
-# Show (True) or Hide (False) ToDo's
-todo_include_todos = True
+# Make sure the target is unique
+autosectionlabel_prefix_document = True
+
 
 # Include methods that start with an _
 napoleon_include_private_with_doc = True
@@ -39,12 +40,10 @@ napoleon_include_private_with_doc = True
 myst_enable_extensions = ["colon_fence"]
 
 # Ignore documentating these files.
-autodoc_mock_imports = ['influxdb','paho']
+autodoc_mock_imports = ['influxdb', 'paho']
 
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
-
-
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

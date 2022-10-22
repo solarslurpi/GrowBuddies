@@ -1,5 +1,5 @@
 import logging
-from GrowBuddy_code import GrowBuddy
+from growbuddy_code import GrowBuddy
 
 current_soil_moisture_reading = 0
 

@@ -107,7 +107,7 @@ Using a tool like [MQTT Explorer](http://mqtt-explorer.com/)
 MQTT Explorer
 :::
 We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
-
+(set_time_between_readings)=
 #### Set Time Between Readings
 Set up the period between sending the sensor readings over mqtt using the `teleperiod` command.  e.g.:
 ```

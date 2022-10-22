@@ -2,11 +2,10 @@ import json
 import math
 import os
 import logging
-import threading
 
 import paho.mqtt.client as mqtt
-from logging_handler import LoggingHandler
 from enum import Enum
+from growbuddy_code import GrowBuddy
 
 settings_filename = "code/growbuddy_settings.json"
 
@@ -24,7 +23,7 @@ class growthStage(Enum):
     FLOWER = 3
 
 
-class vpdController:
+class vpdController(GrowBuddy):
 
     """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
         of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
@@ -41,28 +40,11 @@ class vpdController:
         Exception: There are a few exception states to check and can alert the caller.
     """
 
-    def __init__(
-        self,
-        growth_stage: int = growthStage.VEG,
-        values_callback=None,
-        log_level=logging.DEBUG,
-    ):
-
-        # Used for initialization of PID controller when the first mqtt message from SnifferBuddy comes in.
-        self.first_message = True
-        self.values_callback = values_callback
-
-        # Set up logging to go to the console.
-        self.logger = LoggingHandler(log_level)
-        self.logger.debug("-> Initializing VPDcontroller class")
-        # Get settings out of JSON file.
-        try:
-            self.settings = self._read_settings()
-            self.logger.debug(f"...Settings: {self.settings}")
-        except Exception as e:
-            self.logger.error(f"...Exiting due to Error: {e}")
-            os._exit(1)
-
+    def __init__(self, snifferbuddy_values_callback=None, growth_stage=growthStage.VEG):
+        super().__init__("vpdController",
+                         values_callback=self._values_callback,
+                         log_level=logging.DEBUG)
+        self.snifferbuddy_values_callback = snifferbuddy_values_callback
         # Set up the setpoint to the ideal vpd value.ds
         self.setpoint = 0.0
         if growth_stage == growthStage.VEG:
@@ -79,78 +61,20 @@ class vpdController:
         self.pid_cum_error = 0.0
         self.pid_last_error = 0.0
 
-        # Connect up with mqtt.
-        try:
-            self.client = mqtt.Client("vpdBuddy")
-            self.client.on_message = self._on_message
-            self.client.on_connect = self._on_connect
-            self.client.connect(self.settings["mqtt_broker"])
-            # At this point, mqtt drives the code.
-            self.logger.debug(
-                "VPDcontroller has been initialized.  Handing over to mqtt."
-            )
-            self.client.loop_forever()
-
-        except Exception as e:
-            self.logger.debug(f"...In the midst of mqtt traffic.  Exiting due to Error: {e}")
-            os._exit(1)
-
-    def _read_settings(self) -> dict:
-        """INTERNAL METHOD.  Opens the JSON file identified in `settings_filename` and reads in the settings as a dict.
-        Raises:
-            Exception: When it can't find the file named by the `settings_filename` attribute.
-
-        Returns:
-            dict: including values for the mqtt broker, topic, and vpd setpoints.
-        """
-        self.logger.debug(f"-> Reading in settings from {settings_filename} file.")
-        dict_of_settings = {}
-        try:
-            with open(settings_filename) as json_file:
-                dict_of_settings = json.load(json_file)
-        except Exception as e:
-            raise Exception(
-                f"Could not open the settings file named {settings_filename}.  Error: {e}"
-            )
-        return dict_of_settings
-
-    def _on_connect(self, client, userdata, flags, rc):
-        """INTERNAL METHOD.  Called back by the mqtt library once the code has connected with the broker.
-        Now we can subscribe to SensorBuddy readings.
+    def _values_callback(self, dict):
+        """ GrowBuddy calls this method when it receives a reading from SnifferBuddy
 
         Args:
-            client (opaque structure passed along through the mqtt library. It maintains the mqtt client connection to
-            the broker): We got here because the mqtt library found the broker we want to work with and has assigned a
-            session to this client.
-            userdata (_type_): Not used.
-            flags (_type_): Not used.
-            rc (int): return code from the mqtt library connecting with the broker.
-        """
-        """"""
-        self.logger.debug(f"-> Mqtt connection returned {rc}")
-        mqtt_snifferbuddy_topic = self.settings["mqtt_snifferbuddy_topic"]
-        client.subscribe(mqtt_snifferbuddy_topic)
-        self.logger.debug(f"subscribed to topic:{mqtt_snifferbuddy_topic}")
-
-    def _on_message(self, client, userdata, msg):
-        """INTERNAL METHOD. Received a `tele/snifferbuddy/SENSOR` msg (sensor reading) from SnifferBuddy (obtained
-        through the growbuddy broker).  Next, a new value for the VPD is calculated and the values are sent to the
-        caller if a callback function was provided.
-
-        Args:
-            msg (str):The message is a JSON string sent by SnifferBuddy that looks something like
-
-
-                {"Time":"2022-09-06T08:52:59",
+            dict (Dictionary): The JSON string sent by SnifferBuddy.  It looks something like:
+               {"Time":"2022-09-06T08:52:59",
                 "ANALOG":{"A0":542},
                 "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
-
         """
-        message = msg.payload.decode(encoding="UTF-8")
-        self.logger.debug(f"mqtt received message...{message}")
-        time, air_T, RH, vpd = self._calc_vpd(message)
-        if self.values_callback:
-            self.values_callback(time, air_T, RH, vpd)
+
+        self.logger.debug(f"vpdControler's values_callback. Dict:{dict}")
+        time, air_T, RH, vpd = self._calc_vpd(dict)
+        if self.snifferbuddy_values_callback:
+            self.snifferbuddy_values_callback(time, air_T, RH, vpd)
 
         nSecondsON = self._pid(self.setpoint, vpd)
         self.logger.debug(
@@ -250,14 +174,16 @@ class vpdController:
         """
         # TODO: Sonoff can be sent TOGGLE, ON, OFF in the form of cmnd/vaporbuddy_mister/POWER
         # Set up a callback to send an OFF message after the humidifier has been on nSecondsON
-        timer = threading.Timer(nSecondsON, self._turn_off_humidifier)
-        self.client.publish("cmnd/plug_humidifier_fan/POWER", "ON")
-        self.client.publish("cmnd/plug_humidifier_mister/POWER", "ON")
-        self.logger.debug(f"-> vaperBuddy turned ON for {nSecondsON} seconds.")
-        timer.start()
+        # timer = threading.Timer(nSecondsON, self._turn_off_humidifier)
+        # self.client.publish("cmnd/plug_humidifier_fan/POWER", "ON")
+        # self.client.publish("cmnd/plug_humidifier_mister/POWER", "ON")
+        # self.logger.debug(f"-> vaperBuddy turned ON for {nSecondsON} seconds.")
+        # timer.start()
+        pass
 
     def _turn_off_vaporbuddy(self):
         """Send mqtt messages to the plug_humidifier_fan and plug_humidifier_mister to turn them off."""
-        self.client.publish("cmnd/plug_humidifier_fan/POWER", "OFF")
-        self.client.publish("cmnd/plug_humidifier_mister/POWER", "OFF")
-        self.logger.debug("-> vaperBuddy turned OFF")
+        # self.client.publish("cmnd/plug_humidifier_fan/POWER", "OFF")
+        # self.client.publish("cmnd/plug_humidifier_mister/POWER", "OFF")
+        # self.logger.debug("-> vaperBuddy turned OFF")
+        pass
