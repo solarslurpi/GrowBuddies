@@ -41,8 +41,7 @@ class vpdController(GrowBuddy):
     """
 
     def __init__(self, snifferbuddy_values_callback=None, growth_stage=growthStage.VEG):
-        super().__init__("vpdController",
-                         values_callback=self._values_callback,
+        super().__init__(values_callback=self._values_callback,
                          log_level=logging.DEBUG)
         self.snifferbuddy_values_callback = snifferbuddy_values_callback
         # Set up the setpoint to the ideal vpd value.ds
@@ -63,12 +62,11 @@ class vpdController(GrowBuddy):
 
     def _values_callback(self, dict):
         """ GrowBuddy calls this method when it receives a reading from SnifferBuddy
-
         Args:
-            dict (Dictionary): The JSON string sent by SnifferBuddy.  It looks something like:
-               {"Time":"2022-09-06T08:52:59",
-                "ANALOG":{"A0":542},
-                "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
+        dict (Dictionary): The JSON string sent by SnifferBuddy.  It looks something like:
+            {"Time":"2022-09-06T08:52:59",
+            "ANALOG":{"A0":542},
+            "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
         """
 
         self.logger.debug(f"vpdControler's values_callback. Dict:{dict}")

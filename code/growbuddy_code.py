@@ -35,7 +35,7 @@ class GrowBuddy(Thread):
         log_level=logging.DEBUG
     ):
         # Initialize a Thread so that each instance has it's own mqtt session on loop_start().
-        self.unique_name = [''.join(random.choice(string.ascii_lowercase) for i in range(10))]
+        self.unique_name = ''.join(random.choice(string.ascii_lowercase) for i in range(10))
         Thread.__init__(self, name=self.unique_name)
         self.values_callback = values_callback
 
@@ -86,7 +86,7 @@ class GrowBuddy(Thread):
 
     def _on_connect(self, client, userdata, flags, rc):
         """INTERNAL METHOD.  Called back by the mqtt library once the code has connected with the broker.
-        Now we can subscribe to SensorBuddy readings.
+        Now we can subscribe to readings based on the topic initially passed in.
 
         Args:
             client (opaque structure passed along through the mqtt library. It maintains the mqtt client connection to
