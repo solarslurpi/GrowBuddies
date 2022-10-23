@@ -72,6 +72,8 @@ class GrowBuddy(Thread):
             os._exit(1)
 
     def start(self):
+        """Starts up an mqtt client on a unique thread.
+        """
         # # Set up a connection to the growbuddy database that has already been created.
         # try:
         #     self.influx_client = InfluxDBClient(host="growbuddy", database="growbuddy")
@@ -89,6 +91,7 @@ class GrowBuddy(Thread):
             # At this point, mqtt drives the code.
             self.logger.debug("Done with initialization. Handing over to mqtt.")
             self.mqtt_client.loop_forever()
+            # self.mqtt_client.loop_start()
 
         except Exception as e:
             self.logger.error(
@@ -96,6 +99,13 @@ class GrowBuddy(Thread):
             )
             os._exit(1)
 
+    def stop(self):
+        self.logger.debug("Stopping vdpBuddy")
+        self.mqtt_client.disconnect()
+
+    def observe(self):
+        pass
+    
     def _on_connect(self, client, userdata, flags, rc):
         """INTERNAL METHOD.  Called back by the mqtt library once the code has connected with the broker.
         Now we can subscribe to readings based on the topic initially passed in.

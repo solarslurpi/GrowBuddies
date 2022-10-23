@@ -20,26 +20,31 @@ class growthStage(Enum):
     FLOWER = 3
 
 
-class vpdController(GrowBuddy):
+class vpdBuddy(GrowBuddy):
 
     """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
         of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
         data into influxdb.
 
     Args:
-        growth_stage (class growthStage (which is an Enum), optional): Entered by the user. Defaults to growthStage.VEG.
-        values_callback (function, optional): Function in the caller's code that is called back when there is data to
-        pass back. Defaults to None.
-        log_level (_type_, optional):Logging level.  DEBUG is useful while setting up.  Then switching to INFO is a
-        great idea to cut back on the volume of log entries. Defaults to logging.DEBUG.
+        snifferbuddy_values_callback (function, optional): Callback to get all the readings. Defaults to None.
+        growth_stage (_type_, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
 
     Raises:
         Exception: There are a few exception states to check and can alert the caller.
     """
 
-    def __init__(self, snifferbuddy_values_callback=None, growth_stage=growthStage.VEG):
+    def __init__(
+        self,
+        snifferbuddy_values_callback=None,
+        growth_stage=growthStage.VEG,
+        manage=False,
+    ):
         super().__init__(values_callback=self._values_callback, log_level=logging.DEBUG)
         self.snifferbuddy_values_callback = snifferbuddy_values_callback
+        self.manage = manage
+        msg = "Turning VaporBuddy Plugs ON and OFF" if self.manage else "Observing SnifferBuddy Readings"
+        self.logger.debug(msg)
         # Set up the setpoint to the ideal vpd value.
         self.setpoint = 0.0
         if growth_stage == growthStage.VEG:
@@ -56,6 +61,11 @@ class vpdController(GrowBuddy):
         self.pid_cum_error = 0.0
         self.pid_last_error = 0.0
 
+    def plugs_off(self):
+        """You might want to turn the plugs off prior to plugging in the mister or fan.
+        """
+        self._turn_off_vaporBuddy()
+
     def _values_callback(self, dict):
         """GrowBuddy calls this method when it receives a reading from the requested sensor.
 
@@ -67,12 +77,12 @@ class vpdController(GrowBuddy):
         """
 
         self.logger.debug(f"vpdControler's values_callback. Dict:{dict}")
-        time, air_T, RH, vpd = self._calc_vpd(dict)
+        vpd = self._calc_vpd(dict)
         nSecondsON = self._pid(self.setpoint, vpd)
         self.logger.debug(
             f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}"
         )
-        if nSecondsON > 0:
+        if self.manage and nSecondsON > 0:
             self._turn_on_vaporBuddy(nSecondsON)
 
         if self.snifferbuddy_values_callback:
@@ -105,7 +115,6 @@ class vpdController(GrowBuddy):
         # TODO: Make usable for at least the SCD30 or SCD40
         air_T = dict["SCD30"]["Temperature"]
         RH = dict["SCD30"]["Humidity"]
-        time = dict["Time"]
         if (
             not isinstance(air_T, float)
             or not isinstance(RH, float)
@@ -120,7 +129,7 @@ class vpdController(GrowBuddy):
             math.exp(17.863 - 9621 / (leaf_T + 460))
             - ((RH / 100) * math.exp(17.863 - 9621 / (air_T + 460)))
         )
-        return (time, air_T, RH, vpd)
+        return vpd
 
     def _pid(self, setpoint: float, reading: float) -> int:
         """INTERNAL METHOD.  This is the code for the `PID controller <https://en.wikipedia.org/wiki/PID_controller>`_
@@ -182,7 +191,9 @@ class vpdController(GrowBuddy):
         # Send the command to power ON.
         self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "ON")
         self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "ON")
-        self.logger.debug(f"...Sent mqtt messages to the two vaporBuddy plugs to turn ON for {nSecondsON} seconds.")
+        self.logger.debug(
+            f"...Sent mqtt messages to the two vaporBuddy plugs to turn ON for {nSecondsON} seconds."
+        )
         timer.start()
 
     def _turn_off_vaporBuddy(self):
@@ -190,4 +201,6 @@ class vpdController(GrowBuddy):
         vaporBuddy plugs to turn OFF."""
         self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "OFF")
         self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "OFF")
-        self.logger.debug("...Sent mqtt messages to the two vaporBuddy plugs to turn OFF.")
+        self.logger.debug(
+            "...Sent mqtt messages to the two vaporBuddy plugs to turn OFF."
+        )
