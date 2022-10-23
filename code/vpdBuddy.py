@@ -1,19 +1,19 @@
 from vpdController_code import vpdController
 
 
-def snifferbuddy_values_callback(time: str, air_T: float, RH: float, vpd: float):
+def snifferbuddy_values_callback(sniffer_dict):
     """Returns date/time, air temperature, and relative humidity values vpdController().
     vpdController() recieves mqtt messages from a SnifferBuddy.  It then uses the values
     to calculate the vpd.  Now that we have the values, we can store them into an influxdb
     database for future analysis.
 
     Args:
-        time (str): _description_
+        time (str): The date and time the reading was taken (based on the Rasp Pi's date/time).
         air_T (float): Air Temperature readings that originate from SnifferBuddy.
         RH (float): Relative Humidity readings that originate from SnifferBuddy.
-        vpd (float): calculated Vapor Pressure Deficit based on SnifferBuddy readings.
+        vpd (float): Calculated Vapor Pressure Deficit based on SnifferBuddy readings.
     """
-    print(f"time: {time}, air temp: {air_T}, humidity: {RH}, vpd: {vpd}")
+    print(f"sniffer_dict: {sniffer_dict}")
 
 
 def main():

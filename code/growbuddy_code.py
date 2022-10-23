@@ -4,7 +4,8 @@ import os
 from threading import Thread  # Necessary so that each sensor has it's own mqtt thread.
 import paho.mqtt.client as mqtt
 from logging_handler import LoggingHandler
-from influxdb import InfluxDBClient
+
+# from influxdb import InfluxDBClient
 import random
 import string
 
@@ -20,11 +21,14 @@ class GrowBuddy(Thread):
 
 
     Args:
-        task (str): _description_
-        values_callback (_type_, optional): _description_. Defaults to None.
-        settings_filename (str, optional): _description_. Defaults to 'growbuddy_settings.json'.
-        log_level (_type_, optional): _description_. Defaults to logging.DEBUG.
-
+        topic_key (str, optional): The dictionary key for the full topic in the settings file.
+        Defaults to "mqtt_snifferbuddy_topic".
+        Which means by default, GrowBuddy will receive messages from SnifferBuddy.  The messages from SnifferBuddy contain
+        the readings for air temp, relative humidity, CO2, and light level.
+        values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
+        Defaults to None.
+        settings_filename (str, optional): All the settings used by the GrowBuddy system. Defaults to "growbuddy_settings.json".
+        log_level (constant, optional): Defined by Python's logging library. Defaults to logging.DEBUG.
     """
 
     def __init__(
@@ -32,10 +36,14 @@ class GrowBuddy(Thread):
         topic_key="mqtt_snifferbuddy_topic",
         values_callback=None,
         settings_filename="growbuddy_settings.json",
-        log_level=logging.DEBUG
+        log_level=logging.DEBUG,
     ):
+
         # Initialize a Thread so that each instance has it's own mqtt session on loop_start().
-        self.unique_name = ''.join(random.choice(string.ascii_lowercase) for i in range(10))
+        # Use a unique name made of 10 lowercase ascii characters.
+        self.unique_name = "".join(
+            random.choice(string.ascii_lowercase) for i in range(10)
+        )
         Thread.__init__(self, name=self.unique_name)
         self.values_callback = values_callback
 
@@ -44,7 +52,9 @@ class GrowBuddy(Thread):
 
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler(log_level)
-        self.logger.debug(f"-> Initializing GrowBuddy class for task {self.unique_name}")
+        self.logger.debug(
+            f"-> Initializing GrowBuddy class for task {self.unique_name}"
+        )
         # Set the working directory to where the Python files are located.
         self.logger.debug(
             f"--> Current Directory prior to setting to the file location is {os.getcwd()}"
@@ -60,15 +70,15 @@ class GrowBuddy(Thread):
         except Exception as e:
             self.logger.error(f"...Exiting due to Error: {e}")
             os._exit(1)
-  
+
     def start(self):
-        # Set up a connection to the growbuddy database that has already been created.
-        try:
-            self.influx_client = InfluxDBClient(host="growbuddy", database="growbuddy")
-        except ValueError as e:
-            self.logger.error(
-                f"ERROR! Was not able to connect to the Influxdb.  Error: {e}"
-            )
+        # # Set up a connection to the growbuddy database that has already been created.
+        # try:
+        #     self.influx_client = InfluxDBClient(host="growbuddy", database="growbuddy")
+        # except ValueError as e:
+        #     self.logger.error(
+        #         f"ERROR! Was not able to connect to the Influxdb.  Error: {e}"
+        #     )
         # Connect up with mqtt.
         try:
             self.mqtt_client = mqtt.Client(self.unique_name)

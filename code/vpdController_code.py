@@ -2,6 +2,7 @@ import math
 import logging
 from enum import Enum
 from growbuddy_code import GrowBuddy
+import threading
 
 settings_filename = "code/growbuddy_settings.json"
 
@@ -60,22 +61,26 @@ class vpdController(GrowBuddy):
 
         Args:
             dict (Dictionary): For example, a SnifferBuddy dict looks something like:
-             {"Time":"2022-09-06T08:52:59",
-              "ANALOG":{"A0":542},
-              "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
+            {"Time":"2022-09-06T08:52:59",
+            "ANALOG":{"A0":542},
+            "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
         """
 
         self.logger.debug(f"vpdControler's values_callback. Dict:{dict}")
         time, air_T, RH, vpd = self._calc_vpd(dict)
-        if self.snifferbuddy_values_callback:
-            self.snifferbuddy_values_callback(time, air_T, RH, vpd)
-
         nSecondsON = self._pid(self.setpoint, vpd)
         self.logger.debug(
             f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}"
         )
         if nSecondsON > 0:
-            self._turn_on_humidifier(nSecondsON)
+            self._turn_on_vaporBuddy(nSecondsON)
+
+        if self.snifferbuddy_values_callback:
+            # sniffer_dict = self._make_sniffer_dict(time, air_T, RH, vpd, nSecondsON, dict['ANALOG']['A0'])
+            dict["vpd_setpoint"] = self.setpoint
+            dict["vpd"] = vpd
+            dict["seconds_on"] = nSecondsON
+            self.snifferbuddy_values_callback(dict)
 
     def _calc_vpd(self, dict: dict) -> (float):
 
@@ -165,24 +170,24 @@ class vpdController(GrowBuddy):
         )
         return nSecondsON
 
-    def _turn_on_vaporbuddy(self, nSecondsON: int) -> None:
-        """Send mqtt messages to the plug_humidifier_fan and plug_humidifier_mister
+    def _turn_on_vaporBuddy(self, nSecondsON: int) -> None:
+        """Send mqtt messages to vaporBuddy's plugs to turn ON.
 
         Args:
-            nSecondsON (int): The number of seconds to turn the mister and fan on.
+            nSecondsON (int): The number of seconds to turn the plugs on.
         """
-        # TODO: Sonoff can be sent TOGGLE, ON, OFF in the form of cmnd/vaporbuddy_mister/POWER
-        # Set up a callback to send an OFF message after the humidifier has been on nSecondsON
-        # timer = threading.Timer(nSecondsON, self._turn_off_humidifier)
-        # self.client.publish("cmnd/plug_humidifier_fan/POWER", "ON")
-        # self.client.publish("cmnd/plug_humidifier_mister/POWER", "ON")
-        # self.logger.debug(f"-> vaperBuddy turned ON for {nSecondsON} seconds.")
-        # timer.start()
-        pass
+        # Set up a timer with the callback on completion.
+        timer = threading.Timer(nSecondsON, self._turn_off_vaporBuddy)
+        # The command to a Sonoff plug can be either TOGGLE, ON, OFF.
+        # Send the command to power ON.
+        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "ON")
+        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "ON")
+        self.logger.debug(f"...Sent mqtt messages to the two vaporBuddy plugs to turn ON for {nSecondsON} seconds.")
+        timer.start()
 
-    def _turn_off_vaporbuddy(self):
-        """Send mqtt messages to the plug_humidifier_fan and plug_humidifier_mister to turn them off."""
-        # self.client.publish("cmnd/plug_humidifier_fan/POWER", "OFF")
-        # self.client.publish("cmnd/plug_humidifier_mister/POWER", "OFF")
-        # self.logger.debug("-> vaperBuddy turned OFF")
-        pass
+    def _turn_off_vaporBuddy(self):
+        """The timer set in _turn_on_vaporBuddy has expired.  Send messages to the
+        vaporBuddy plugs to turn OFF."""
+        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "OFF")
+        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "OFF")
+        self.logger.debug("...Sent mqtt messages to the two vaporBuddy plugs to turn OFF.")

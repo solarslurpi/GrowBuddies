@@ -1,4 +1,7 @@
 # VPDBuddy
+```
+sniffer_dict: {'Time': '2022-10-23T06:37:32', 'ANALOG': {'A0': 7}, 'SCD30': {'CarbonDioxide': 610, 'eCO2': 589, 'Temperature': 68.0, 'Humidity': 58.4, 'DewPoint': 52.8}, 'TempUnit': 'F', 'vpd': 0.8257631298494408, 'seconds_on': 0}
+```
 
 ## Resources
 The term "Vapor Pressure Deficit" is not that obvious to immediately understand (at least for me).  I found these resources helpful to better understand VPD:
