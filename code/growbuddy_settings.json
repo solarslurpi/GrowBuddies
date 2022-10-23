@@ -1,6 +1,8 @@
 {
     "mqtt_broker": "growbuddy",
     "mqtt_snifferbuddy_topic": "tele/snifferbuddy/SENSOR",
+    "mqtt_vaporbuddy_fan_topic": "cmnd/vaporbuddy_fan/POWER",
+    "mqtt_vaporbuddy_mister_topic": "cmnd/vaporbuddy_mister/POWER",
     "readSoilMoisture": "tele/soil_moisture/SENSOR",
     "calibrateSoilMoisture": "calibrate",
     "startVPDBuddy": " TODO ",
