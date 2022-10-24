@@ -9,7 +9,6 @@ charset-normalizer==2.1.1
 colorama==0.4.5
 docopt==0.6.2
 docutils==0.17.1
-esbonio==0.14.1
 flake8==5.0.4
 google-api-core==2.10.2
 google-api-python-client==2.65.0
@@ -19,7 +18,7 @@ googleapis-common-protos==1.56.4
 httplib2==0.20.4
 idna==3.4
 imagesize==1.4.1
-importlib-metadata==5.0.0
+importlib-metadata==4.2
 importlib-resources==3.3.1
 influxdb==5.3.1
 Jinja2==3.1.2
@@ -40,7 +39,6 @@ myst-parser==0.18.1
 packaging==21.3
 paho-mqtt==1.6.1
 pathspec==0.10.1
-Pillow==9.2.0
 platformdirs==2.5.2
 pockets==0.9.1
 protobuf==4.21.8
