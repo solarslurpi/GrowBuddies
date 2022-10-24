@@ -43,7 +43,11 @@ class vpdBuddy(GrowBuddy):
         super().__init__(values_callback=self._values_callback, log_level=logging.DEBUG)
         self.snifferbuddy_values_callback = snifferbuddy_values_callback
         self.manage = manage
-        msg = "Turning VaporBuddy Plugs ON and OFF" if self.manage else "Observing SnifferBuddy Readings"
+        msg = (
+            "Turning VaporBuddy Plugs ON and OFF"
+            if self.manage
+            else "Observing SnifferBuddy Readings"
+        )
         self.logger.debug(msg)
         # Set up the setpoint to the ideal vpd value.
         self.setpoint = 0.0
@@ -60,11 +64,6 @@ class vpdBuddy(GrowBuddy):
         # These are used in the _pid() routine.
         self.pid_cum_error = 0.0
         self.pid_last_error = 0.0
-
-    def plugs_off(self):
-        """You might want to turn the plugs off prior to plugging in the mister or fan.
-        """
-        self._turn_off_vaporBuddy()
 
     def _values_callback(self, dict):
         """GrowBuddy calls this method when it receives a reading from the requested sensor.
@@ -174,6 +173,8 @@ class vpdBuddy(GrowBuddy):
         # Calculate the # Seconds to turn Humidifier on.  I am roughly guessing 1 second on lowers VPD by .01.
         # A Wild Guess to be sure.
         nSecondsON = abs(int((pCorrection + iCorrection + dCorrection) * 100))
+        # Tapping off the max number of seconds VaporBuddy can be on
+        nSecondsON = nSecondsON if nSecondsON < 10 else 10
         self.logger.debug(
             f"Number of seconds to turn on the Humdifier is {nSecondsON}."
         )
