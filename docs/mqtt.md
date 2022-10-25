@@ -1,5 +1,13 @@
 # mqtt
-Mqtt is used as an APIk
+
+mqtt is how the Buddies text message each other. For example, [SnifferBuddy](snifferbuddy.md) sends out (i.e.: publishes in mqtt terminology) over wifi an mqtt message like this:
+```
+{"Time":"2022-09-06T08:52:59",
+  "ANALOG":{"A0":542},
+  "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
+}
+```
+[vpdBuddy](vpdBuddy.md) is listening for messages from SnifferBuddy (i.e.: subscribed to )
 We use the mosquitto broker running on a raspberry pi.
 ## Resources
 - [Installing mosquitto on Rasp Pi](https://pimylifeup.com/raspberry-pi-mosquitto-mqtt-server/)
