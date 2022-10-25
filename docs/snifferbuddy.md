@@ -1,5 +1,5 @@
 
-
+(snifferbuddy_page)=
 # SnifferBuddy
 
 :::{figure} images/snifferbuddy_in_growtent.jpg

@@ -4,6 +4,26 @@
 % contain the root `toctree` directive.
 
 # Welcome to GrowBuddy!
+Hello! Thank you for stopping by. 
+
+GrowBuddy is an Open DIY gardening project to make growing plants in a grow tent the happiest possible experience.  The idea is these devices and the software running on them act as gardening buddies.  Doing tasks that improve the grow experience.  
+
+Currently available Buddies:
+- [SnifferBuddy](snifferbuddy.md)
+
+:::{figure} images/snifferbuddy_in_growtent_sm.jpg
+:align: center
+:height: 250
+
+SnifferBuddy in Grow Tent
+:::
+SnifferBuddy happily hangs around the grow tent sending out air temperature, humidity, CO2, and light level values over a home's wifi.  The readings are picked up by the GrowBuddy Server.
+
+The GrowBuddy Server can store the values in a database for later analysis.
+- [vpdBuddy]()
+
+
+
 
 GrowBuddy is an Open DIY project that monitors and adjusts environment variables that affect plant growth within a grow tent.  Currently, GrowBuddy focuses on controlling an indoor plant's water needs.  Helping plants get the right amount of water - whether the water is in the form of vapor when in the air or liquid in the soil - is difficult to get right.  Besides, watering requires constant - usually daily - attention.  How does that work when I want to go on vacation?  Since I grow in Living Soil (I recommend [KIS BioChar](https://www.kisorganics.com/products/kis-organics-biochar-soil-mix)), GrowBuddy's solutions focus on growing in soil, but of course aren't constrained to soil based grows.
 ## Current Solutions
@@ -41,7 +61,7 @@ vaporbuddy
 wiring
 tasmota
 systemd
-VPDbuddy
+vpdfbuddy
 modules
 raspPi_learnings
 sphinxLearnings
