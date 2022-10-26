@@ -17,15 +17,16 @@ The available features will evolve incrementally over time.  Currently available
 SnifferBuddy in Grow Tent
 :::
 SnifferBuddy happily hangs around the grow tent sending out air temperature, humidity, CO2, and light level values over a home's wifi.  The readings are picked up by the GrowBuddy Server.
-
+- GrowBuddy Server
 :::{figure} images/GrowBuddy_Server.jpg
 :align: center
 :height: 250
 
 GrowBuddy Server
 :::
+
 The GrowBuddy Server is either a Raspberry Pi 4 (the green case encloses a Raspberry Pi 4).  Or Raspberry Pi 3 (like the Raspberry Pi 3 enclosed by the purplse case).  It can store the values in a database for later analysis.  It also runs an mqtt broker that routes the messages the buddies send.
-- [vpdBuddy](vpdBuddy.md)
+- [vpdBuddy](vpdbuddy.md)
 
 
 
@@ -58,7 +59,7 @@ See you in the garden!
 
 
 getting_started
-growbuddy
+growbuddyServer
 mygrowtent
 mqtt
 snifferbuddy
@@ -68,7 +69,6 @@ tasmota
 systemd
 vpdfbuddy
 modules
-raspPi_learnings
 sphinxLearnings
 SoilMoistureBuddy
 printing
