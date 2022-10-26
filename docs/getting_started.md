@@ -54,7 +54,7 @@ pi@growbuddy:~ $
 If you cannot reach the growbuddy raspberry pi, first check to see if the raspberry pi is on your home wifi by using a utility like [Angry IP](https://angryip.org/).  If it is not, perhaps [this troubleshooting guide](raspi-nowifi) helps.
 
 ### Print Enclosure
-The Raspberry Pi enclosure
+I chose [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used within [this folder]().
 
 ### Install the mqtt Broker
 The Buddies communicate over a home's wifi using mqtt
