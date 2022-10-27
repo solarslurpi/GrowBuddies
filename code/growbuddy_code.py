@@ -8,8 +8,7 @@ from logging_handler import LoggingHandler
 # from influxdb import InfluxDBClient
 import random
 import string
-
-# TODO TTL Checking.  I did this in node red.
+from util_code import get_SnifferBuddy_dict
 
 
 class GrowBuddy(Thread):
@@ -48,6 +47,7 @@ class GrowBuddy(Thread):
         )
         Thread.__init__(self, name=self.unique_name)
         self.values_callback = values_callback
+        self.status_callback = status_callback
 
         # Remember the key in the settings dictionary for the mqtt topic.
         self.topic_key = topic_key
@@ -92,13 +92,19 @@ class GrowBuddy(Thread):
             self.mqtt_client.connect(self.settings["mqtt_broker"])
             # At this point, mqtt drives the code.
             self.logger.debug("Done with initialization. Handing over to mqtt.")
-            self.mqtt_client.loop_forever() 
+            self.mqtt_client.loop_forever()
 
         except Exception as e:
             self.logger.error(
                 f"...In the midst of mqtt traffic.  Exiting due to Error: {e}")
             os._exit(1)
-    
+
+    def _LWT_callback(self, client, userdata, msg):
+        message = msg.payload.decode(encoding="UTF-8")
+        self.logger.info(f"LWT received message...{message}")
+        if self.status_callback:
+            self.status_callback(message)
+
     def _on_connect(self, client, userdata, flags, rc):
         """INTERNAL METHOD.  Called back by the mqtt library once the code has connected with the broker.
         Now we can subscribe to readings based on the topic initially passed in. We also subscribe to mqtt's
@@ -116,6 +122,8 @@ class GrowBuddy(Thread):
         client.subscribe(self.settings[self.topic_key])
         LWT_topic = self.settings[self.topic_key].rsplit('/', 1)[0] + "/LWT"
         client.subscribe(LWT_topic)
+        # Set a callback to handle LWT
+        client.message_callback_add(LWT_topic, self._LWT_callback)
         self.logger.info(f"-> Subscribed to -->{self.settings[self.topic_key]}<--")
 
     def _on_message(self, client, userdata, msg):
@@ -135,7 +143,9 @@ class GrowBuddy(Thread):
 
         try:
             dict = json.loads(message)
-            self.values_callback(dict)
+            if self.topic_key == "mqtt_snifferbuddy_topic":
+                snifferbuddy_dict = get_SnifferBuddy_dict(dict)
+            self.values_callback(snifferbuddy_dict)
         except Exception as e:
             self.logger.error(f"ERROR! Could not read the  measurement. ERROR: {e}")
         return
