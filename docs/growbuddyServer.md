@@ -178,3 +178,46 @@ A wsl window will open at this location.
 sudo rsync -avh pi@growbuddy:/home/pi/growbuddy_1_data.zip  .
 
 ```
+## Killing a Process
+Let's say the [Sphinx autobuild](autobuild) process won't shut down.  It's hogging the port. You see this because the traceback notes:
+```
+line 162, in bind_sockets
+    sock.bind(sockaddr)
+```
+- Step 1: Find the Process ID based on the process name.  
+```
+$ pstree -p "$PPID"
+node(16284)─┬─bash(16502)─┬─htop(19732)
+            │             └─sphinx-autobuil(18450)
+            ├─bash(16555)───python(17688)─┬─python(17694)─┬─{python}(17703)
+            │                             │               ├─{python}(17704)
+            │                             │               ├─{python}(17706)
+            │                             │               ├─{python}(17707)
+            │                             │               └─{python}(17708)
+            │                             ├─{python}(17691)
+            │                             ├─{python}(17693)
+            │                             └─{python}(17696)
+            ├─bash(18790)───pstree(21514)
+            ├─sh(21498)───cpuUsage.sh(21499)───sleep(21504)
+            ├─sh(21509)───cpuUsage.sh(21510)───sleep(21513)
+            ├─{node}(16285)
+            ├─{node}(16286)
+            ├─{node}(16287)
+            ├─{node}(16288)
+            ├─{node}(16289)
+            ├─{node}(16292)
+            ├─{node}(16308)
+            ├─{node}(16309)
+            ├─{node}(16310)
+            ├─{node}(16311)
+            ├─{node}(16503)
+            ├─{node}(16556)
+            └─{node}(18791)
+
+```
+- Step 2:  Kill the process with the process name / id seen in the
+```
+$ kill -9 18450
+          
+```
+

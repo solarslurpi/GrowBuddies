@@ -1,5 +1,5 @@
 
-# sphinxLearning
+# Sphinx Learnings
 
 The documentation uses Sphinx.  I'm putting learnings on how to do non intuitive Sphinx things here.
 
@@ -11,7 +11,7 @@ I tried using the [RST page preview](https://marketplace.visualstudio.com/items?
  sphinx-autobuild docs docs/_build/html
 ```
 
-The command assumes the md or rst files are in the docs file and the output is in docs/_build/html.
+The command assumes the md or rst files are in the docs directory and the output is in docs/_build/html.
 
 ## sphinx-apidoc
 [sphinx-apidoc](https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html) is a command line utility that will pull out the documentation from the Python code.  To generate the code,

@@ -5,11 +5,13 @@ def get_SnifferBuddy_dict(dict):
     snifferbuddy_dict = {}
     a = snifferbuddy_dict["air_T"] = dict["SCD30"]["Temperature"]
     r = snifferbuddy_dict["RH"] = dict["SCD30"]["Humidity"]
+    c = snifferbuddy_dict["CO2"] = dict["SCD30"]["CarbonDioxide"]
     l = snifferbuddy_dict["light_level"] = dict["ANALOG"]["A0"]
     if (
         not isinstance(a, float)
         or not isinstance(r, float)
         or not isinstance(l, int)
+        or not isinstance(c, int)
         or a <= 0.0
         or r <= 0.0
         or l < 0
