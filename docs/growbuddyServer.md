@@ -160,9 +160,9 @@ Changing the ssid and psk to match your network.
 
 
 
-## Using Rsync to Copy Files from Rasp Pi to Another Computer
+## Using Rsync 
 Rsync is a very useful utiity on the Raspberry Pi.  I document my use here because I keep forgetting
-how to send the command.  Currently I am on a Windows PC.  The challenge is to start an Bash session in the right directory.
+how to use it.  Currently I am on a Windows PC.  The challenge is to start an Bash session in the right directory.
 - open Explorer, go to the directory to use rsync, type in bash in the text field for the filepath.
 
 :::{figure} images/explorer_with_bash.jpg

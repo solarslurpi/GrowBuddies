@@ -27,6 +27,7 @@ class GrowBuddy(Thread):
         the readings for air temp, relative humidity, CO2, and light level.
         values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
         Defaults to None.
+        status_callback (function optional): Will be called if GrowBuddy detects a problem accessing the Buddy.
         settings_filename (str, optional): All the settings used by the GrowBuddy system. Defaults to "growbuddy_settings.json".
         log_level (constant, optional): Defined by Python's logging library. Defaults to logging.DEBUG.
     """
@@ -35,6 +36,7 @@ class GrowBuddy(Thread):
         self,
         topic_key="mqtt_snifferbuddy_topic",
         values_callback=None,
+        status_callback=None,
         settings_filename="growbuddy_settings.json",
         log_level=logging.DEBUG,
     ):
@@ -94,13 +96,13 @@ class GrowBuddy(Thread):
 
         except Exception as e:
             self.logger.error(
-                f"...In the midst of mqtt traffic.  Exiting due to Error: {e}"
-            )
+                f"...In the midst of mqtt traffic.  Exiting due to Error: {e}")
             os._exit(1)
     
     def _on_connect(self, client, userdata, flags, rc):
         """INTERNAL METHOD.  Called back by the mqtt library once the code has connected with the broker.
-        Now we can subscribe to readings based on the topic initially passed in.
+        Now we can subscribe to readings based on the topic initially passed in. We also subscribe to mqtt's
+        LWT messages coming from each Buddy and retained by the GrowBuddy Broker.
 
         Args:
             client (opaque structure passed along through the mqtt library. It maintains the mqtt client connection to
@@ -112,6 +114,8 @@ class GrowBuddy(Thread):
         """
         self.logger.debug(f"-> Mqtt connection returned {rc}")
         client.subscribe(self.settings[self.topic_key])
+        LWT_topic = self.settings[self.topic_key].rsplit('/', 1)[0] + "/LWT"
+        client.subscribe(LWT_topic)
         self.logger.info(f"-> Subscribed to -->{self.settings[self.topic_key]}<--")
 
     def _on_message(self, client, userdata, msg):
