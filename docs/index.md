@@ -60,6 +60,7 @@ See you in the garden!
 
 getting_started
 growbuddyServer
+examples
 mygrowtent
 snifferbuddy
 vaporbuddy
