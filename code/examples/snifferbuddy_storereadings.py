@@ -1,8 +1,8 @@
 """
 
 **The only difference between this example and the
-`snifferbuddy_getreadings <https://tinyurl.com/mrxwhc6z>`_ example is the
-storing of the reading into an influxDB database**
+`snifferbuddy_getreadings <https://tinyurl.com/mrxwhc6z>`_ 
+example is the storing of the reading into an influxDB database**
 
 The 'heavy lifter' here is the GrowBuddy class.
 .. py.class:: code.growbuddy_code
