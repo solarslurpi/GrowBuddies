@@ -1,11 +1,10 @@
 """
-**Simplest SnifferBuddy Example**
 
 SnifferBuddy sniffs out the air temperature, relative humidity, CO2 level, as well as a light
 level readings.
 
-This example leverages the GrowBuddy class to return the values in the values_callback as well
-as whether the SnifferBuddy is Online or Offline through the status_callback.
+**This example leverages the GrowBuddy class to return SnifferBuddy readings in the values_callback as well
+as whether the SnifferBuddy is Online or Offline through the status_callback.**
 
 The example also shows the logging feature of the GrowBuddy system.  It is an abstraction above
 Python's logging.  Adding stack tracing as well as color coding.
@@ -29,7 +28,7 @@ def values_callback(dict):
     """Called when GrowBuddy receives a reading from the SnifferBuddy.
 
     Args:
-        dict (dict): e.g.: {'air_T': 72.5, 'RH': 58.6, 'CO2': 693, 'light_level': 264}
+        dict (dict): e.g.: {'air_T': 68.1, 'RH': 59.4, 'vpd': 0.805, 'CO2': 611, 'light_level': 8}
     """
     logger.debug(f"{dict}")
 

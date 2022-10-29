@@ -6,7 +6,11 @@
 # Welcome to GrowBuddy!
 Hello! Thank you for stopping by. 
 
-GrowBuddy is an Open DIY gardening project to make growing plants in a grow tent the happiest possible experience.  The idea is these devices and the software running on them act as gardening buddies.  Doing tasks that improve the grow experience.  
+GrowBuddy is an Open DIY project.
+
+GrowBuddy Buddies monitor and maintain the best grow experience.  
+
+TODO: picture of grow tent with snifferbuddy.  Then to the side a picture of vaporbuddy....
 
 The available features will evolve incrementally over time.  Currently available Buddies:
 - [SnifferBuddy](snifferbuddy.md)

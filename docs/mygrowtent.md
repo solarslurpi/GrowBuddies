@@ -1,6 +1,13 @@
 # My Grow Tent
 Welcome to my grow tent! A place to relax and smile.
 
+
+Guide the plant's needs:
+- Water  (soil moisture and water vapor)
+- Nutrient 
+- pH Management
+- Disease Management
+
 ## Living Soil
 After watching soil microbes under a microscope, I became convinced Living Soil is the way to go.  The next decision was individual containers, or a raised bed.  I opted for the rasied bed.  This way, the roots, soil, and microbes have a vast expanse to thrive in.  The con for me was having a significant amount of soil in my kitchen.  Also, a bed of soil adds more moisture in the air.  This actually is a positive.  I hope to be using the same soil for 5 years.  We'll see about that!
 

@@ -3,8 +3,9 @@
 
 ### Python ###
 # Byte-compiled / optimized / DLL files
-code/__pycache__/
-py_env/
+# code/__pycache__/
+**/py_env
+**/__pycache__
 docs/_build/
 docs/_static/
 docs/_templates/

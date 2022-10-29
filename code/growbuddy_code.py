@@ -5,7 +5,7 @@ from threading import Thread  # Necessary so that each sensor has it's own mqtt 
 import paho.mqtt.client as mqtt
 from logging_handler import LoggingHandler
 
-# from influxdb import InfluxDBClient
+from influxdb import InfluxDBClient
 import random
 import string
 from util_code import get_SnifferBuddy_dict
@@ -26,7 +26,8 @@ class GrowBuddy(Thread):
         the readings for air temp, relative humidity, CO2, and light level.
         values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
         Defaults to None.
-        status_callback (function optional): Will be called if GrowBuddy detects a problem accessing the Buddy.
+        status_callback (function, optional): Will be called if GrowBuddy detects a problem accessing the Buddy.
+        db_table_name (str, optional): Name of influxdb to store message values.  Defaults to None.
         settings_filename (str, optional): All the settings used by the GrowBuddy system. Defaults to "growbuddy_settings.json".
         log_level (constant, optional): Defined by Python's logging library. Defaults to logging.DEBUG.
     """
@@ -36,6 +37,7 @@ class GrowBuddy(Thread):
         topic_key="mqtt_snifferbuddy_topic",
         values_callback=None,
         status_callback=None,
+        db_table_name=None,
         settings_filename="growbuddy_settings.json",
         log_level=logging.DEBUG,
     ):
@@ -48,6 +50,7 @@ class GrowBuddy(Thread):
         Thread.__init__(self, name=self.unique_name)
         self.values_callback = values_callback
         self.status_callback = status_callback
+        self.db_table_name = db_table_name
 
         # Remember the key in the settings dictionary for the mqtt topic.
         self.topic_key = topic_key
@@ -72,24 +75,23 @@ class GrowBuddy(Thread):
         except Exception as e:
             self.logger.error(f"...Exiting due to Error: {e}")
             os._exit(1)
+        # Get a connection to the influxdb database, if needed.
+        # The database must exist on the "hostname" Server (which is most likely named "GrowBuddy").
+        if self.db_table_name is not None:
+            try:
+                self.influx_client = InfluxDBClient(host=self.settings["hostname"], database=self.settings["influxdb"]["db_name"])
+            except ValueError as e:
+                self.logger.error(f"ERROR! Was not able to connect to Influxdb.  Error: {e}")
 
     def start(self, loop_forever=True):
         """Starts up an mqtt client on a unique thread.
         """
-        # # Set up a connection to the growbuddy database that has already been created.
-        # try:
-        #     self.influx_client = InfluxDBClient(host="growbuddy", database="growbuddy")
-        # except ValueError as e:
-        #     self.logger.error(
-        #         f"ERROR! Was not able to connect to the Influxdb.  Error: {e}"
-        #     )
-        # Connect up with mqtt.
         try:
             self.mqtt_client = mqtt.Client(self.unique_name)
             self.mqtt_client.on_message = self._on_message
             self.mqtt_client.on_connect = self._on_connect
             self.mqtt_client.on_disconnect = self._on_disconnect
-            self.mqtt_client.connect(self.settings["mqtt_broker"])
+            self.mqtt_client.connect(self.settings["hostname"])
             # At this point, mqtt drives the code.
             self.logger.debug("Done with initialization. Handing over to mqtt.")
             self.mqtt_client.loop_forever()
@@ -127,12 +129,10 @@ class GrowBuddy(Thread):
         self.logger.info(f"-> Subscribed to -->{self.settings[self.topic_key]}<--")
 
     def _on_message(self, client, userdata, msg):
-        """INTERNAL METHOD. Received a `tele/snifferbuddy/SENSOR` msg (sensor reading) from SnifferBuddy (obtained
-        through the growbuddy broker).  Next, a new value for the VPD is calculated and the values are sent to the
-        caller if a callback function was provided.
+        """INTERNAL METHOD. Received a reading.
 
         Args:
-            msg (str):The message is a JSON string sent by SnifferBuddy that looks something like
+            msg (str):The message is a JSON string... if sent by SnifferBuddy, it looks something like
                 {"Time":"2022-09-06T08:52:59",
                 "ANALOG":{"A0":542},
                 "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
@@ -140,14 +140,23 @@ class GrowBuddy(Thread):
         """
         message = msg.payload.decode(encoding="UTF-8")
         self.logger.info(f"mqtt received message...{message}")
-
+        # Send the message contents as a dictionary back to the values_callback.
         try:
             dict = json.loads(message)
             if self.topic_key == "mqtt_snifferbuddy_topic":
+                # Since this is a SnifferBuddy reading, put in a simple dictionary.
                 snifferbuddy_dict = get_SnifferBuddy_dict(dict)
-            self.values_callback(snifferbuddy_dict)
+                self.values_callback(snifferbuddy_dict)
+                # Write reading to database table if desired.
+            if self.db_table_name:
+                self.db_write(snifferbuddy_dict)
+            # TBD about this.  So far, the sensor is SnifferBuddy and everyone parties on that.  But one could imagine different
+            # sensors.  Perhaps for water level or PAR value, etc.
+            else:
+                self.values_callback(dict)
         except Exception as e:
             self.logger.error(f"ERROR! Could not read the  measurement. ERROR: {e}")
+
         return
 
     def _on_disconnect(self, client, userdaata, rc=0):
@@ -174,32 +183,26 @@ class GrowBuddy(Thread):
             )
         return dict_of_settings
 
-    def db_write(self, data) -> None:
-        r"""write the sensor reading to the InfluxDB table (which is refered to as a measurement).
+    def db_write(self, dict) -> None:
+        """write reading to the InfluxDB table (which is refered to as a measurement)
 
         Args:
-            data (JSON): The format is something like:
+            dict (dict): Dictionary of values that needs to be converted into a JSON foratted body.
+            An example is given in the `InfluxDBClient documentation
+    <https://influxdb-python.readthedocs.io/en/latest/include-readme.html#examples`_.
 
-        .. code-block:: python
-
-                measurement = "sensor_data"
-                data = [
-                    {
-                    "measurement": measurement,
-                    "tags": {
-                        "location": location,
-                        },
-                    "fields": {
-                        "temperature" : temperature,
-                        "humidity": humidity
-                        }
-                    }
-                ]
 
         There typically aren't any tags.  However, the fields will change bases on what sensor data there is to store.
         """
         try:
-            self.influx_client.write_points(data)
+            if self.db_table_name == self.settings["influxdb"]["snifferbuddy_table_name"]:
+                influxdb_dict = {
+                    {"measurement": self.db_table_name,
+                     "fields": dict,
+                     }
+
+                }
+            self.influx_client.write_points(influxdb_dict)
             self.logger.debug("Successfully added the reading to Influxdb.")
         except Exception as e:
             self.logger.error(

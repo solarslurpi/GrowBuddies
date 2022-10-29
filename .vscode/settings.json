@@ -7,6 +7,6 @@
     },
     "python.linting.flake8Args": [
         "--max-line-length=130",
-        "--ignore=W605",
+        "--ignore=W605,E402",
     ],
 }
