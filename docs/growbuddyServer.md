@@ -4,6 +4,7 @@ The GrowBuddy Server is a Raspberry Pi running:
 - mqtt.
 - influxdb.
 
+
 ## Materials
 - Raspberry Pi 3 or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck from [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).
 - Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to2.5A)__
@@ -119,6 +120,11 @@ issuing the `status 6` command on the Tasmota command line informs us on the mqt
  ```
 The mqtt info lets us know the mqtt keep alive time is 30 seconds.
 
+## Install influxdb
+[InfluxDB (v1.8)](https://www.influxdata.com/) is a time series based database that is free to use on the Raspberry Pi.  
+
+Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) to install.
+
 ## Troubleshooting
 
 (raspi-nowifi)=
@@ -171,7 +177,6 @@ how to use it.  Currently I am on a Windows PC.  The challenge is to start an Ba
 
 Getting to Bash Command Line Through Explorer
 :::
-
 
 A wsl window will open at this location.
 ```

@@ -1,4 +1,6 @@
 # Getting Started
+To get started, let's build the core components.  Once this is completed:
+
 ## Build The Core Components
 Let's start with the core components:
 - [Build the GrowBuddy Server](growbuddyServer.md)

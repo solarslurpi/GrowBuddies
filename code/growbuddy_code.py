@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from threading import Thread  # Necessary so that each sensor has it's own mqtt thread.
+from threading import Thread
 import paho.mqtt.client as mqtt
 from logging_handler import LoggingHandler
 
@@ -196,13 +196,12 @@ class GrowBuddy(Thread):
         """
         try:
             if self.db_table_name == self.settings["influxdb"]["snifferbuddy_table_name"]:
-                influxdb_dict = {
-                    {"measurement": self.db_table_name,
-                     "fields": dict,
-                     }
-
-                }
-            self.influx_client.write_points(influxdb_dict)
+                influxdb_data = [{"measurement": self.db_table_name,
+                                  "fields": dict
+                                  }
+                                 ]
+                # influxdb_dict.update(dict)
+            self.influx_client.write_points(influxdb_data)
             self.logger.debug("Successfully added the reading to Influxdb.")
         except Exception as e:
             self.logger.error(

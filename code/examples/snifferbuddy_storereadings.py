@@ -1,13 +1,11 @@
 """
 
-SnifferBuddy sniffs out the air temperature, relative humidity, CO2 level, as well as a light
-level readings.
+**The only difference between this example and the
+`snifferbuddy_getreadings <https://tinyurl.com/mrxwhc6z>`_ example is the
+storing of the reading into an influxDB database**
 
-**This example leverages the GrowBuddy class to return SnifferBuddy readings in the values_callback as well
-as whether the SnifferBuddy is Online or Offline through the status_callback.**
-
-The example also shows the logging feature of the GrowBuddy system.  It is an abstraction above
-Python's logging.  Adding stack tracing as well as color coding.
+The 'heavy lifter' here is the GrowBuddy class.
+.. py.class:: code.growbuddy_code
 
 
 

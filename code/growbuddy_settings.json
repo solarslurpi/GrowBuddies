@@ -10,7 +10,6 @@
         "db_name": "growbuddy",
         "snifferbuddy_table_name": "snifferbuddy"
     },
-    "db_name": " ",
     "baby_setpoint": 0.8,
     "veg_setpoint": 1.0,
     "flower_setpoint": 1.4,

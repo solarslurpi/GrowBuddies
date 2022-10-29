@@ -61,17 +61,16 @@ See you in the garden!
 ```{toctree}
 :maxdepth: 1
 
-
-getting_started
-growbuddyServer
-examples
 mygrowtent
+getting_started
+examples
+growbuddyServer
 snifferbuddy
 vaporbuddy
 wiring
 tasmota
 systemd
-vpdfbuddy
+vpdbuddy
 modules
 sphinxLearnings
 SoilMoistureBuddy
