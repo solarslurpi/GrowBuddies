@@ -18,7 +18,7 @@ The command assumes the md or rst files are in the docs directory and the output
 1. From a command line change to the code directory.
 2. Type in and execute the command:
 ```console
- $ sphinx-apidoc -f -o . ..\code
+ $ sphinx-apidoc -f -o . .
 ```
 The command creates .rst files in the docs folder (that's why we start there) for each code file it finds in the \code directory.  It also creates the modules.rst and code.rst files.
 This will create a [modules.rst file](modules.rst), as well as .rst files for the other GrowBuddy modules.

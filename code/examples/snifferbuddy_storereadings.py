@@ -1,13 +1,12 @@
 """
 
-**The only difference between this example and the
-`snifferbuddy_getreadings <https://tinyurl.com/mrxwhc6z>`_ 
-example is the storing of the reading into an influxDB database**
+**The only difference between this example and the**
+
+`snifferbuddy_getreadings <https://tinyurl.com/mrxwhc6z>`_
+
+**example is the storing of the reading into an influxDB database**
 
 The 'heavy lifter' here is the GrowBuddy class.
-.. py.class:: code.growbuddy_code
-
-
 
 """
 import logging
@@ -23,33 +22,45 @@ logger = LoggingHandler(logging.DEBUG)
 
 
 def values_callback(dict):
-    """Called when GrowBuddy receives a reading from the SnifferBuddy.
+    """Called by GrowBuddy when the instance receives a reading from the SnifferBuddy.
 
     Args:
-        dict (dict): e.g.: {'air_T': 72.5, 'RH': 58.6, 'CO2': 693, 'light_level': 264}
+        dict (dict): identical to the dict in snifferbuddy_getreadings.py
+
     """
     logger.debug(f"{dict}")
 
 
 def status_callback(status):
-    """The status callback passed into the GrowBuddy class so we can detect
-    whether the SnifferBuddy is Online or Offline.
+    """Identical to the status_callback function in snifferbuddy_getreadings.py
 
     Args:
-        status (str): Since these messages will come from Tasmota devices,
-        The message will be either "Online" or "Offline"
+        status (str): Either the string "Online" or "Offline".
     """
     logger.debug(f'-> SnifferBuddy is: {status}')
     # TODO: act on the device offline/online status of the device.
 
 
 def main():
-    """First we instantiate an instance of the GrowBuddy class.  We're keeping the
-    default settings file (which is code/growbuddy_settings.json).  There
-    is a key "mqtt_snifferbuddy_topic".  This tells GrowBuddy to subscribe to mqtt messages
-    from SnifferBuddy.  Modifiy the topic string if your topic string is different.  We pass in our
-    callbacks so we can receive the values when SnifferBuddy publishes them and also SnifferBuddy's status.
-    """
+
+    """The difference in instantiating an instance of GrowBuddy as just reading versus storing
+        readings is including a name of a table (aka measurement in influxdb lingo) where the results
+        will be stored.  e.g.:
+.. code-block:: python
+
+   db_table_name="snifferbuddy"
+
+
+After this code is run, there should be entries in the database within the "snifferbuddy" measurement. e.g.::
+
+   > select * from snifferbuddy
+   name: snifferbuddy
+   time                CO2 RH   air_T light_level vpd
+   ----                --- --   ----- ----------- ---
+   1667055876521133863 659 59.9 69.7  28          0.84
+   1667055907978140667 658 59.8 69.7  17          0.84
+
+   """
     # Leaving the logging level at DEBUG and the settings file to the default name.
     snifferbuddy = GrowBuddy("mqtt_snifferbuddy_topic", values_callback=values_callback, status_callback=status_callback,
                              db_table_name="snifferbuddy")

@@ -1,15 +1,13 @@
 """
+SnifferBuddy sends out mqtt messages that contain the air temperature, relative humidity, CO2 level, as well
+as a light level readings.
 
-SnifferBuddy sniffs out the air temperature, relative humidity, CO2 level, as well as a light
-level readings.
-
-**This example leverages the GrowBuddy class to return SnifferBuddy readings in the values_callback as well
-as whether the SnifferBuddy is Online or Offline through the status_callback.**
+**This example leverages the GrowBuddy class to return SnifferBuddy readings plus the calculated vpd value based
+on the air temperature and humidity readings provided by SnifferBuddy.  If provided,
+the status_callback function is called when an event is captured by mqtt on whether SnifferBuddy is Online or Offline.**
 
 The example also shows the logging feature of the GrowBuddy system.  It is an abstraction above
-Python's logging.  Adding stack tracing as well as color coding.
-
-
+Python's logging, adding stack tracing as well as color coding.
 
 """
 import logging
@@ -27,8 +25,11 @@ logger = LoggingHandler(logging.DEBUG)
 def values_callback(dict):
     """Called when GrowBuddy receives a reading from the SnifferBuddy.
 
-    Args:
-        dict (dict): e.g.: {'air_T': 68.1, 'RH': 59.4, 'vpd': 0.805, 'CO2': 611, 'light_level': 8}
+    dict (dict): e.g.:
+
+.. code-block:: python
+
+        dict = {'air_T': 68.2, 'RH': 59.4, 'vpd': 0.81, 'CO2': 612, 'light_level': 8}
     """
     logger.debug(f"{dict}")
 
@@ -38,8 +39,8 @@ def status_callback(status):
     whether the SnifferBuddy is Online or Offline.
 
     Args:
-        status (str): Since these messages will come from Tasmota devices,
-        The message will be either "Online" or "Offline"
+        status (str): Since these messages will come from Tasmota devices, The status message returned
+        will be either "Online" or "Offline"
     """
     logger.debug(f'-> SnifferBuddy is: {status}')
     # TODO: act on the device offline/online status of the device.

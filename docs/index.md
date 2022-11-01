@@ -38,7 +38,7 @@ The GrowBuddy Server is either a Raspberry Pi 4 (the green case encloses a Raspb
 GrowBuddy is an Open DIY project that monitors and adjusts environment variables that affect plant growth within a grow tent.  Currently, GrowBuddy focuses on controlling an indoor plant's water needs.  Helping plants get the right amount of water - whether the water is in the form of vapor when in the air or liquid in the soil - is difficult to get right.  Besides, watering requires constant - usually daily - attention.  How does that work when I want to go on vacation?  Since I grow in Living Soil (I recommend [KIS BioChar](https://www.kisorganics.com/products/kis-organics-biochar-soil-mix)), GrowBuddy's solutions focus on growing in soil, but of course aren't constrained to soil based grows.
 ## Current Solutions
 The current solutions (given the focus is on water) are:
-- [Vapor Pressure Deficit (VPD)](VPDbuddy.md)
+- [Vapor Pressure Deficit (VPD)](vpdbuddy)
 - [Soil Moisture](SoilMoistureBuddy.md)
 
 
@@ -67,6 +67,7 @@ examples
 growbuddyServer
 snifferbuddy
 vaporbuddy
+flash_S31
 wiring
 tasmota
 systemd

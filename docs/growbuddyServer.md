@@ -183,7 +183,19 @@ A wsl window will open at this location.
 sudo rsync -avh pi@growbuddy:/home/pi/growbuddy_1_data.zip  .
 
 ```
+## OSError: [Errno 98] Address already in use
+```
+(py_env) pi@growbuddy:~/growbuddy $ ps aux | grep sphinx-autobuild
+pi        2465  0.2  0.4  25956 17520 pts/0    T    09:31   0:00 /home/pi/growbuddy/py_env/bin/python /home/pi/growbuddy/py_env/bin/sphinx-autobuild docs docs/_build/html
+pi        2641  0.0  0.0   7344   508 pts/0    S+   09:34   0:00 grep --color=auto sphinx-autobuild
+(py_env) pi@growbuddy:~/growbuddy $ sudo kill -9 2465
+[1]+  Killed                  sphinx-autobuild docs docs/_build/html  (wd: ~/growbuddy/docs)
+(wd now: ~/growbuddy)
+(py_env) pi@growbuddy:~/growbuddy $ 
+```
+
 ## Killing a Process
+(_Note: This is a different way to address Address already in use_)
 Let's say the [Sphinx autobuild](autobuild) process won't shut down.  It's hogging the port. You see this because the traceback notes:
 ```
 line 162, in bind_sockets
