@@ -9,4 +9,7 @@
         "--max-line-length=150",
         "--ignore=W605,E402",
     ],
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "python.formatting.provider": "none",
+    "editor.formatOnSave": true,
 }

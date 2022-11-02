@@ -3,17 +3,18 @@ import logging
 from enum import Enum
 from growbuddy_code import GrowBuddy
 import threading
+from util_code import calc_vpd
 
 settings_filename = "code/growbuddy_settings.json"
 
 
 class growthStage(Enum):
-    """An enumeration to set the stage of plant growth.  Whether in vegetative or flower is an input from the user.
-    The code then converts this to a growthStage enum and passes the value when instantiating an instance of the
-    VPDcontroller() class.
+    """An enumeration to let GrowBuddy know if the plants it is caring for are in the vegetative or flower growth stage.
+    This class is used internally to make it easy to follow if the running code assumes the Vegetative or Flower state.
 
     Args:
         Enum (int): Either VEG for Vegetative of FLOWER for when the plant is in flowering.
+
     """
 
     VEG = 2
@@ -23,25 +24,31 @@ class growthStage(Enum):
 class vpdBuddy(GrowBuddy):
 
     """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
-        of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
-        data into influxdb.
+    of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
+    data into influxdb.
 
     Args:
-        snifferbuddy_values_callback (function, optional): Callback to get all the readings. Defaults to None.
-        growth_stage (_type_, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
+        vpd_values_callback (function, optional): Callback to get all the readings. Defaults to None.
+
+        growth_stage (growthStage Enum, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
+
+        manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning vaporBuddy ON
+            and OFF. Defaults to False (only observe values by setting the svpd_values_callback).
 
     Raises:
-        Exception: There are a few exception states to check and can alert the caller.
+        Exception: Code checks if the vpd setpoint it reads from the settings file is within expected values.  If it isn't, an exception
+            is raised.
+
     """
 
     def __init__(
         self,
-        snifferbuddy_values_callback=None,
+        vpd_values_callback=None,
         growth_stage=growthStage.VEG,
         manage=False,
     ):
         super().__init__(values_callback=self._values_callback, log_level=logging.DEBUG)
-        self.snifferbuddy_values_callback = snifferbuddy_values_callback
+        self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
             "Turning VaporBuddy Plugs ON and OFF"
@@ -69,14 +76,18 @@ class vpdBuddy(GrowBuddy):
         """GrowBuddy calls this method when it receives a reading from the requested sensor.
 
         Args:
-            dict (Dictionary): For example, a SnifferBuddy dict looks something like:
+            dict (dict): values returned as a dictionary.  For example, a snifferbuddy dict
+                looks something like:
+
+        .. code-block:: python
+
             {"Time":"2022-09-06T08:52:59",
             "ANALOG":{"A0":542},
             "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
-        """
 
+        """
         self.logger.debug(f"vpdControler's values_callback. Dict:{dict}")
-        vpd = self._calc_vpd(dict)
+        vpd = calc_vpd(dict)
         nSecondsON = self._pid(self.setpoint, vpd)
         self.logger.debug(
             f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}"
@@ -84,29 +95,32 @@ class vpdBuddy(GrowBuddy):
         if self.manage and nSecondsON > 0:
             self._turn_on_vaporBuddy(nSecondsON)
 
-        if self.snifferbuddy_values_callback:
+        if self.vpd_values_callback:
             # sniffer_dict = self._make_sniffer_dict(time, air_T, RH, vpd, nSecondsON, dict['ANALOG']['A0'])
             dict["vpd_setpoint"] = self.setpoint
             dict["vpd"] = vpd
             dict["seconds_on"] = nSecondsON
-            self.snifferbuddy_values_callback(dict)
+            self.vpd_values_callback(dict)
 
     def _pid(self, setpoint: float, reading: float) -> int:
-        """INTERNAL METHOD.  This is the code for the `PID controller <https://en.wikipedia.org/wiki/PID_controller>`_
+        """This is the code for the PID controller_
 
-        The PID controller is at the heart of determining how many seconds to turn on the humidifier.  I expect this
-        method to be evolved over time.
-        1. I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature is in the
-        70's F.  The relative humidity is typically around 40-50%.
-        2. I am new to PID controllers.  I have to start somewhere, but I am quite sure I will cringe at this code
-        a year from now!
-
+        .. _controller: https://en.wikipedia.org/wiki/PID_controller
         Args:
-            setpoint (float): The ideal value for the VPD.
-            reading (float):  The most recent reading.
+            setpoint (float): The ideal vpd value.
+            reading (float): The vpd value that will be compared to the setpoint.
 
         Returns:
-            int: How many seconds to turn on the humidifier on.
+            int: The number of seconds to turn on vaporBuddy.
+        .. note::
+                I expect this method to evolved over time.
+
+                * I am new to PID controllers.  I have to start somewhere, but I am quite sure I will cringe
+                  at this code a year from now!
+
+                * I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature
+                  is in the 70's F.  The relative humidity is typically around 40-50%.
+
         """
         Kp = self.settings["Kp"]
         Ki = self.settings["Ki"]
@@ -146,6 +160,7 @@ class vpdBuddy(GrowBuddy):
 
         Args:
             nSecondsON (int): The number of seconds to turn the plugs on.
+
         """
         # Set up a timer with the callback on completion.
         timer = threading.Timer(nSecondsON, self._turn_off_vaporBuddy)
@@ -161,6 +176,7 @@ class vpdBuddy(GrowBuddy):
     def _turn_off_vaporBuddy(self):
         """The timer set in _turn_on_vaporBuddy has expired.  Send messages to the
         vaporBuddy plugs to turn OFF."""
+
         self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "OFF")
         self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "OFF")
         self.logger.debug(

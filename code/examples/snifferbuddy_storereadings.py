@@ -1,12 +1,10 @@
 """
 
-**The only difference between this example and the**
-
-`snifferbuddy_getreadings <https://tinyurl.com/mrxwhc6z>`_
-
-**example is the storing of the reading into an influxDB database**
+The only difference between this example and the snifferbuddy_getreadings example is the storing of the
+reading into an influxDB database.
 
 The 'heavy lifter' here is the GrowBuddy class.
+
 
 """
 import logging
@@ -38,20 +36,18 @@ def status_callback(status):
         status (str): Either the string "Online" or "Offline".
     """
     logger.debug(f'-> SnifferBuddy is: {status}')
-    # TODO: act on the device offline/online status of the device.
 
 
 def main():
 
-    """The difference in instantiating an instance of GrowBuddy as just reading versus storing
-        readings is including a name of a table (aka measurement in influxdb lingo) where the results
-        will be stored.  e.g.:
-.. code-block:: python
+    """Setting a table name is what causes GrowBuddy to store readings.  e.g.:
 
-   db_table_name="snifferbuddy"
+    .. code-block:: python
+
+        db_table_name="snifferbuddy"
 
 
-After this code is run, there should be entries in the database within the "snifferbuddy" measurement. e.g.::
+After this code is run, there should be entries in the influxdb database within the "snifferbuddy" measurement. e.g.::
 
    > select * from snifferbuddy
    name: snifferbuddy
