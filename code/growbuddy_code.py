@@ -13,10 +13,29 @@ from util_code import get_SnifferBuddy_dict
 
 class GrowBuddy(Thread):
 
-    """The GrowBuddy class assumes the
+    """The GrowBuddy class provides:
+    * Callbacks for receiving readings as well as health status.  Under the covers, mqtt messaging is managed.
+    * Method to writel readings to an InfluxDB measurement (which is what Influx seems to call a Table within a database).
+    * Rich logging for debugging and auditing.
+
+    Args:
+        topic_key (str, optional): The dictionary key for the full topic in the settings file.
+            Defaults to "mqtt_snifferbuddy_topic". Which means by default, GrowBuddy will receive
+            messages from SnifferBuddy.  The messages from SnifferBuddy contain the readings for air temp,
+            relative humidity, CO2, and light level.
+
+        values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
+            Defaults to None.
+
+        status_callback (function, optional): Will be called if GrowBuddy detects a problem accessing the Buddy.
+
+        db_table_name (str, optional): Name of influxdb to store message values.  Defaults to None.
+
+        settings_filename (str, optional): All the settings used by the GrowBuddy system. Defaults to "growbuddy_settings.json".
+
+        log_level (constant, optional): Defined by Python's logging library. Defaults to logging.DEBUG.
 
     """
-
     def __init__(
         self,
         topic_key="mqtt_snifferbuddy_topic",
@@ -68,7 +87,7 @@ class GrowBuddy(Thread):
             except ValueError as e:
                 self.logger.error(f"ERROR! Was not able to connect to Influxdb.  Error: {e}")
 
-    def start(self, loop_forever=True):
+    def start(self):
         """Starts up an mqtt client on a unique thread.
 
         """
@@ -88,13 +107,22 @@ class GrowBuddy(Thread):
             os._exit(1)
 
     def _LWT_callback(self, client, userdata, msg):
+        """mqtt callback we set up earlier to be called when a Last Will and Testament (LWT) message
+        is available.  Tasmota's LWT messages are either "Online" or "Offline".
+
+        Args:
+            client (paho mqtt client instance): Opaque blob passed about identifying the mqtt session.
+            userdata : Not used.
+            msg (str): The Last Will and Testament strings from a Tasmota device is either
+                "Online" or "Offline".
+        """
         message = msg.payload.decode(encoding="UTF-8")
         self.logger.info(f"LWT received message...{message}")
         if self.status_callback:
             self.status_callback(message)
 
     def _on_connect(self, client, userdata, flags, rc):
-        """mqtt client callback called lonce the code has connected with the broker.
+        """mqtt client callback called once the code has connected with the broker.
         Now we can subscribe to readings based on the topic initially passed in. We also subscribe to mqtt's
         LWT messages coming from each Buddy and retained by the GrowBuddy Broker.  The LWT messages is how
         we can determine if a Buddy is Online or Offline.
@@ -119,12 +147,14 @@ class GrowBuddy(Thread):
         self.logger.info(f"-> Subscribed to -->{self.settings[self.topic_key]}<--")
 
     def _on_message(self, client, userdata, msg):
-        """INTERNAL METHOD. Received a reading.
+        """Received a message for the client.subscribe() we subscribed to in _on_connect().
 
         Args:
+            client (paho mqtt client instance): Opaque blob passed about identifying the mqtt session.
+
+            userdata : Not used.
+
             msg (str):The message is a JSON string... if sent by SnifferBuddy, it looks something like
-
-
         """
         message = msg.payload.decode(encoding="UTF-8")
         self.logger.info(f"mqtt received message...{message}")
@@ -158,8 +188,8 @@ class GrowBuddy(Thread):
             Exception: When it can't find the file named by the settings_filename attribute.
 
         Returns:
-            dict: including values for the mqtt broker, topic, and vpd setpoints at the different
-            growth stages.
+            dict: A dictionary of values for things like the name of the mqtt broker, mqtt topics,
+            vpd setpoints, etc.  The file provided is named "growbuddy_settings.json".
 
         """
         self.logger.debug(f"-> Reading in settings from {settings_filename} file.")
@@ -174,15 +204,13 @@ class GrowBuddy(Thread):
         return dict_of_settings
 
     def db_write(self, dict) -> None:
-        """write reading to the InfluxDB table (which is refered to as a measurement)
+        """Write reading to the InfluxDB table (which is refered to as a measurement).
 
         Args:
             dict (dict): Dictionary of values that needs to be converted into a JSON foratted body.
-            An example is given in the `InfluxDBClient documentation
-            <https://influxdb-python.readthedocs.io/en/latest/include-readme.html#examples`_.
+                An example is given in the
 
-
-        There typically aren't any tags.  However, the fields will change bases on what sensor data there is to store.
+                `InfluxDBClient documentation <https://influxdb-python.readthedocs.io/en/latest/include-readme.html#examples>`_
 
         """
         try:
