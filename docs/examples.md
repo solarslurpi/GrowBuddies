@@ -1,6 +1,7 @@
 # Examples
 - [Get Values from SnifferBuddy](get_values)
 - [Store Values from SnifferBuddy](store_values)
+- [Observe vpdBuddy](vpdbuddy_observe)
 (get_values)=
 ## Get Values from SnifferBuddy
 **[Source Code](https://github.com/solarslurpi/GrowBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_getreadings.py)**
@@ -15,6 +16,16 @@
 **[Source Code](https://github.com/solarslurpi/GrowBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_storereadings.py)**
 ```{eval-rst}
 .. automodule:: code.examples.snifferbuddy_storereadings
+   :members:
+   :undoc-members:
+   :show-inheritance:
+```
+
+(vpdbuddy_observe)=
+## Observe vpdBuddy
+**[Source Code](https://github.com/solarslurpi/GrowBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_storereadings.py)**
+```{eval-rst}
+.. automodule:: code.examples.vpdbuddy_observe
    :members:
    :undoc-members:
    :show-inheritance:

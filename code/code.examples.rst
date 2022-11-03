@@ -20,6 +20,14 @@ code.examples.snifferbuddy\_storereadings module
    :undoc-members:
    :show-inheritance:
 
+code.examples.snifferbuddy\vpdbuddy_observe module
+------------------------------------------------
+
+.. automodule:: code.examples.vpdbuddy_observe
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 
