@@ -1,0 +1,3 @@
+{"Time":"2022-09-06T08:52:59",
+"ANALOG":{"A0":542},
+"SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}

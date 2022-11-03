@@ -22,7 +22,8 @@ def get_SnifferBuddy_dict(dict):
         or l > 1024
     ):
         raise Exception(
-            f"Values received:\n  Air Temperature: {a},\n Relative Humidity: {r},Light_level: {l}.\n\n  One or all of these values are out of range of what was expected.")
+            f"One or more of the values received:\n  Air Temperature: {a},\n Relative Humidity: {r}, Light_level: {l}. Was unexpected."
+        )
     return snifferbuddy_dict
 
 
