@@ -4,33 +4,29 @@ import sys
 sys.path.append('/home/pi/growbuddy/code')
 
 import json
-import pytest
+# import pytest
 
 from snifferbuddy_code import snifferBuddy
 
 
-@pytest.fixture(scope="module")
-def sb():
-    # Testing with snifferbuddy formed mqtt message.
-    sb = None
+# def test_snifferbuddy_values(capsys) -> None:
+def test_snifferbuddy_values() -> None:
+    s = None
     try:
-        with open("scd30_mqtt.json") as json_file:
+        with open("code/test/scd30_mqtt.json") as json_file:
             dict = json.load(json_file)
             print(f"{dict}")
-            sb = snifferBuddy(dict)
+            s = snifferBuddy(dict)
     except FileNotFoundError as e:
         print(f"ERROR - message: {e}")
-    return sb
+  #  with capsys.disabled():
+    print(f"Temperature: {s.temperature} | Humidity: {s.humidity} | CO2: {s.co2} | vpd {s.vpd} | light level {s.light_level}")
+    # Check that the values are realistic.
+    assert (0.0 < s.temperature)
+    assert (0.0 < s.humidity <= 100.0)
+    assert (0 < s.co2 <= 3000)
+    assert (0.0 < s.vpd <= 3.0)
+    assert (0 < s.light_level <= 1024)
 
 
-def test_temperature() -> None:
-    s = None
-    with open("code/test/scd30_mqtt.json") as json_file:
-        dict = json.load(json_file)
-        print(f"{dict}")
-        s = snifferBuddy(dict)
-    print(f"{s.temperature}")
-    assert (s.temperature > 0.0)
-
-if __name__ == "__main__":
-    test_temperature()
+test_snifferbuddy_values()

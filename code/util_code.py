@@ -27,7 +27,7 @@ def get_SnifferBuddy_dict(dict):
     return snifferbuddy_dict
 
 
-def calc_vpd(dict: dict) -> (float):
+def calc_vpd(temperature: float, humidity: float) -> (float):
 
     """INTERNAL METHOD. I decided at this point not to measure the leaf temperature but take the much simpler
     approach of assuming 2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for
@@ -48,8 +48,8 @@ def calc_vpd(dict: dict) -> (float):
     Returns the calculated VPD value.
     """
     # TODO: Make usable for at least the SCD30 or SCD40
-    air_T = dict["SCD30"]["Temperature"]
-    RH = dict["SCD30"]["Humidity"]
+    air_T = temperature
+    RH = humidity
     if (
         not isinstance(air_T, float)
         or not isinstance(RH, float)
@@ -64,4 +64,4 @@ def calc_vpd(dict: dict) -> (float):
         math.exp(17.863 - 9621 / (leaf_T + 460))
         - ((RH / 100) * math.exp(17.863 - 9621 / (air_T + 460)))
     )
-    return vpd
+    return round(vpd,2)
