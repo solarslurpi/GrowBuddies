@@ -9,17 +9,20 @@ import json
 from snifferbuddy_code import snifferBuddy
 
 
-# def test_snifferbuddy_values(capsys) -> None:
 def test_snifferbuddy_values() -> None:
+    # The scd30_mqtt.json file contains an SnifferBuddy mqtt message from a snifferBuddy that
+    # has an scd30 sensor.  This test opens the file as the mqtt dictionary and then checks the transfer
+    # into snifferBuddy properties.
     s = None
     try:
         with open("code/test/scd30_mqtt.json") as json_file:
-            dict = json.load(json_file)
-            print(f"{dict}")
-            s = snifferBuddy(dict)
+            mqtt_dict = json.load(json_file)
+            print(f"{mqtt_dict}")
+            # Translate between the mqtt_dict and the snifferBuddy values.
+            s = snifferBuddy(mqtt_dict)
     except FileNotFoundError as e:
         print(f"ERROR - message: {e}")
-  #  with capsys.disabled():
+    #  with capsys.disabled():
     print(f"Temperature: {s.temperature} | Humidity: {s.humidity} | CO2: {s.co2} | vpd {s.vpd} | light level {s.light_level}")
     # Check that the values are realistic.
     assert (0.0 < s.temperature)

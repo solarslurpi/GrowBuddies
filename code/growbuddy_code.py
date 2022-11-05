@@ -8,21 +8,23 @@ from logging_handler import LoggingHandler
 from influxdb import InfluxDBClient
 import random
 import string
-from util_code import get_SnifferBuddy_dict
+from snifferbuddy_code import snifferBuddy
 
 
 class GrowBuddy(Thread):
 
     """The GrowBuddy class provides:
-    * Callbacks for receiving readings as well as health status.  Under the covers, mqtt messaging is managed.
-    * Method to writel readings to an InfluxDB measurement (which is what Influx seems to call a Table within a database).
+
+    * Callbacks for receiving readings as well as the health status of the sensor.  Under the covers, mqtt messaging is managed.
+
+    * Method to write readings to an InfluxDB measurement (which is what Influx seems to call a Table within a database).
+
     * Rich logging for debugging and auditing.
 
     Args:
         topic_key (str, optional): The dictionary key for the full topic in the settings file.
-            Defaults to "mqtt_snifferbuddy_topic". Which means by default, GrowBuddy will receive
-            messages from SnifferBuddy.  The messages from SnifferBuddy contain the readings for air temp,
-            relative humidity, CO2, and light level.
+            Defaults to "mqtt_snifferbuddy_topic". Which means by default, GrowBuddy will receive air quality
+            messages from SnifferBuddy.
 
         values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
             Defaults to None.
@@ -39,7 +41,7 @@ class GrowBuddy(Thread):
     def __init__(
         self,
         topic_key="mqtt_snifferbuddy_topic",
-        values_callback=None,
+        growBuddy_values_callback=None,
         status_callback=None,
         db_table_name=None,
         settings_filename="growbuddy_settings.json",
@@ -52,7 +54,7 @@ class GrowBuddy(Thread):
             random.choice(string.ascii_lowercase) for i in range(10)
         )
         Thread.__init__(self, name=self.unique_name)
-        self.values_callback = values_callback
+        self.values_callback = growBuddy_values_callback
         self.status_callback = status_callback
         self.db_table_name = db_table_name
 
@@ -160,18 +162,15 @@ class GrowBuddy(Thread):
         self.logger.info(f"mqtt received message...{message}")
         # Send the message contents as a dictionary back to the values_callback.
         try:
-            dict = json.loads(message)
+            mqtt_dict = json.loads(message)
             if self.topic_key == "mqtt_snifferbuddy_topic":
                 # Since this is a SnifferBuddy reading, put in a simple dictionary.
-                snifferbuddy_dict = get_SnifferBuddy_dict(dict)
-                self.values_callback(snifferbuddy_dict)
+                s = snifferBuddy(mqtt_dict)
+                self.values_callback(s)
                 # Write reading to database table if desired.
             if self.db_table_name:
-                self.db_write(snifferbuddy_dict)
-            # TBD about this.  So far, the sensor is SnifferBuddy and everyone parties on that.  But one could imagine different
-            # sensors.  Perhaps for water level or PAR value, etc.
-            else:
-                self.values_callback(dict)
+                self.db_write(s)
+
         except Exception as e:
             self.logger.error(f"ERROR! Could not read the  measurement. ERROR: {e}")
 

@@ -1,5 +1,6 @@
 # Getting Started
-To get started, let's build the core components.  Once this is completed:
+To start, build a SnifferBuddy and a GrowBuddy.  These are the foundation of the Buddies.  Once these are built and working, air qulity measurements can be evaluated and stored into a database.  SnifferBuddy's air quality measurements will be used by other Buddies like vpdBuddy.  The air quality information includes air temperature, relative humidity, CO2 level, and a light level reading from the SnifferBuddy's photoresistor.
+
 
 ## Build The Core Components
 Let's start with the core components:

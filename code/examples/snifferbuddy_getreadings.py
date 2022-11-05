@@ -1,9 +1,9 @@
 """
-SnifferBuddy sends out mqtt messages that contain the air temperature, relative humidity, CO2 level, as well
-as a light level readings.
+SnifferBuddy sends out mqtt messages that contain air quality readings.
 
-**This example leverages the GrowBuddy class to return SnifferBuddy readings plus the calculated vpd value based
-on the air temperature and humidity readings provided by SnifferBuddy.  If provided,
+**This example leverages the GrowBuddy class to return air quality readings from snifferBuddy.  The snifferBuddy class
+figures out how to transfer the values from the sensor specific mqtt_dict to the snifferBuddy properties.
+  If provided,
 the status_callback function is called when an event is captured by mqtt on whether SnifferBuddy is Online or Offline.**
 
 The example also shows the logging feature of the GrowBuddy system.  It is an abstraction above
@@ -17,21 +17,26 @@ sys.path.append('/home/pi/growbuddy/code')
 
 from logging_handler import LoggingHandler
 from growbuddy_code import GrowBuddy
+from snifferbuddy_code import snifferBuddy
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
 
 
-def values_callback(dict):
+def values_callback(snifferBuddy_values: snifferBuddy):
     """Called when GrowBuddy receives a reading from the SnifferBuddy.
 
-    dict (dict): e.g.:
+    snifferBuddy_values (snifferBuddy class): air quality values as
+    properties as well as within a dictionary.
 
-.. code-block:: python
-
-        dict = {'air_T': 68.2, 'RH': 59.4, 'vpd': 0.81, 'CO2': 612, 'light_level': 8}
     """
-    logger.debug(f"{dict}")
+    values = (f'temperature: {snifferBuddy_values.temperature},'
+              f'| humidity: {snifferBuddy_values.humidity},'
+              f' | co2: {snifferBuddy_values.co2},'
+              f' | vpd: {snifferBuddy_values.vpd} ,'
+              f' | light level: {snifferBuddy_values.light_level}')
+    logger.debug(values)
+    logger.debug(snifferBuddy_values.dict)
 
 
 def status_callback(status):
@@ -46,7 +51,7 @@ def status_callback(status):
     # TODO: act on the device offline/online status of the device.
 
 
-def main():
+def test_snifferbuddy_getreadings():
     """First we instantiate an instance of the GrowBuddy class.  We're keeping the
     default settings file (which is code/growbuddy_settings.json).  There
     is a key "mqtt_snifferbuddy_topic".  This tells GrowBuddy to subscribe to mqtt messages
@@ -58,5 +63,4 @@ def main():
     snifferbuddy.start()
 
 
-if __name__ == "__main__":
-    main()
+test_snifferbuddy_getreadings()

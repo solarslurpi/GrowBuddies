@@ -15,10 +15,10 @@ The command assumes the md or rst files are in the docs directory and the output
 
 ## sphinx-apidoc
 [sphinx-apidoc](https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html) is a command line utility that will pull out the documentation from the Python code.  It will grab all the files from the directory holding the code files.  To generate the code,
-1. From a command line change to the code directory.
+1. From a command line change to the docs directory.
 2. Type in and execute the command:
 ```console
- $ sphinx-apidoc -f -o . .
+ $  sphinx-apidoc -f -o . ../code
 ```
 The command creates .rst files in the docs folder (that's why we start there) for each code file it finds in the \code directory.  It also creates the modules.rst and code.rst files.
 This will create a [modules.rst file](modules.rst), as well as .rst files for the other GrowBuddy modules.

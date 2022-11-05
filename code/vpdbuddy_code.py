@@ -3,7 +3,7 @@ import logging
 from enum import Enum
 from growbuddy_code import GrowBuddy
 import threading
-from util_code import calc_vpd
+from snifferbuddy_code import snifferBuddy
 
 settings_filename = "code/growbuddy_settings.json"
 
@@ -47,7 +47,7 @@ class vpdBuddy(GrowBuddy):
         growth_stage=growthStage.VEG,
         manage=False,
     ):
-        super().__init__(values_callback=self._values_callback, log_level=logging.DEBUG)
+        super().__init__(growBuddy_values_callback=self._values_callback, log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
@@ -59,48 +59,36 @@ class vpdBuddy(GrowBuddy):
         # Set up the setpoint to the ideal vpd value.
         self.setpoint = 0.0
         if growth_stage == growthStage.VEG:
-            self.setpoint = self.settings["veg_setpoint"]
+            self.setpoint = self.settings["vpd_setpoints"]["veg"]
         else:
-            self.setpoint = self.settings["flower_setpoint"]
+            self.setpoint = self.settings["vpd_setpoints"]["flower"]
         # The setpoint should be around .6 to 1.6...
         if not isinstance(self.setpoint, float) or self.setpoint * 10 not in range(20):
             raise Exception(
-                "The vpd setpoint should be a floating point number between 0.0 and 2.0"
+                "The vpd setpoint should be a floating point number between 0.0 and less than 2.0"
             )
         self.logger.debug(f"The value for the vpd setpoint is: {self.setpoint}")
         # These are used in the _pid() routine.
         self.pid_cum_error = 0.0
         self.pid_last_error = 0.0
 
-    def _values_callback(self, dict):
-        """GrowBuddy calls this method when it receives a reading from the requested sensor.
+    def _values_callback(self, s: snifferBuddy):
+        """GrowBuddy calls this method when it receives a reading from the requested sensor.  
 
         Args:
-            dict (dict): values returned as a dictionary.  For example, a snifferbuddy dict
-                looks something like:
+            vpd (float): The calculated vpd value from the most recent snifferBuddy reading.  
 
-        .. code-block:: python
-
-            {"Time":"2022-09-06T08:52:59",
-            "ANALOG":{"A0":542},
-            "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
 
         """
-        self.logger.debug(f"vpdControler's values_callback. Dict:{dict}")
-        vpd = calc_vpd(dict)
-        nSecondsON = self._pid(self.setpoint, vpd)
+        nSecondsON = self._pid(self.setpoint, s.vpd)
         self.logger.debug(
-            f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}"
+            f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}"
         )
         if self.manage and nSecondsON > 0:
             self._turn_on_vaporBuddy(nSecondsON)
 
         if self.vpd_values_callback:
-            # sniffer_dict = self._make_sniffer_dict(time, air_T, RH, vpd, nSecondsON, dict['ANALOG']['A0'])
-            dict["vpd_setpoint"] = self.setpoint
-            dict["vpd"] = vpd
-            dict["seconds_on"] = nSecondsON
-            self.vpd_values_callback(dict)
+            self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON)
 
     def _pid(self, setpoint: float, reading: float) -> int:
         """This is the code for the PID controller_
@@ -122,17 +110,16 @@ class vpdBuddy(GrowBuddy):
                   is in the 70's F.  The relative humidity is typically around 40-50%.
 
         """
-        Kp = self.settings["Kp"]
-        Ki = self.settings["Ki"]
-        Kd = self.settings["Kd"]
+        Kp = self.settings["PID_settings"]["Kp"]
+        Ki = self.settings["PID_settings"]["Ki"]
+        Kd = self.settings["PID_settings"]["Kd"]
         # This code is designed for my setup.  The indoors is climate cocntrolled.  There is only a humidifier to turn
         # on or off - that is, it is always the case more humidity is needed and
         # the air temperature is a comfortable range for the plants.
         # If setpoint - reading is positive, the air in the grow room is too humid.  Most (pretty much all?)
         # of the time the error should be negative.
         error = setpoint - reading
-        if error > 0.0:
-            return 0
+
         # Calculate the Proportional Correction
         pCorrection = Kp * error
         # Calculate the Integral Correction

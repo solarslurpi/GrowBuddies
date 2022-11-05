@@ -1,19 +1,24 @@
 {
     "hostname": "growbuddy",
+    "log_level": "DEBUG",
     "mqtt_snifferbuddy_topic": "tele/snifferbuddy/SENSOR",
     "mqtt_vaporbuddy_fan_topic": "cmnd/vaporbuddy_fan/POWER",
     "mqtt_vaporbuddy_mister_topic": "cmnd/vaporbuddy_mister/POWER",
     "readSoilMoisture": "tele/soil_moisture/SENSOR",
     "calibrateSoilMoisture": "calibrate",
-    "startVPDBuddy": " TODO ",
     "influxdb": {
         "db_name": "growbuddy",
         "snifferbuddy_table_name": "snifferbuddy"
     },
-    "baby_setpoint": 0.8,
-    "veg_setpoint": 1.0,
-    "flower_setpoint": 1.4,
-    "Kp": 0.1,
-    "Ki": 0.1,
-    "Kd": 0.1
+    "vpd_setpoints": {
+        "veg": 1.9,
+        "flower": 1.4
+    },
+   
+    "PID_settings": {
+        "Kp": 0.1,
+        "Ki": 0.1,
+        "Kd": 0.1
+    }
+
 }

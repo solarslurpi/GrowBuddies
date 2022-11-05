@@ -1,7 +1,14 @@
-code package
-============
 
-Submodules
+
+Examples
+--------
+
+.. toctree::
+   :maxdepth: 4
+
+   code.examples
+
+Libraries
 ----------
 
 code.growbuddy\_code module
@@ -20,18 +27,18 @@ code.logging\_handler module
    :undoc-members:
    :show-inheritance:
 
-code.soil\_moisture\_buddy module
----------------------------------
+code.snifferbuddy\_code module
+------------------------------
 
-.. automodule:: code.soil_moisture_buddy
+.. automodule:: code.snifferbuddy_code
    :members:
    :undoc-members:
    :show-inheritance:
 
-code.test\_vpd module
----------------------
+code.soil\_moisture\_buddy module
+---------------------------------
 
-.. automodule:: code.test_vpd
+.. automodule:: code.soil_moisture_buddy
    :members:
    :undoc-members:
    :show-inheritance:
@@ -52,10 +59,3 @@ code.vpdbuddy\_code module
    :undoc-members:
    :show-inheritance:
 
-Module contents
----------------
-
-.. automodule:: code
-   :members:
-   :undoc-members:
-   :show-inheritance:

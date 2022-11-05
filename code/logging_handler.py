@@ -56,12 +56,14 @@ class LoggingHandler:
 
     def __init__(self, log_level=logging.DEBUG):
 
+        # Multiple calls to getLogger() with the same name will always return a reference to the same Logger object.
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(log_level)
-        formatter = logging.Formatter("%(asctime)s:%(levelname)s:%(message)s")
-        handler = logging.StreamHandler(stream=sys.stdout)
-        handler.setFormatter(formatter)
-        self.logger.addHandler(handler)
+        if not self.logger.hasHandlers():
+            formatter = logging.Formatter("%(asctime)s:%(message)s")
+            handler = logging.StreamHandler(stream=sys.stdout)
+            handler.setFormatter(formatter)
+            self.logger.addHandler(handler)
 
     def debug(self, message):
         f = inspect.currentframe()
