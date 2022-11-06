@@ -3,6 +3,14 @@
 
 The documentation uses Sphinx.  I'm putting learnings on how to do non intuitive Sphinx things here.
 
+## Resources
+
+* [Myst Parser Extensions](https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#images)
+
+* [Docutils Restructured Text Directives](https://docutils.sourceforge.io/docs/ref/rst/directives.html)
+
+* [Sphinx Build Errors like Unexpected Unindent](https://www.tarantool.io/en/doc/latest/contributing/docs/sphinx-warnings/)
+
 ## Autobuild
 Autobuild brings WYSIWYG editing.  It is extremely useful when editing Sphinx docs!
 
@@ -22,6 +30,16 @@ The command assumes the md or rst files are in the docs directory and the output
 ```
 The command creates .rst files in the docs folder (that's why we start there) for each code file it finds in the \code directory.  It also creates the modules.rst and code.rst files.
 This will create a [modules.rst file](modules.rst), as well as .rst files for the other GrowBuddy modules.
+
+## Trailing White Spaces
+Sphinx HATES trailing white spaces in files.  VS Code LOVES to put trailing white spaces in files.  To change VS Code's mind to trim trailing spaces, go to preference/settings and turn on trim white spaces:
+
+```{image} https://i.stack.imgur.com/hZrUY.png
+:align: center
+```
+
+## PEP 257
+Having trouble with docstrings in your python code?  Check out [Pep 257 - Docstring Conventions](https://peps.python.org/pep-0257/#multi-line-docstrings).
 
 
 ## Myst-parser
@@ -46,17 +64,10 @@ myst_enable_extensions = ["colon_fence"]
 ```
 Now we can include restructured text images/figures directives.
 
-:::{figure} images/SnifferBuddy_wiring.jpg
-:align: center
-:scale: 100
-
-SnifferBuddy Wiring
-:::
-
 ### Example
 In this example, we start with a file in rst format and convert to markdown.  To do this, we use the rst-to-myst[sphinx]
 1. Install the library into your virtual environment `pip install rst-to-myst[sphinx]`
-2. Convert the files.  I put snifferbuddy.rst into the rst-test-files folder to give us an example to work with. 
+2. Convert the files.  I put snifferbuddy.rst into the rst-test-files folder to give us an example to work with.
 ```
 rst2myst convert ../rst-test-files/* .
 ```

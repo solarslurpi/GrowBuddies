@@ -1,12 +1,10 @@
 """
-SnifferBuddy sends out mqtt messages that contain air quality readings.
+This example gets air quality readings from a snifferBuddy.
 
-**This example leverages the GrowBuddy class to return air quality readings from snifferBuddy.  The snifferBuddy class
-figures out how to transfer the values from the sensor specific mqtt_dict to the snifferBuddy properties.
-  If provided,
-the status_callback function is called when an event is captured by mqtt on whether SnifferBuddy is Online or Offline.**
+An instance of the growBuddy class returns air quality readings from snifferBuddy to a values_callback function.  The
+status_callback function will be called by the growBuddy instance when there is an Offline or Online snifferBuddy event.
 
-The example also shows the logging feature of the GrowBuddy system.  It is an abstraction above
+The example also shows the logging feature of the growBuddy class.  It is an abstraction above
 Python's logging, adding stack tracing as well as color coding.
 
 """
@@ -40,12 +38,11 @@ def values_callback(snifferBuddy_values: snifferBuddy):
 
 
 def status_callback(status):
-    """The status callback passed into the GrowBuddy class so we can detect
-    whether the SnifferBuddy is Online or Offline.
+    """Detect whether the SnifferBuddy is Online or Offline.
 
     Args:
         status (str): Since these messages will come from Tasmota devices, The status message returned
-        will be either "Online" or "Offline"
+    will be either "Online" or "Offline"
     """
     logger.debug(f'-> SnifferBuddy is: {status}')
     # TODO: act on the device offline/online status of the device.
@@ -59,7 +56,7 @@ def test_snifferbuddy_getreadings():
     callbacks so we can receive the values when SnifferBuddy publishes them and also SnifferBuddy's status.
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferbuddy = GrowBuddy("mqtt_snifferbuddy_topic", values_callback=values_callback, status_callback=status_callback)
+    snifferbuddy = GrowBuddy("mqtt_snifferbuddy_topic", growBuddy_values_callback=values_callback, status_callback=status_callback)
     snifferbuddy.start()
 
 

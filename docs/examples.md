@@ -10,6 +10,7 @@
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 ```
 (store_values)=
 ## Store Values from SnifferBuddy
@@ -19,6 +20,7 @@
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 ```
 
 (vpdbuddy_observe)=
@@ -29,4 +31,5 @@
    :members:
    :undoc-members:
    :show-inheritance:
+   :noindex:
 ```

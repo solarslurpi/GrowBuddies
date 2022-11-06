@@ -26,8 +26,8 @@ class GrowBuddy(Thread):
             Defaults to "mqtt_snifferbuddy_topic". Which means by default, GrowBuddy will receive air quality
             messages from SnifferBuddy.
 
-        values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
-            Defaults to None.
+        growBuddy_values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
+            Defaults to snifferBuddy's topic.
 
         status_callback (function, optional): Will be called if GrowBuddy detects a problem accessing the Buddy.
 

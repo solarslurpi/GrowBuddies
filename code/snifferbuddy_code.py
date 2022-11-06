@@ -6,28 +6,26 @@ from util_code import calc_vpd
 
 class snifferBuddySensors:
     """These are constants containing a string identifying the air quality sensor being used.
-    Starting off, only the SCD30 is available.
-
     """
     SCD30 = "SCD30"
 
 
 class snifferBuddyConstants:
-    """These are the constants representing the item id of a SnifferBuddy measurement.  It is used for mapping between
-    The mqtt message and the snifferBuddy property.
+    """These are the constants representing the item id of a SnifferBuddy measurement.
     """
     TEMPERATURE = 0
     HUMIDITY = 1
     CO2 = 2
     LIGHT_LEVEL = 3
-    # Note: vpd is a function of temperature and humidity.
+    # Note: vpd is not listed because it is a function of temperature and humidity.
 
 
 class snifferBuddy():
-    """The snifferBuddy class takes in the mqtt packet sent by the snifferBuddy and then transfer the
-    values to the snifferBuddy properties itemized below.
+    """Takes in an mqtt air quality message from a snifferBuddy and translates into an easy to use set of properties.
 
-    For example, the payload of the SCD30 mqtt message is:
+    The mqtt air quality message is sensor specific different.  Different air quality sensors will have a different message format.
+
+    For example, the mqtt air quality message of the SCD30 is:
 
     .. code:: python
 
@@ -35,9 +33,16 @@ class snifferBuddy():
          "ANALOG":{"A0":542},
          "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
 
-    Another air quality sensor will have a different message that needs to be understood.  The snifferBuddy class takes
-    in the sensor specific mqtt message and transfers the values for Temperature, Humidity, CO2, and light level.  Instead
-    of access the mqtt message, Buddies access the properties of an instance of the snifferBuddy class.
+    Another air quality sensor will have a different message that needs to be understood.
+
+    Buddies access the snifferBuddy properties instead of properties within the mqtt message.
+
+    .. code:: python
+
+        from snifferbuddy_code import snifferBuddy
+        s = snifferBuddy(mqtt_dict)
+        print({s.dict})
+        print({s.vpd})
 
     Args:
         mqtt_dict (dict): Sensor model specific mqtt message from a snifferBuddy.
@@ -50,7 +55,7 @@ class snifferBuddy():
 
         self.sensor = sensor
         self.mqtt_dict = mqtt_dict
-        # The air quality sensor's names in the mqtt message.
+        # The air quality sensor's name in the mqtt message.
         self.name_dict = {snifferBuddySensors.SCD30: ["Temperature", "Humidity", "CarbonDioxide"]
                           }
         # Set up logging.  LoggingHandler gives stack trace information.
@@ -79,6 +84,11 @@ class snifferBuddy():
 
     @property
     def dict(self) -> dict:
+        """Returns snifferBuddy readings as a dictionary.
+
+        Returns:
+            dict: Contains values for temperature, humidity, co2, vpd, and light level.
+        """
         return {"temperature": self.temperature,
                 "humidity": self.humidity,
                 "co2": self.co2,
@@ -87,6 +97,11 @@ class snifferBuddy():
 
     @property
     def temperature(self) -> float:
+        """Return snifferBuddy's temperature reading
+
+        Returns:
+            float: snifferBuddy's reading of the air temperature.  Whether it is in F or C is dependent on how you set up snifferBuddy.
+        """
         # I set the temperature to F.
         t = self._get_item(snifferBuddyConstants.TEMPERATURE)
         return t

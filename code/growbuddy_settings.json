@@ -11,7 +11,7 @@
         "snifferbuddy_table_name": "snifferbuddy"
     },
     "vpd_setpoints": {
-        "veg": 1.9,
+        "veg": 0.8,
         "flower": 1.4
     },
    
