@@ -10,10 +10,10 @@ settings_filename = "code/growbuddy_settings.json"
 
 class growthStage(Enum):
     """An enumeration to let GrowBuddy know if the plants it is caring for are in the vegetative or flower growth stage.
-    This class is used internally to make it easy to follow if the running code assumes the Vegetative or Flower state.
 
-    Args:
-        Enum (int): Either VEG for Vegetative of FLOWER for when the plant is in flowering.
+       Args:
+
+            Enum (int): Either VEG for Vegetative of FLOWER for when the plant is in flowering.
 
     """
 
@@ -73,10 +73,10 @@ class vpdBuddy(GrowBuddy):
         self.pid_last_error = 0.0
 
     def _values_callback(self, s: snifferBuddy):
-        """GrowBuddy calls this method when it receives a reading from the requested sensor.  
+        """GrowBuddy calls this method when it receives a reading from the requested sensor.
 
         Args:
-            vpd (float): The calculated vpd value from the most recent snifferBuddy reading.  
+            vpd (float): The calculated vpd value from the most recent snifferBuddy reading.
 
 
         """
@@ -91,34 +91,43 @@ class vpdBuddy(GrowBuddy):
             self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON)
 
     def _pid(self, setpoint: float, reading: float) -> int:
-        """This is the code for the PID controller_
+        """This is the code for the PID controller.
 
-        .. _controller: https://en.wikipedia.org/wiki/PID_controller
         Args:
             setpoint (float): The ideal vpd value.
             reading (float): The vpd value that will be compared to the setpoint.
 
         Returns:
             int: The number of seconds to turn on vaporBuddy.
+
+        The goals of this PID controller are:
+
+        * Automatically adjust the humidity within a grow tent to the vpd setpoint.
+
+        * Be better than a "BANG-BANG" controller by not constantly turning vaporBuddy on and off.
+
+        .. image:: ../docs/images/banbbang_controller..jpg
+            :scale: 35
+            :alt: BANG BANG Controller
+            :align: center
+
         .. note::
-                I expect this method to evolved over time.
+            I expect this method to evolve over time.
 
-                * I am new to PID controllers.  I have to start somewhere, but I am quite sure I will cringe
-                  at this code a year from now!
+            - I am new to PID controllers.  I'm bumbling about tuning it.  My goal is to get advice from folks that know more than me.
 
-                * I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature
-                  is in the 70's F.  The relative humidity is typically around 40-50%.
-
+            - I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature is in the 70's F.  The relative
+              humidity is typically around 40-50%.  If the error (setpoint - reading) is positive, it means the area is too humid.
         """
+
         Kp = self.settings["PID_settings"]["Kp"]
         Ki = self.settings["PID_settings"]["Ki"]
         Kd = self.settings["PID_settings"]["Kd"]
-        # This code is designed for my setup.  The indoors is climate cocntrolled.  There is only a humidifier to turn
-        # on or off - that is, it is always the case more humidity is needed and
-        # the air temperature is a comfortable range for the plants.
-        # If setpoint - reading is positive, the air in the grow room is too humid.  Most (pretty much all?)
-        # of the time the error should be negative.
+        nSecondsON = 0
         error = setpoint - reading
+        # If the error is is > 0, it means the reading is too humid.  The current code adjust only when the error is negative - the area is too dry.
+        if error > 0:
+            return nSecondsON
 
         # Calculate the Proportional Correction
         pCorrection = Kp * error
@@ -130,8 +139,9 @@ class vpdBuddy(GrowBuddy):
         dCorrection = Kd * slope
         self.pid_last_error = error
         self.logger.debug(
-            f"pCorrection is {pCorrection}, iCorrection is {iCorrection}, dCorrection is {dCorrection}"
+            f"error is {error}, pCorrection is {pCorrection}, iCorrection is {iCorrection}, dCorrection is {dCorrection}"
         )
+        # Tuning to calculate the number of seconds to turn the humidifier on seems to take on a bit of a Wild Ass Guess.
         # Calculate the # Seconds to turn Humidifier on.  I am roughly guessing 1 second on lowers VPD by .01.
         # A Wild Guess to be sure.
         nSecondsON = abs(int((pCorrection + iCorrection + dCorrection) * 100))
