@@ -7,8 +7,7 @@
     "readSoilMoisture": "tele/soil_moisture/SENSOR",
     "calibrateSoilMoisture": "calibrate",
     "influxdb": {
-        "db_name": "growbuddy",
-        "snifferbuddy_table_name": "snifferbuddy"
+        "db_name": "growbuddy"
     },
     "vpd_setpoints": {
         "veg": 0.8,

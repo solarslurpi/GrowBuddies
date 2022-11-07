@@ -71,6 +71,6 @@ def main():
 - [Set the time between mqtt messages](set_time_between_readings) to be one minute.
 - Run vpdbuddy_manage.py.
 ```
-(pyenv) $ vpdbuddy_manage.py
+(pyenv) $ python code/examples/vpdbuddy_manage.py
 ```
 - View a graph.

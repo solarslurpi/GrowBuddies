@@ -43,7 +43,7 @@ class GrowBuddy(Thread):
         topic_key="mqtt_snifferbuddy_topic",
         growBuddy_values_callback=None,
         status_callback=None,
-        db_table_name=None,
+        snifferbuddy_table_name=None,
         settings_filename="growbuddy_settings.json",
         log_level=logging.DEBUG,
     ):
@@ -56,7 +56,7 @@ class GrowBuddy(Thread):
         Thread.__init__(self, name=self.unique_name)
         self.values_callback = growBuddy_values_callback
         self.status_callback = status_callback
-        self.db_table_name = db_table_name
+        self.snifferbuddy_table_name = snifferbuddy_table_name
 
         # Remember the key in the settings dictionary for the mqtt topic.
         self.topic_key = topic_key
@@ -83,7 +83,7 @@ class GrowBuddy(Thread):
             os._exit(1)
         # Get a connection to the influxdb database, if needed.
         # The database must exist on the "hostname" Server (which is most likely named "GrowBuddy").
-        if self.db_table_name is not None:
+        if self.snifferbuddy_table_name is not None:
             try:
                 self.influx_client = InfluxDBClient(host=self.settings["hostname"], database=self.settings["influxdb"]["db_name"])
             except ValueError as e:
@@ -168,8 +168,8 @@ class GrowBuddy(Thread):
                 s = snifferBuddy(mqtt_dict)
                 self.values_callback(s)
                 # Write reading to database table if desired.
-            if self.db_table_name:
-                self.db_write(s)
+            if self.snifferbuddy_table_name:
+                self.db_write(s.dict)
 
         except Exception as e:
             self.logger.error(f"ERROR! Could not read the  measurement. ERROR: {e}")
@@ -206,15 +206,16 @@ class GrowBuddy(Thread):
         """Write reading to the InfluxDB table (which is refered to as a measurement).
 
         Args:
-            dict (dict): Dictionary of values that needs to be converted into a JSON foratted body.
+            dict (dict): The fields value passed to the influx client.
                 An example is given in the
 
                 `InfluxDBClient documentation <https://influxdb-python.readthedocs.io/en/latest/include-readme.html#examples>`_
 
         """
+        # TODO: Other context specific writes to tables...
         try:
-            if self.db_table_name == self.settings["influxdb"]["snifferbuddy_table_name"]:
-                influxdb_data = [{"measurement": self.db_table_name,
+            if self.snifferbuddy_table_name :
+                influxdb_data = [{"measurement": self.snifferbuddy_table_name,
                                   "fields": dict
                                   }
                                  ]

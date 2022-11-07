@@ -48,7 +48,7 @@ def main():
     # snifferbuddy_table_name.
     # To store the date/time vpdBuddy turned vaporBuddy ON and OFF, set the
     # parameter vpdbuddy_table_name.
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy")
+    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_60")
     vpdbuddy.start()
 
 
