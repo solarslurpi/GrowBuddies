@@ -58,9 +58,9 @@ After this code is run, there should be entries in the influxdb database within 
 
    """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferbuddy = GrowBuddy("mqtt_snifferbuddy_topic", values_callback=values_callback, status_callback=status_callback,
-                             db_table_name="snifferbuddy")
-    snifferbuddy.start()
+    snifferBuddy = GrowBuddy("mqtt_snifferbuddy_topic", values_callback=values_callback, status_callback=status_callback,
+                             snifferbuddy_table_name="snifferbuddy")
+    snifferBuddy.start()
 
 
 if __name__ == "__main__":

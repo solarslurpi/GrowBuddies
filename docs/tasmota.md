@@ -13,7 +13,7 @@ The easiest way requires you have the same ESP286 [the Wemos D1](https://www.ali
 
 _Note: There is also a config file for a **[Tasmotized Sonoff plug](flash_tasmota)**_.
 ### Web Install
-Install Tasmota using either the Edge or Chrome browser (web install doesn't work using the Brave browser).  Go to [Tasmota Install URL](https://tasmota.github.io/install/).  
+Install Tasmota using either the Edge or Chrome browser (web install doesn't work using the Brave browser).  Go to [Tasmota Install URL](https://tasmota.github.io/install/).
 _Note:  If the USB/COM port can't be identified, the first thing to do is to check the cable.  The USB cable might not support data i/o.  If that doesn't work, check the USB driver.  The ESP286 or ESP32 may be using a driver that isn't installed on your Windows PC or Mac._
 
 There are many Tasmota binaries that could be installed.  We want to install the Tasmota Sensors binary for the ESP286.
@@ -36,7 +36,7 @@ Angry IP Scan Shows Tasmota
 
 Choose your adventure for the rest of install:
 - [Restore Configuration](restore_config) if:
-  - you are building a SnifferBuddy with [the Wemos D1](https://www.aliexpress.us/item/2251832645039000.html) and the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867). 
+  - you are building a SnifferBuddy with [the Wemos D1](https://www.aliexpress.us/item/2251832645039000.html) and the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867).
   - you are building a [Tasmotized Plug](flash_tasmota).
 - [Install Without a Configuration File](install_without_config) if you do not want to use the configuration file or a configuration file does not exist for your hardware configuration.
 
@@ -55,8 +55,8 @@ Tasmota config files have the .dmp extension.  The backup config file is:
 - `/bin/Config_snifferbuddy_11.1.0.1.dmp` for SnifferBuddy.
 - `/bin/Config_vaporbuddy_fan_10.1.0.dmp` for the Tasmotized plug designated for VaporBuddy's fan.
 - `/bin/Config_vaporbuddy_mister_10.1.0.dmp` for the Tasmotized plug designated for VaporBuddy's mister Power Supply.
-  
-Choose the file for the component you are building and start the restore.  
+
+Choose the file for the component you are building and start the restore.
 
 
 (install_without_config)=
@@ -86,8 +86,8 @@ Tasmota Setting GPIO pins
 :::
 (configure_mqtt)=
 #### Configure mqtt
-Go to Configure MQTT.  
-- Set the Host to growbuddy (assuming the mqtt broker is named growbuddy).  
+Go to Configure MQTT.
+- Set the Host to growbuddy (assuming the mqtt broker is named growbuddy).
 - Set the topic to the Buddy being enabled (in this case SnifferBuddy).
 - Change the prefix part of the Full Topic to start with growbuddy.
 
@@ -98,6 +98,7 @@ Go to Configure MQTT.
 Tasmota mqtt Settings
 :::
 Save and go back to the main menu.
+
 #### Check mqtt
 Using a tool like [MQTT Explorer](http://mqtt-explorer.com/)
 :::{figure} images/tasmota_mqtt_explorer.jpg
@@ -107,13 +108,29 @@ Using a tool like [MQTT Explorer](http://mqtt-explorer.com/)
 MQTT Explorer
 :::
 We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
+#### Commands
+Tasmota support A LOT of [commands](https://tasmota.github.io/docs/Commands/).  The ones listed below were used on Tasmotized Buddies (like snifferBuddy).  Commands are accessed through clicking on the Console button in the main menu.
+:::{figure} images/tasmota_main_screen.jpg
+:align: center
+:scale: 35
+
+Tasmota main menu
+:::
+The main menu is then replaced with the console where commands can be entered.
+:::{figure} images/tasmota_console.jpg
+:align: center
+:scale: 35
+
+Tasmota main menu
+:::
+
 (set_time_between_readings)=
 #### Set Time Between Readings
 Set up the period between sending the sensor readings over mqtt using the `teleperiod` command.  e.g.:
 ```
-teleperiod 100
+teleperiod 60
 ```
-sets sending readings via mqtt to occur every 100 seconds.
+sets sending readings via mqtt to occur every minute.
 (set_date_time)=
 #### set Local Time
 This command set the correct timezone stuff for PST:
@@ -133,7 +150,7 @@ Typing in the command without an option returns the current setting.
 21:45:11.776 CMD: setoption8
 21:45:11.782 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"ON"}
 ```
-Weirdly, "ON" means temperature readings will be in Fahrenheit.  
+Weirdly, "ON" means temperature readings will be in Fahrenheit.
 ```
 21:46:30.756 CMD: so8 0
 21:46:30.761 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"OFF"}
@@ -147,7 +164,7 @@ The first time I used the SCD30 with Tasmota on a Wemos D1, it didn't work.  The
 Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if the software and wiring are correct.
 
 ### i2cscan
-`i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to show you if the i2c sensor is wired correctly.  It is useful right after an install to see if the wiring to the ESP286 is correct.
+`i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to **show you if the i2c sensor is wired correctly**.  It is useful right after an install to see if the wiring to the ESP286 is correct.
 ```
 21:41:54.158 CMD: i2cscan
 21:41:54.179 MQT: growbuddy/snifferbuddy/RESULT = {"I2CScan":"Device(s) found at 0x62"}
@@ -155,7 +172,17 @@ Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if 
 The above is a verification that the wiring works for the ESP286/SCD40 I built since 0x62 is the SCD40's I2C address.
 
 ### i2cdriver
-`i2cdriver` shows the list of drivers that were loaded by the Tasmota build.
+`i2cdriver` shows **the list of drivers that were loaded by the Tasmota build**.  For example, by default, the SCD40 is not in the ESP286 Tasmota Sensors build.  This is shown in [Tasmota's build table](https://tasmota.github.io/docs/BUILDS/).
+```{image} images/scd_in_builds.jpg
+:align: center
+:scale: 70
+```
+I find the builds table challenging to read.  Here's my take:
+- The rows are for each sensor where there is a Tasmota driver.
+- The s column is for sensors.  I'm guessing (this is not obvious to me) the X (Sensor included) and - (Sensor not in build) in this column is referencing the **ESP286** Tasmota sensors build.
+- The t column is for ESP286/ESP386 Tasmota build.  This column says the SCD30 and SCD40 are in the ESP32 Tasmota build - so I assume also in the ESP32 Sensor build since it is a subset.
+
+
 ```
 21:40:49.852 CMD: i2cdriver
 21:40:49.861 MQT: growbuddy/snifferbuddy/RESULT = {"I2CDriver":"7,8,9,10,11,12,13,14,15,17,18,20,24,29,31,36,41,42,44,46,48,62"}
@@ -215,7 +242,7 @@ Tasmota Sonoff Configuration
 _I added this section to maintain what I learned with the Wemos D1 + SCD30 Setup_
 
 I fixed a problem with the SCD30 + ESP286 (Wemos D1) not working without a restart.  I couldn't get the Tasmota team to look at it at the time it happened so I fixed it and submitted a PR.  A bit later on, another person had the same challenge.  Wonderfully, arendst pointed out _From the datasheet it needs 2 seconds to power up. The current code doesn't allow this._ (see [PR 15438](https://github.com/arendst/Tasmota/issues/15438)).
-This may be unique to the Wemos mini D1 ESP286 (noisy power...?).  
+This may be unique to the Wemos mini D1 ESP286 (noisy power...?).
 
 After further investigating the Wemos D1 powering and communication with the SCD 30, Arends notes: _As I thought. The Wemos D1 is flakey at power on._ (That's what $1.50 buys us!). _In latest dev there is a new command called SetOption46 0..255 allowing you to stall initialization for 0..255 * 10 milliseconds to let stabilize the local Wemos power. You might want to experiment with values like SO46 10 os SO46 20 for a 100mSec or 200mSec delay. If you own the Adafruit SCD30 you might also want to power the device from 5V as it draws a lot of power when measuring (notice the fainting power led because the wemos LDO just cannot provide enough power for the device. YMMV._
 

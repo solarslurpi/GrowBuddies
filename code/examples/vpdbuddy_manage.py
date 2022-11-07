@@ -27,7 +27,7 @@ logger = LoggingHandler(logging.DEBUG)
 
 
 def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
-    """vpdBuddy() calls this function when it has updated vpd values on how 
+    """vpdBuddy() calls this function when it has updated vpd values on how
     many seconds to turn vaporBuddy on.
 
     """
@@ -44,8 +44,11 @@ def main():
     callback function and leave other parameters to their default.  In particular,
     the manage parameter defaults to False.  Which is what we want.
     """
-
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True)
+    # To store snifferBuddy readings into the database, set the parameter
+    # snifferbuddy_table_name.
+    # To store the date/time vpdBuddy turned vaporBuddy ON and OFF, set the
+    # parameter vpdbuddy_table_name.
+    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy")
     vpdbuddy.start()
 
 

@@ -6,7 +6,7 @@
 :align: center
 :height: 350
 
-SnifferBuddy in Grow Tent
+A Happy snifferBuddy hanging about
 :::
 SnifferBuddy happily hangs around in a grow tent sending out mqtt messages over a home's wifi containing readings for the air's CO2 level, relative humidity, and temperature.  There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off.  This is indicated by the A0 reading of 542 in the above image.
 

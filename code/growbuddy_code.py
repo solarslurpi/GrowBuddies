@@ -31,7 +31,7 @@ class GrowBuddy(Thread):
 
         status_callback (function, optional): Will be called if GrowBuddy detects a problem accessing the Buddy.
 
-        db_table_name (str, optional): Name of influxdb to store message values.  Defaults to None.
+        snifferbuddy_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.  Defaults to None.
 
         settings_filename (str, optional): All the settings used by the GrowBuddy system. Defaults to "growbuddy_settings.json".
 

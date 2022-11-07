@@ -45,9 +45,12 @@ class vpdBuddy(GrowBuddy):
         self,
         vpd_values_callback=None,
         growth_stage=growthStage.VEG,
+        snifferbuddy_table_name=None,
         manage=False,
     ):
-        super().__init__(growBuddy_values_callback=self._values_callback, log_level=logging.DEBUG)
+        # vpdBuddy needs the snifferBuddy values.  This is why the growBuddy callback is set to
+        # the internal _values_callback() method.
+        super().__init__(growBuddy_values_callback=self._values_callback, snifferbuddy_table_name=snifferbuddy_table_name, log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
@@ -106,22 +109,35 @@ class vpdBuddy(GrowBuddy):
 
         * Be better than a "BANG-BANG" controller by not constantly turning vaporBuddy on and off.
 
-        .. image:: ../docs/images/banbbang_controller..jpg
+
+        More like **This**
+
+        .. image:: ../docs/images/PID_controller.jpg
             :scale: 35
+            :alt: PID Controller
+            :align: center
+
+        Than **This**
+
+        .. image:: ../docs/images/bangbang_controller.jpg
+            :scale: 30
             :alt: BANG BANG Controller
             :align: center
 
         .. note::
             I expect this method to evolve over time.
 
-            - I am new to PID controllers.  I'm bumbling about tuning it.  My goal is to get advice from folks that know more than me.
+            - I am new to PID controllers.  I'm bumbling about tuning it.  My goal is to get advice from folks that know more than me,
+              and then improve the code.
 
             - I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature is in the 70's F.  The relative
               humidity is typically around 40-50%.  If the error (setpoint - reading) is positive, it means the area is too humid.
         """
 
         Kp = self.settings["PID_settings"]["Kp"]
+
         Ki = self.settings["PID_settings"]["Ki"]
+
         Kd = self.settings["PID_settings"]["Kd"]
         nSecondsON = 0
         error = setpoint - reading
@@ -146,7 +162,7 @@ class vpdBuddy(GrowBuddy):
         # A Wild Guess to be sure.
         nSecondsON = abs(int((pCorrection + iCorrection + dCorrection) * 100))
         # Tapping off the max number of seconds VaporBuddy can be on
-        nSecondsON = nSecondsON if nSecondsON < 10 else 10
+        # nSecondsON = nSecondsON if nSecondsON < 10 else 10
         self.logger.debug(
             f"Number of seconds to turn on the Humdifier is {nSecondsON}."
         )
