@@ -1,8 +1,9 @@
 # GrowBuddy Server
 The GrowBuddy Server is a Raspberry Pi running:
-- the Raspberry Pi OS with SSH for remote connecting.
-- mqtt.
-- influxdb.
+- The Raspberry Pi OS with SSH for remote connecting.  [Install](raspPi_install)
+- The mosquitto mqtt broker.  [install](mqtt_install)
+- The influxdb database software. [install]influxdb_install
+- grafana.
 
 
 ## Materials
@@ -10,6 +11,7 @@ The GrowBuddy Server is a Raspberry Pi running:
 - Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to2.5A)__
 - [microSD card with full size adapter](https://amzn.to/3W3yvHa)
 - [Enclosure](print_enclosure)
+(raspPi_install)=
 ## Install Raspberry Pi OS
 - Download [the Raspberry Pi Installer](https://www.raspberrypi.com/software/).
 - Click to choose OS.  Only Raspberry Pi Lite is needed.  Choose this option:
@@ -18,7 +20,7 @@ The GrowBuddy Server is a Raspberry Pi running:
 :align: center
 :scale: 75
 
-Rasp Pi Lite OS 
+Rasp Pi Lite OS
 :::
 - Choose the SD card, then go into Settings by clicking on the cog.
 
@@ -46,7 +48,7 @@ Setup Options
 Go to a terminal window on your Mac or PC and type:
 ```
 ssh pi@growbuddy
-```  
+```
 After entering your password, you should be in the command prompt:
 ```
 pi@growbuddy:~ $
@@ -56,7 +58,7 @@ If you cannot reach the growbuddy raspberry pi, first check to see if the raspbe
 (print_enclosure)=
 ## Print the Enclosure
 I chose [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used within [this folder](https://github.com/solarslurpi/GrowBuddy/tree/12164fa3791e3b8eb33d5ebfc06c2096fe7cf1e7/enclosures/GrowBuddy).
-
+(mqtt_install)=
 ## Install mqtt
 mqtt is how the Buddies text message each other. For example, [SnifferBuddy](snifferbuddy.md) sends out (i.e.: publishes in mqtt terminology) over wifi an mqtt message like this:
 ```
@@ -65,7 +67,7 @@ mqtt is how the Buddies text message each other. For example, [SnifferBuddy](sni
   "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
 }
 ```
-[vpdBuddy](vpdBuddy.md) is listening (i.e.: subscribed to) for messages from SnifferBuddy 
+[vpdBuddy](vpdBuddy.md) is listening (i.e.: subscribed to) for messages from SnifferBuddy
 We use the mosquitto broker running on a raspberry pi.
 ### Resources
 - [Installing mosquitto on Rasp Pi](https://pimylifeup.com/raspberry-pi-mosquitto-mqtt-server/)
@@ -119,9 +121,9 @@ issuing the `status 6` command on the Tasmota command line informs us on the mqt
  MQT: stat/snifferbuddy/STATUS6 = {"StatusMQT":{"MqttHost":"growbuddy","MqttPort":1883,"MqttClientMask":"DVES_%06X","MqttClient":"DVES_25EEA5","MqttUser":"DVES_USER","MqttCount":1,"MAX_PACKET_SIZE":1200,"KEEPALIVE":30,"SOCKET_TIMEOUT":4}}
  ```
 The mqtt info lets us know the mqtt keep alive time is 30 seconds.
-
+(influxdb_install)=
 ## Install influxdb
-[InfluxDB (v1.8)](https://www.influxdata.com/) is a time series based database that is free to use on the Raspberry Pi.  
+[InfluxDB (v1.8)](https://www.influxdata.com/) is a time series based database that is free to use on the Raspberry Pi.
 
 Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) to install.
 
@@ -129,9 +131,9 @@ Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) 
 
 (raspi-nowifi)=
 ### Installed Raspberry Pi But Cannot SSH
-You've verified the growbuddy Rasp Pi has an IP address.  However, perhaps you accidentally entered the wrong SSID or password for your wifi.  Or you forget to enable SSH.  You can manually configure these options.  
-- Add "SSH" file to the root of the image.  We do this by opening a terminal on the boot partition and typing `$touch ssh` 
-- Create the `wpa_supplicant.conf` file : `$touch wpa_supplicant.conf`.  Copy the contents into the file `nano wpa_supplicant.conf`:  
+You've verified the growbuddy Rasp Pi has an IP address.  However, perhaps you accidentally entered the wrong SSID or password for your wifi.  Or you forget to enable SSH.  You can manually configure these options.
+- Add "SSH" file to the root of the image.  We do this by opening a terminal on the boot partition and typing `$touch ssh`
+- Create the `wpa_supplicant.conf` file : `$touch wpa_supplicant.conf`.  Copy the contents into the file `nano wpa_supplicant.conf`:
 ```
 country=US
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
@@ -143,8 +145,8 @@ network={
 }
 
 ```
-_Note: Multiple wifi networks can be set up by following [this example](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)_:  
-  
+_Note: Multiple wifi networks can be set up by following [this example](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md)_:
+
 ```
 network={
     ssid="SchoolNetworkSSID"
@@ -158,7 +160,7 @@ network={
     id_str="home"
 }
 ```
- 
+
 Changing the ssid and psk to match your network.
 - Remove the SD-card.
 - Put the SD-card into the Rasp-Pi's micro-SD port.
@@ -166,7 +168,7 @@ Changing the ssid and psk to match your network.
 
 
 
-## Using Rsync 
+## Using Rsync
 Rsync is a very useful utiity on the Raspberry Pi.  I document my use here because I keep forgetting
 how to use it.  Currently I am on a Windows PC.  The challenge is to start an Bash session in the right directory.
 - open Explorer, go to the directory to use rsync, type in bash in the text field for the filepath.
@@ -191,7 +193,7 @@ pi        2641  0.0  0.0   7344   508 pts/0    S+   09:34   0:00 grep --color=au
 (py_env) pi@growbuddy:~/growbuddy $ sudo kill -9 2465
 [1]+  Killed                  sphinx-autobuild docs docs/_build/html  (wd: ~/growbuddy/docs)
 (wd now: ~/growbuddy)
-(py_env) pi@growbuddy:~/growbuddy $ 
+(py_env) pi@growbuddy:~/growbuddy $
 ```
 
 ## Killing a Process
@@ -201,7 +203,7 @@ Let's say the [Sphinx autobuild](autobuild) process won't shut down.  It's hoggi
 line 162, in bind_sockets
     sock.bind(sockaddr)
 ```
-- Step 1: Find the Process ID based on the process name.  
+- Step 1: Find the Process ID based on the process name.
 ```
 $ pstree -p "$PPID"
 node(16284)─┬─bash(16502)─┬─htop(19732)
@@ -235,6 +237,6 @@ node(16284)─┬─bash(16502)─┬─htop(19732)
 - Step 2:  Kill the process with the process name / id seen in the
 ```
 $ kill -9 18450
-          
+
 ```
 
