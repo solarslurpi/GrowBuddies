@@ -1,4 +1,4 @@
-from simple_pid import PID
+from PID_mqtt import PID
 import logging
 from enum import Enum
 from growbuddy_code import GrowBuddy
