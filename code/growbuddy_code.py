@@ -176,8 +176,8 @@ class GrowBuddy(Thread):
 
         return
 
-    def _on_disconnect(self, client, userdaata, rc=0):
-        self.logger.debug("Disconnected result code {rc}")
+    def _on_disconnect(self, client, userdata, rc):
+        self.logger.debug(f"Disconnected result code {rc}")
         self.mqtt_client.loop_stop()
 
     def _read_settings(self, settings_filename) -> dict:
@@ -214,7 +214,7 @@ class GrowBuddy(Thread):
         """
         # TODO: Other context specific writes to tables...
         try:
-            if self.snifferbuddy_table_name :
+            if self.snifferbuddy_table_name:
                 influxdb_data = [{"measurement": self.snifferbuddy_table_name,
                                   "fields": dict
                                   }

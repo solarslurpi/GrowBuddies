@@ -15,9 +15,10 @@
     },
 
     "PID_settings": {
-        "Kp": 0.01,
-        "Ki": 0.1,
-        "Kd": 0.1
+        "Kp": 50,
+        "Ki": 0,
+        "Kd": 0,
+        "sampling_interval": 30
     }
 
 }

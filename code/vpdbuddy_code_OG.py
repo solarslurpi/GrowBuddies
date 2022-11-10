@@ -1,10 +1,9 @@
-from simple_pid import PID
+
 import logging
 from enum import Enum
 from growbuddy_code import GrowBuddy
 import threading
 from snifferbuddy_code import snifferBuddy
-
 
 settings_filename = "code/growbuddy_settings.json"
 
@@ -75,15 +74,6 @@ class vpdBuddy(GrowBuddy):
         # These are used in the _pid() routine.
         self.pid_cum_error = 0.0
         self.pid_last_error = 0.0
-        # Initialize the PID tuning variables.
-        # How far away from the destination - Proportional
-        Kp = self.settings["PID_settings"]["Kp"]
-        Ki = self.settings["PID_settings"]["Ki"]
-        Kd = self.settings["PID_settings"]["Kd"]
-        sampling_interval = self.settings["PID_settings"]["sampling_interval"]
-        self.pid = PID(Kp, Ki, Kd, self.setpoint, sampling_interval)
-        self.logger.debug(f"PID Kp = {Kp}, Ki = {Ki}, Kd = {Kd}, Setpoint = {self.setpoint}, Sampling interval = {sampling_interval}")
-        self.logger.debug("--> PID has been initialized.")
 
     def _values_callback(self, s: snifferBuddy):
         """GrowBuddy calls this method when it receives a reading from the requested sensor.
@@ -143,15 +133,40 @@ class vpdBuddy(GrowBuddy):
             - I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature is in the 70's F.  The relative
               humidity is typically around 40-50%.
         """
+        # How far away from the destination - Proportional
+        Kp = self.settings["PID_settings"]["Kp"]
 
-        nSecondsOn = self.pid(reading)
-        # if nSecondsOn is negative, it means the vpd value says the environment is too dry.
-        # if positive, it is too humid since we only know about vaporBuddy.
-        nSecondsOn = abs(int(nSecondsOn)) if nSecondsOn < 0 else 0
+        Ki = self.settings["PID_settings"]["Ki"]
 
+        Kd = self.settings["PID_settings"]["Kd"]
+        nSecondsON = 0
+        error = setpoint - reading
+        # If the error is is > 0, it means the reading is too humid .  The current code adjust only when the error is negative - the area is too dry.
+        if error > 0:
+            return nSecondsON
+
+        # Calculate the Proportional Correction
+        pCorrection = Kp * error
+        # Calculate the Integral Correction
+        self.pid_cum_error += error
+        iCorrection = Ki * self.pid_cum_error
+        # Calculate the Derivitive Correction
+        slope = error - self.pid_last_error
+        dCorrection = Kd * slope
+        self.pid_last_error = error
         self.logger.debug(
-            f"Number of seconds to turn on the Humdifier is {nSecondsOn}.")
-        return nSecondsOn
+            f"error is {error}, pCorrection is {pCorrection}, iCorrection is {iCorrection}, dCorrection is {dCorrection}"
+        )
+        # Tuning to calculate the number of seconds to turn the humidifier on seems to take on a bit of a Wild Ass Guess.
+        # Calculate the # Seconds to turn Humidifier on.  I am roughly guessing 1 second on lowers VPD by .01.
+        # A Wild Guess to be sure.
+        nSecondsON = abs(int((pCorrection + iCorrection + dCorrection) * 100))
+        # Tapping off the max number of seconds VaporBuddy can be on
+        # nSecondsON = nSecondsON if nSecondsON < 10 else 10
+        self.logger.debug(
+            f"Number of seconds to turn on the Humdifier is {nSecondsON}."
+        )
+        return nSecondsON
 
     def _turn_on_vaporBuddy(self, nSecondsON: int) -> None:
         """Send mqtt messages to vaporBuddy's plugs to turn ON.

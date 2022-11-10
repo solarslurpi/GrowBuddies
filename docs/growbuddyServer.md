@@ -166,8 +166,21 @@ Changing the ssid and psk to match your network.
 - Put the SD-card into the Rasp-Pi's micro-SD port.
 - Power up the Rasp Pi.  Hopefully wireless is working!
 
-
-
+### The list of sources could not be read
+I followed [the steps to install grafana](https://grafana.com/tutorials/install-grafana-on-raspberry-pi/). When I try:
+```
+sudo apt-get update
+```
+I got the message:
+```
+E: Conflicting values set for option Signed-By regarding source https://packages.grafana.com/oss/deb/ stable: /usr/share/keyrings/grafana-archive-keyrings.gpg !=
+E: The list of sources could not be read.
+```
+after bumbling about on Google/StackOverflow, I ended up:
+```
+$ sudo nano /etc/apt/sources.list.d/grafana.list
+```
+and deleted the duplicate lines.
 ## Using Rsync
 Rsync is a very useful utiity on the Raspberry Pi.  I document my use here because I keep forgetting
 how to use it.  Currently I am on a Windows PC.  The challenge is to start an Bash session in the right directory.

@@ -27,7 +27,7 @@ logger = LoggingHandler(logging.DEBUG)
 
 
 def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
-    """vpdBuddy() calls this function when it has updated vpd values on how 
+    """vpdBuddy() calls this function when it has updated vpd values on how
     many seconds to turn vaporBuddy on.
 
     """
