@@ -29,7 +29,7 @@ The command assumes the md or rst files are in the docs directory and the output
  $  sphinx-apidoc -f -o . ../code
 ```
 The command creates .rst files in the docs folder (that's why we start there) for each code file it finds in the \code directory.  It also creates the modules.rst and code.rst files.
-This will create a [modules.rst file](modules.rst), as well as .rst files for the other GrowBuddy modules.
+This will create a [modules.rst file](modules.rst), as well as .rst files for the other growBuddy modules.
 
 ## Trailing White Spaces
 Sphinx HATES trailing white spaces in files.  VS Code LOVES to put trailing white spaces in files.  To change VS Code's mind to trim trailing spaces, go to preference/settings and turn on trim white spaces:

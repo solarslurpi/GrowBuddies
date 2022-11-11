@@ -1,12 +1,12 @@
-.. GrowBuddy documentation master file, created by
+.. growBuddy documentation master file, created by
    sphinx-quickstart on Mon Sep 26 14:48:47 2022.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
 =====================
-Welcome to GrowBuddy!
+Welcome to growBuddy!
 =====================
-GrowBuddy is a DIY "smart gardening" environment cobbled together with inexpensive hardware, 3D printed enclosures, software, and wifi to help us maintain:
+growBuddy is a DIY "smart gardening" environment cobbled together with inexpensive hardware, 3D printed enclosures, software, and wifi to help us maintain:
 
 - the humidity / temperature in an ideal range (see VPD for more information).
 - a living soil bed at the ideal soil moisture (see Living Soil for more information).
@@ -28,10 +28,10 @@ and adds analysis tools:
 
 The TBDs indicate that this project will continually evolve and (hopefully!) improve.  Please let me know what you think, especially what can be improved.
 
-You can reach me at happygrowbuddy@gmail.com
+You can reach me at happygrowBuddy@gmail.com
 
-Everyone is welcome. Perhaps most especially if you are a care giver of plants with an appreciation of DIY technology.  I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness 
-is gained by being a care taker to plants.  
+Everyone is welcome. Perhaps most especially if you are a care giver of plants with an appreciation of DIY technology.  I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness
+is gained by being a care taker to plants.
 
 See you in the garden!
 
@@ -39,8 +39,8 @@ See you in the garden!
    :maxdepth: 1
 
    overview
-   install_growbuddy
-   growbuddy
+   install_growBuddy
+   growBuddy
    snifferbuddy
    wiring
    tasmota

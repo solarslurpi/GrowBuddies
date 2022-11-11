@@ -87,9 +87,9 @@ Tasmota Setting GPIO pins
 (configure_mqtt)=
 #### Configure mqtt
 Go to Configure MQTT.
-- Set the Host to growbuddy (assuming the mqtt broker is named growbuddy).
+- Set the Host to growBuddy (assuming the mqtt broker is named growBuddy).
 - Set the topic to the Buddy being enabled (in this case SnifferBuddy).
-- Change the prefix part of the Full Topic to start with growbuddy.
+- Change the prefix part of the Full Topic to start with growBuddy.
 
 :::{figure} images/tasmota_mqtt_config.jpg
 :align: center
@@ -148,12 +148,12 @@ Or Keep It Simple and just change the timezone with the command `timezone -8` (s
 Typing in the command without an option returns the current setting.
 ```
 21:45:11.776 CMD: setoption8
-21:45:11.782 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"ON"}
+21:45:11.782 MQT: growBuddy/snifferbuddy/RESULT = {"SetOption8":"ON"}
 ```
 Weirdly, "ON" means temperature readings will be in Fahrenheit.
 ```
 21:46:30.756 CMD: so8 0
-21:46:30.761 MQT: growbuddy/snifferbuddy/RESULT = {"SetOption8":"OFF"}
+21:46:30.761 MQT: growBuddy/snifferbuddy/RESULT = {"SetOption8":"OFF"}
 ```
 The temperature is set to celsius with the command `so8 0`.  To Fahrenheit with the command `so8 1`.
 
@@ -167,7 +167,7 @@ Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if 
 `i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to **show you if the i2c sensor is wired correctly**.  It is useful right after an install to see if the wiring to the ESP286 is correct.
 ```
 21:41:54.158 CMD: i2cscan
-21:41:54.179 MQT: growbuddy/snifferbuddy/RESULT = {"I2CScan":"Device(s) found at 0x62"}
+21:41:54.179 MQT: growBuddy/snifferbuddy/RESULT = {"I2CScan":"Device(s) found at 0x62"}
 ```
 The above is a verification that the wiring works for the ESP286/SCD40 I built since 0x62 is the SCD40's I2C address.
 
@@ -185,7 +185,7 @@ I find the builds table challenging to read.  Here's my take:
 
 ```
 21:40:49.852 CMD: i2cdriver
-21:40:49.861 MQT: growbuddy/snifferbuddy/RESULT = {"I2CDriver":"7,8,9,10,11,12,13,14,15,17,18,20,24,29,31,36,41,42,44,46,48,62"}
+21:40:49.861 MQT: growBuddy/snifferbuddy/RESULT = {"I2CDriver":"7,8,9,10,11,12,13,14,15,17,18,20,24,29,31,36,41,42,44,46,48,62"}
 ```
 From the results of i2cdriver, I can see the SCD40 (which sits on i2c address 0x62) is in this build.  I created a [custom build](github_compile) in order to include the SCD40 in the set of software drivers shown by `i2cdriver`.
 

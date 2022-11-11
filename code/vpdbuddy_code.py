@@ -1,16 +1,16 @@
 from PID_mqtt import PID
 import logging
 from enum import Enum
-from growbuddy_code import GrowBuddy
+from growbuddy_code import growBuddy
 import threading
 from snifferbuddy_code import snifferBuddy
 
 
-settings_filename = "code/growbuddy_settings.json"
+settings_filename = "code/growBuddy_settings.json"
 
 
 class growthStage(Enum):
-    """An enumeration to let GrowBuddy know if the plants it is caring for are in the vegetative or flower growth stage.
+    """An enumeration to let growBuddy know if the plants it is caring for are in the vegetative or flower growth stage.
 
        Args:
 
@@ -22,7 +22,7 @@ class growthStage(Enum):
     FLOWER = 3
 
 
-class vpdBuddy(GrowBuddy):
+class vpdBuddy(growBuddy):
 
     """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
     of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
@@ -86,7 +86,7 @@ class vpdBuddy(GrowBuddy):
         self.logger.debug("--> PID has been initialized.")
 
     def _values_callback(self, s: snifferBuddy):
-        """GrowBuddy calls this method when it receives a reading from the requested sensor.
+        """growBuddy calls this method when it receives a reading from the requested sensor.
 
         Args:
             vpd (float): The calculated vpd value from the most recent snifferBuddy reading.

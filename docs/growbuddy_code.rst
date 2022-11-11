@@ -1,7 +1,7 @@
-growbuddy\_code module
+growBuddy\_code module
 ======================
 
-.. automodule:: growbuddy_code
+.. automodule:: growBuddy_code
    :members:
    :undoc-members:
    :show-inheritance:

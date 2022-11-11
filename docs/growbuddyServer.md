@@ -1,5 +1,5 @@
-# GrowBuddy Server
-The GrowBuddy Server is a Raspberry Pi running:
+# growBuddy Server
+The growBuddy Server is a Raspberry Pi running:
 - The Raspberry Pi OS with SSH for remote connecting.  [Install](raspPi_install)
 - The mosquitto mqtt broker.  [install](mqtt_install)
 - The influxdb database software. [install]influxdb_install
@@ -30,7 +30,7 @@ Rasp Pi Lite OS
 
 Choose the cog
 :::
-- Enter growbuddy for the hostname and enable SSH with password authentication.
+- Enter growBuddy for the hostname and enable SSH with password authentication.
 - Fill in the other options - wifi, username/password, wifi, and local settings.
 
 :::{figure} images/rasppi_lite_install_3.jpg
@@ -47,17 +47,17 @@ Setup Options
 ### Verify the Install
 Go to a terminal window on your Mac or PC and type:
 ```
-ssh pi@growbuddy
+ssh pi@growBuddy
 ```
 After entering your password, you should be in the command prompt:
 ```
-pi@growbuddy:~ $
+pi@growBuddy:~ $
 ```
-If you cannot reach the growbuddy raspberry pi, first check to see if the raspberry pi is on your home wifi by using a utility like [Angry IP](https://angryip.org/).  If it is not, perhaps [this troubleshooting guide](raspi-nowifi) helps.
+If you cannot reach the growBuddy raspberry pi, first check to see if the raspberry pi is on your home wifi by using a utility like [Angry IP](https://angryip.org/).  If it is not, perhaps [this troubleshooting guide](raspi-nowifi) helps.
 
 (print_enclosure)=
 ## Print the Enclosure
-I chose [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used within [this folder](https://github.com/solarslurpi/GrowBuddy/tree/12164fa3791e3b8eb33d5ebfc06c2096fe7cf1e7/enclosures/GrowBuddy).
+I chose [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used within [this folder](https://github.com/solarslurpi/growBuddy/tree/12164fa3791e3b8eb33d5ebfc06c2096fe7cf1e7/enclosures/growBuddy).
 (mqtt_install)=
 ## Install mqtt
 mqtt is how the Buddies text message each other. For example, [SnifferBuddy](snifferbuddy.md) sends out (i.e.: publishes in mqtt terminology) over wifi an mqtt message like this:
@@ -92,14 +92,14 @@ allow_anonymous true
   - save and exit.
 - Install Mosquitto [following PiMyLife's steps](https://pimylifeup.com/raspberry-pi-mosquitto-mqtt-server/)
 ### Play
-Open up [MQTT explorer](http://mqtt-explorer.com/) and connect to GrowBuddy.
+Open up [MQTT explorer](http://mqtt-explorer.com/) and connect to growBuddy.
 :::{figure} images/mqtt_explorer_before_snifferbuddy.jpg
 :align: center
 :scale: 80
 
-GrowBuddy[1] mqtt broker
+growBuddy[1] mqtt broker
 :::
-_Note: The name of this server is GrowBuddy1 because GrowBuddy is being used._  Since there are no Buddies, the only traffic is the default traffic of the broker.
+_Note: The name of this server is growBuddy1 because growBuddy is being used._  Since there are no Buddies, the only traffic is the default traffic of the broker.
 ### Determining the Health of a Device
 You may not need to know anything about this.  I have it here so I don't forget why this is in the code!
 
@@ -107,7 +107,7 @@ You may not need to know anything about this.  I have it here so I don't forget 
 
 For example,  let's say we have a snifferbuddy up and running.
 ```
-pi@growbuddy:~ $ mosquitto_sub -t "tele/snifferbuddy/LWT"
+pi@growBuddy:~ $ mosquitto_sub -t "tele/snifferbuddy/LWT"
 Online
 Offline
 Online
@@ -118,7 +118,7 @@ The [MQTT Esentials Page 9](https://www.hivemq.com/blog/mqtt-essentials-part-9-l
 
 issuing the `status 6` command on the Tasmota command line informs us on the mqtt settings for this Tasmota device:
 ```
- MQT: stat/snifferbuddy/STATUS6 = {"StatusMQT":{"MqttHost":"growbuddy","MqttPort":1883,"MqttClientMask":"DVES_%06X","MqttClient":"DVES_25EEA5","MqttUser":"DVES_USER","MqttCount":1,"MAX_PACKET_SIZE":1200,"KEEPALIVE":30,"SOCKET_TIMEOUT":4}}
+ MQT: stat/snifferbuddy/STATUS6 = {"StatusMQT":{"MqttHost":"growBuddy","MqttPort":1883,"MqttClientMask":"DVES_%06X","MqttClient":"DVES_25EEA5","MqttUser":"DVES_USER","MqttCount":1,"MAX_PACKET_SIZE":1200,"KEEPALIVE":30,"SOCKET_TIMEOUT":4}}
  ```
 The mqtt info lets us know the mqtt keep alive time is 30 seconds.
 (influxdb_install)=
@@ -131,7 +131,7 @@ Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) 
 
 (raspi-nowifi)=
 ### Installed Raspberry Pi But Cannot SSH
-You've verified the growbuddy Rasp Pi has an IP address.  However, perhaps you accidentally entered the wrong SSID or password for your wifi.  Or you forget to enable SSH.  You can manually configure these options.
+You've verified the growBuddy Rasp Pi has an IP address.  However, perhaps you accidentally entered the wrong SSID or password for your wifi.  Or you forget to enable SSH.  You can manually configure these options.
 - Add "SSH" file to the root of the image.  We do this by opening a terminal on the boot partition and typing `$touch ssh`
 - Create the `wpa_supplicant.conf` file : `$touch wpa_supplicant.conf`.  Copy the contents into the file `nano wpa_supplicant.conf`:
 ```
@@ -195,18 +195,18 @@ Getting to Bash Command Line Through Explorer
 
 A wsl window will open at this location.
 ```
-sudo rsync -avh pi@growbuddy:/home/pi/growbuddy_1_data.zip  .
+sudo rsync -avh pi@growBuddy:/home/pi/growBuddy_1_data.zip  .
 
 ```
 ## OSError: [Errno 98] Address already in use
 ```
-(py_env) pi@growbuddy:~/growbuddy $ ps aux | grep sphinx-autobuild
-pi        2465  0.2  0.4  25956 17520 pts/0    T    09:31   0:00 /home/pi/growbuddy/py_env/bin/python /home/pi/growbuddy/py_env/bin/sphinx-autobuild docs docs/_build/html
+(py_env) pi@growBuddy:~/growBuddy $ ps aux | grep sphinx-autobuild
+pi        2465  0.2  0.4  25956 17520 pts/0    T    09:31   0:00 /home/pi/growBuddy/py_env/bin/python /home/pi/growBuddy/py_env/bin/sphinx-autobuild docs docs/_build/html
 pi        2641  0.0  0.0   7344   508 pts/0    S+   09:34   0:00 grep --color=auto sphinx-autobuild
-(py_env) pi@growbuddy:~/growbuddy $ sudo kill -9 2465
-[1]+  Killed                  sphinx-autobuild docs docs/_build/html  (wd: ~/growbuddy/docs)
-(wd now: ~/growbuddy)
-(py_env) pi@growbuddy:~/growbuddy $
+(py_env) pi@growBuddy:~/growBuddy $ sudo kill -9 2465
+[1]+  Killed                  sphinx-autobuild docs docs/_build/html  (wd: ~/growBuddy/docs)
+(wd now: ~/growBuddy)
+(py_env) pi@growBuddy:~/growBuddy $
 ```
 
 ## Killing a Process

@@ -11,10 +11,10 @@ Examples
 Libraries
 ----------
 
-code.growbuddy\_code module
+code.growBuddy\_code module
 ---------------------------
 
-.. automodule:: code.growbuddy_code
+.. automodule:: code.growBuddy_code
    :members:
    :undoc-members:
    :show-inheritance:

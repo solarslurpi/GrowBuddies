@@ -11,36 +11,39 @@ import string
 from snifferbuddy_code import snifferBuddy
 
 
-class GrowBuddy(Thread):
+class growBuddy(Thread):
 
-    """The GrowBuddy class provides:
+    """The growBuddy class provides:
 
-    * Callbacks for receiving readings as well as the health status of the sensor.  Under the covers, mqtt messaging is managed.
+    * Callbacks for receiving sensor readings.  Under the covers, mqtt messaging is managed.
+
+    * A way to publish mqtt messages to Buddies (e.g.: to turn a plug on and off during testing).
 
     * Method to write readings to an InfluxDB measurement (which is what Influx seems to call a Table within a database).
 
     * Rich logging for debugging and auditing.
 
     Args:
-        topic_key (str, optional): The dictionary key for the full topic in the settings file.
-            Defaults to "mqtt_snifferbuddy_topic". Which means by default, GrowBuddy will receive air quality
-            messages from SnifferBuddy.
+        topic_key (str, optional): The dictionary key for the full topic in the settings file.  In mqtt, the topic key is given
+        to the Publish/Subscribe methods.
 
-        growBuddy_values_callback (function, optional): Function called by GrowBuddy to return messages received by the mqtt topic.
+        growBuddy_values_callback (function, optional): Function called by growBuddy to return messages received by the mqtt topic.
             Defaults to snifferBuddy's topic.
 
-        status_callback (function, optional): Will be called if GrowBuddy detects a problem accessing the Buddy.
+        status_callback (function, optional): Will be called if growBuddy detects a problem accessing the Buddy.
 
         snifferbuddy_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.  Defaults to None.
 
-        settings_filename (str, optional): All the settings used by the GrowBuddy system. Defaults to "growbuddy_settings.json".
+        settings_filename (str, optional): All the settings used by the growBuddy system. Defaults to "growBuddy_settings.json".
 
         log_level (constant, optional): Defined by Python's logging library. Defaults to logging.DEBUG.
 
     """
     def __init__(
         self,
-        topic_key="mqtt_snifferbuddy_topic",
+        subscribe_to_sensor=True,
+        topic_key="snifferbuddy_topic",
+        msg_value=None,
         growBuddy_values_callback=None,
         status_callback=None,
         snifferbuddy_table_name=None,
@@ -60,11 +63,14 @@ class GrowBuddy(Thread):
 
         # Remember the key in the settings dictionary for the mqtt topic.
         self.topic_key = topic_key
+        self.settings_filename = settings_filename
+        self.subscribe_to_sensor = subscribe_to_sensor
+        self.msg_value = msg_value
 
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler(log_level)
         self.logger.debug(
-            f"-> Initializing GrowBuddy class for task {self.unique_name}"
+            f"-> Initializing growBuddy class for task {self.unique_name}"
         )
         # Set the working directory to where the Python files are located.
         self.logger.debug(
@@ -76,13 +82,13 @@ class GrowBuddy(Thread):
 
         # Get settings out of JSON file.
         try:
-            self.settings = self._read_settings(settings_filename)
+            self.settings = self.read_settings()
             self.logger.debug(f"...Settings: {self.settings}")
         except Exception as e:
             self.logger.error(f"...Exiting due to Error: {e}")
             os._exit(1)
         # Get a connection to the influxdb database, if needed.
-        # The database must exist on the "hostname" Server (which is most likely named "GrowBuddy").
+        # The database must exist on the "hostname" Server (which is most likely named "growBuddy").
         if self.snifferbuddy_table_name is not None:
             try:
                 self.influx_client = InfluxDBClient(host=self.settings["hostname"], database=self.settings["influxdb"]["db_name"])
@@ -98,6 +104,7 @@ class GrowBuddy(Thread):
             self.mqtt_client.on_message = self._on_message
             self.mqtt_client.on_connect = self._on_connect
             self.mqtt_client.on_disconnect = self._on_disconnect
+            self.mqtt_client.on_publish = self._on_publish
             self.mqtt_client.connect(self.settings["hostname"])
             # At this point, mqtt drives the code.
             self.logger.debug("Done with initialization. Handing over to mqtt.")
@@ -107,6 +114,9 @@ class GrowBuddy(Thread):
             self.logger.error(
                 f"...In the midst of mqtt traffic.  Exiting due to Error: {e}")
             os._exit(1)
+
+    def settings(self):
+        return dict
 
     def _LWT_callback(self, client, userdata, msg):
         """mqtt callback we set up earlier to be called when a Last Will and Testament (LWT) message
@@ -126,7 +136,7 @@ class GrowBuddy(Thread):
     def _on_connect(self, client, userdata, flags, rc):
         """mqtt client callback called once the code has connected with the broker.
         Now we can subscribe to readings based on the topic initially passed in. We also subscribe to mqtt's
-        LWT messages coming from each Buddy and retained by the GrowBuddy Broker.  The LWT messages is how
+        LWT messages coming from each Buddy and retained by the growBuddy Broker.  The LWT messages is how
         we can determine if a Buddy is Online or Offline.
 
         Args:
@@ -141,12 +151,17 @@ class GrowBuddy(Thread):
 
         """
         self.logger.debug(f"-> Mqtt connection returned {rc}")
-        client.subscribe(self.settings[self.topic_key])
+        if not self.subscribe_to_sensor:
+            mqtt_topic = self.settings["mqtt"][self.topic_key]
+            self.mqtt_client.publish(mqtt_topic, self.msg_value)
+            return
+        if self.subscribe_to_sensor:
+            client.subscribe(self.topic_key)
+            self.logger.info(f"-> Subscribed to -->{self.topic_key}<--")
         LWT_topic = self.settings[self.topic_key].rsplit('/', 1)[0] + "/LWT"
         client.subscribe(LWT_topic)
         # Set a callback to handle LWT
         client.message_callback_add(LWT_topic, self._LWT_callback)
-        self.logger.info(f"-> Subscribed to -->{self.settings[self.topic_key]}<--")
 
     def _on_message(self, client, userdata, msg):
         """Received a message for the client.subscribe() we subscribed to in _on_connect().
@@ -163,7 +178,7 @@ class GrowBuddy(Thread):
         # Send the message contents as a dictionary back to the values_callback.
         try:
             mqtt_dict = json.loads(message)
-            if self.topic_key == "mqtt_snifferbuddy_topic":
+            if self.topic_key == "mqtt_growBuddy":
                 # Since this is a SnifferBuddy reading, put in a simple dictionary.
                 s = snifferBuddy(mqtt_dict)
                 self.values_callback(s)
@@ -176,11 +191,15 @@ class GrowBuddy(Thread):
 
         return
 
+    def _on_publish(self, client, userdata, msg_id):
+        self.logger.debug(f"message ID {msg_id} was published.  Exiting.")
+        exit(0)
+
     def _on_disconnect(self, client, userdata, rc):
         self.logger.debug(f"Disconnected result code {rc}")
         self.mqtt_client.loop_stop()
 
-    def _read_settings(self, settings_filename) -> dict:
+    def read_settings(self) -> dict:
         """Opens the JSON file identified in settings_file and reads in the settings as a dict.
 
         Raises:
@@ -188,17 +207,17 @@ class GrowBuddy(Thread):
 
         Returns:
             dict: A dictionary of values for things like the name of the mqtt broker, mqtt topics,
-            vpd setpoints, etc.  The file provided is named "growbuddy_settings.json".
+            vpd setpoints, etc.  The file provided is named "growBuddy_settings.json".
 
         """
-        self.logger.debug(f"-> Reading in settings from {settings_filename} file.")
+        self.logger.debug(f"-> Reading in settings from {self.settings_filename} file.")
         dict_of_settings = {}
         try:
-            with open(settings_filename) as json_file:
+            with open(self.settings_filename) as json_file:
                 dict_of_settings = json.load(json_file)
         except Exception as e:
             raise Exception(
-                f"Could not open the settings file named {settings_filename}.  Error: {e}"
+                f"Could not open the settings file named {self.settings_filename}.  Error: {e}"
             )
         return dict_of_settings
 

@@ -1,6 +1,6 @@
 # VPDBuddy
 
-VPDBuddy works to make sure the [Vapor Pressure Deficit (VPD)](https://en.wikipedia.org/wiki/Vapour-pressure_deficit) is within an "ideal" range.  The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/GrowBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .  Figure 6 notes an ideal VPD range during the:
+VPDBuddy works to make sure the [Vapor Pressure Deficit (VPD)](https://en.wikipedia.org/wiki/Vapour-pressure_deficit) is within an "ideal" range.  The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .  Figure 6 notes an ideal VPD range during the:
 
 ```{image} images/vpd_chart.jpg
 :align: center
@@ -28,4 +28,4 @@ If the ideal VPD values are maintained during vegetative and flowering state, VP
 VPDBuddy System Overview
 :::
 
-{ref}`SnifferBuddy <snifferbuddy>` sends it's readings to the GrowBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController
+{ref}`SnifferBuddy <snifferbuddy>` sends it's readings to the growBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController

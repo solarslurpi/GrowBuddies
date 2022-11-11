@@ -1,10 +1,10 @@
 import logging
-from growbuddy_code import GrowBuddy
+from growBuddy_code import growBuddy
 
 current_soil_moisture_reading = 0
 
 
-class SoilMoistureBuddy(GrowBuddy):
+class SoilMoistureBuddy(growBuddy):
     def __init__(self):
         super().__init__("readSoilMoisture",
                          values_callback=self.values_callback,
@@ -29,7 +29,7 @@ class SoilMoistureBuddy(GrowBuddy):
         ]
         self.db_write(influx_data)
 
-class CalibrateCapacitiveTouchSensor(GrowBuddy):
+class CalibrateCapacitiveTouchSensor(growBuddy):
     def __init__(self):
         super().__init__("calibrateSoilMoisture",values_callback=self.values_callback,log_level=logging.INFO)
 
@@ -39,7 +39,7 @@ class CalibrateCapacitiveTouchSensor(GrowBuddy):
             # skip
             self.logger.info(f'Not saving calibration data. The current moisture reading is {current_soil_moisture_reading}.')
             return
-            
+
         measurement = "soil_moisture_calibration"
         influx_data = [
         {
@@ -52,7 +52,7 @@ class CalibrateCapacitiveTouchSensor(GrowBuddy):
             }
         ]
         self.db_write(influx_data)
-    
+
         self.logger.info(f'Calibration data point.  Moisture Sensor value is {current_soil_moisture_reading}. Tensiometer value is {tensiometer_reading}.')
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growbuddy/code')
+sys.path.append('/home/pi/growBuddy/code')
 
 import json
 # import pytest

@@ -10,7 +10,7 @@ import sys
 # Add the code path
 sys.path.insert(0, os.path.abspath('../code'))
 
-project = 'GrowBuddy'
+project = 'growBuddy'
 copyright = '2022, HappyDay'
 author = 'HappyDay'
 release = '0.1'

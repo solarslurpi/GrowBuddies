@@ -11,7 +11,7 @@ The term "Vapor Pressure Deficit" is not that obvious to immediately understand 
 
 ## What VPDBuddy Does
 
-VPDBuddy works to make sure the [Vapor Pressure Deficit (VPD)](https://en.wikipedia.org/wiki/Vapour-pressure_deficit) is within an "ideal" range.  The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/GrowBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .
+VPDBuddy works to make sure the [Vapor Pressure Deficit (VPD)](https://en.wikipedia.org/wiki/Vapour-pressure_deficit) is within an "ideal" range.  The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .
 
 ```{image} images/vpd_chart.jpg
 :align: center
@@ -35,8 +35,8 @@ If the ideal VPD values are maintained during vegetative and flowering state, VP
 VPDBuddy System Overview
 :::
 
-A  [snifferBuddy](snifferBuddy) sends out CO2, air temp, and relative humidity (RH) readings from within the grow tent to the GrowBuddy Broker running on a Respberry Pi.  The VPDController Python class
-- A VPD Controller Python Class running on the GrowBuddy Raspberry Pi.
+A  [snifferBuddy](snifferBuddy) sends out CO2, air temp, and relative humidity (RH) readings from within the grow tent to the growBuddy Broker running on a Respberry Pi.  The VPDController Python class
+- A VPD Controller Python Class running on the growBuddy Raspberry Pi.
 - A VaporBuddy tied into the grow tent
 
 
@@ -44,7 +44,7 @@ VPDBuddy ties the:
 - CO2, Temp, and RH readings being sent out by.
 - VPD Controller Python Class.
 -
- sends it's readings to the GrowBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController
+ sends it's readings to the growBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController
 
  ## Tuning the PID
  vpdBuddy implements an extremely simple PID.  Since I am new to PIDs, I am using this section to
@@ -54,7 +54,7 @@ VPDBuddy ties the:
  My goal is to understand the Proportional constant effect.
  #### First Run: Kp = 0.1
 I'm expecting an very gradual increase.
- - Set the Kp in [growbuddy_settings.json](https://github.com/solarslurpi/GrowBuddy/blob/main/code/growbuddy_settings.json) to 0.1.
+ - Set the Kp in [growBuddy_settings.json](https://github.com/solarslurpi/growBuddy/blob/main/code/growBuddy_settings.json) to 0.1.
 ```
      "PID_settings": {
         "Kp": 0.01,
@@ -62,7 +62,7 @@ I'm expecting an very gradual increase.
         "Kd": 0.1
     }
 ```
-- Add `sniferbuddy_table_name` input when instantiating a vpdBuddy instance in the [vpdbuddy_manage.py](https://github.com/solarslurpi/GrowBuddy/blob/main/code/examples/vpdbuddy_manage.py).  This will store the snifferBuddy readings into the snifferBuddy measurement table of the growBuddy influxdb database.
+- Add `sniferbuddy_table_name` input when instantiating a vpdBuddy instance in the [vpdbuddy_manage.py](https://github.com/solarslurpi/growBuddy/blob/main/code/examples/vpdbuddy_manage.py).  This will store the snifferBuddy readings into the snifferBuddy measurement table of the growBuddy influxdb database.
 ```
 def main():
     vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy")

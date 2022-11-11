@@ -14,7 +14,7 @@ import sys
 sys.path.append('/home/pi/growbuddy/code')
 
 from logging_handler import LoggingHandler
-from growbuddy_code import GrowBuddy
+from growbuddy_code import growBuddy
 from snifferbuddy_code import snifferBuddy
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
@@ -22,7 +22,7 @@ logger = LoggingHandler(logging.DEBUG)
 
 
 def values_callback(snifferBuddy_values: snifferBuddy):
-    """Called when GrowBuddy receives a reading from the SnifferBuddy.
+    """Called when growBuddy receives a reading from the SnifferBuddy.
 
     snifferBuddy_values (snifferBuddy class): air quality values as
     properties as well as within a dictionary.
@@ -49,14 +49,14 @@ def status_callback(status):
 
 
 def test_snifferbuddy_getreadings():
-    """First we instantiate an instance of the GrowBuddy class.  We're keeping the
-    default settings file (which is code/growbuddy_settings.json).  There
-    is a key "mqtt_snifferbuddy_topic".  This tells GrowBuddy to subscribe to mqtt messages
+    """First we instantiate an instance of the growBuddy class.  We're keeping the
+    default settings file (which is code/growBuddy_settings.json).  There
+    is a key "snifferbuddy_topic".  This tells growBuddy to subscribe to mqtt messages
     from SnifferBuddy.  Modifiy the topic string if your topic string is different.  We pass in our
     callbacks so we can receive the values when SnifferBuddy publishes them and also SnifferBuddy's status.
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferbuddy = GrowBuddy("mqtt_snifferbuddy_topic", growBuddy_values_callback=values_callback, status_callback=status_callback)
+    snifferbuddy = growBuddy("snifferbuddy_topic", growBuddy_values_callback=values_callback, status_callback=status_callback)
     snifferbuddy.start()
 
 

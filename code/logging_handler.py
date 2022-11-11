@@ -40,12 +40,12 @@ class LoggingHandler:
     Let's say we left the default log level (debug)
     log_level = logging.DEBUG
     self.logger = LoggingHandler(log_level)
-    self.logger.debug(f"-> Initializing GrowBuddy class for task {self.task}")
+    self.logger.debug(f"-> Initializing growBuddy class for task {self.task}")
 
     The logfile would contain a line similar to:\n
     ```
-    Oct 05 14:32:14 growbuddy python3.7[1286]: 2022-10-05 14:32:14,464:DEBUG:\[\]/home/pi/growbuddy/code/growbuddy.py:44  __init__
-    ...-> Initializing GrowBuddy class for task readSoilMoisture
+    Oct 05 14:32:14 growBuddy python3.7[1286]: 2022-10-05 14:32:14,464:DEBUG:\[\]/home/pi/growBuddy/code/growBuddy.py:44  __init__
+    ...-> Initializing growBuddy class for task readSoilMoisture
     ```
 
     Setting the logging level to logging.DEBUG makes sense as we write or debug the code.  Once those

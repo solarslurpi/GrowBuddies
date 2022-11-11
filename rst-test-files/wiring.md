@@ -28,7 +28,7 @@ For some reason, I find JST connectors confusing.  I oddly found some relief to 
 
 Moving forward, I will stick to STEMMA and STEMMA QT connector types.
 
-## Wiring GrowBuddy Components Together
+## Wiring growBuddy Components Together
 
 To wire an ESP286 to a STEMMA QT, I ordered a [pre-crimped STEMMA/JST PH 2.0 cable kit](https://amzn.to/3SLurIX) .  I noticed at least one of the comments expressed outrage in the high price and we should just all crimp the wires ourselves.  I guess we could.  But it would take too much practice so in my equation, the extra money was well worth the time savings.
 

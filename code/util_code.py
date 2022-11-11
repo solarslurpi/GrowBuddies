@@ -7,7 +7,7 @@ def calc_vpd(temperature: float, humidity: float) -> (float):
     approach of assuming 2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for
     my purposes "good enough."
 
-    Once an mqtt message is received from the GrowBuddy broker that a SnifferBuddy reading is available, _calc_vpd()
+    Once an mqtt message is received from the growBuddy broker that a SnifferBuddy reading is available, _calc_vpd()
     is called to calculate the VPD.  The mqtt message comes in as a JSON string.  The JSON string is converted to a
     dictionary.  The dictionary contains the values needed for the VPD calculation.
 

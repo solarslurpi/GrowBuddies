@@ -4,7 +4,7 @@
 - [Observe vpdBuddy](vpdbuddy_observe)
 (get_values)=
 ## Get Values from SnifferBuddy
-**[Source Code](https://github.com/solarslurpi/GrowBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_getreadings.py)**
+**[Source Code](https://github.com/solarslurpi/growBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_getreadings.py)**
 ```{eval-rst}
 .. automodule:: code.examples.snifferbuddy_getreadings
    :members:
@@ -14,7 +14,7 @@
 ```
 (store_values)=
 ## Store Values from SnifferBuddy
-**[Source Code](https://github.com/solarslurpi/GrowBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_storereadings.py)**
+**[Source Code](https://github.com/solarslurpi/growBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_storereadings.py)**
 ```{eval-rst}
 .. automodule:: code.examples.snifferbuddy_storereadings
    :members:
@@ -25,7 +25,7 @@
 
 (vpdbuddy_observe)=
 ## Observe vpdBuddy
-**[Source Code](https://github.com/solarslurpi/GrowBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_storereadings.py)**
+**[Source Code](https://github.com/solarslurpi/growBuddy/blob/7b07e97f951966bab412ededef19c9209adacca7/code/examples/snifferbuddy_storereadings.py)**
 ```{eval-rst}
 .. automodule:: code.examples.vpdbuddy_observe
    :members:

@@ -28,19 +28,19 @@ I found the following info useful to figure out how to get systemd to do what I 
 7. Check to make sure the service has been started with `systemctl is-active soil_moisture_buddy.service`.  In this example, starting the service failed.  To find out why, try `journalctl -u soil_moisture_buddy.service`.  In this case we have:
 
 ```python
-Oct 05 14:32:14 growbuddy python3.7[1286]: 2022-10-05 14:32:14,464:DEBUG:\[\]/home/pi/growbuddy/code/growbuddy.py:44  __init__   ...-> Initializing GrowBuddy class for task readSoilMoisture
-Oct 05 14:32:14 growbuddy python3.7[1286]: 2022-10-05 14:32:14,465:DEBUG:\[\]/home/pi/growbuddy/code/growbuddy.py:120  _read_settings   ...-> Reading in settings from growbuddy_settings.json file.
-Oct 05 14:32:14 growbuddy python3.7[1286]: 2022-10-05 14:32:14,466:ERROR:\[\]/home/pi/growbuddy/code/growbuddy.py:50  __init__   ......Exiting due to Error: Could not open the settings file named growbuddy_settings.json
-Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Main process exited, code=exited, status=1/FAILURE
-Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Failed with result 'exit-code'.
-Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Service RestartSec=100ms expired, scheduling restart.
-Oct 05 14:32:14 growbuddy systemd[1]: soil_moisture_buddy.service: Scheduled restart job, restart counter is at 5.
-Oct 05 14:32:14 growbuddy systemd[1]: Stopped GrowBuddy Soil Moisture Service.
+Oct 05 14:32:14 growBuddy python3.7[1286]: 2022-10-05 14:32:14,464:DEBUG:\[\]/home/pi/growBuddy/code/growBuddy.py:44  __init__   ...-> Initializing growBuddy class for task readSoilMoisture
+Oct 05 14:32:14 growBuddy python3.7[1286]: 2022-10-05 14:32:14,465:DEBUG:\[\]/home/pi/growBuddy/code/growBuddy.py:120  _read_settings   ...-> Reading in settings from growBuddy_settings.json file.
+Oct 05 14:32:14 growBuddy python3.7[1286]: 2022-10-05 14:32:14,466:ERROR:\[\]/home/pi/growBuddy/code/growBuddy.py:50  __init__   ......Exiting due to Error: Could not open the settings file named growBuddy_settings.json
+Oct 05 14:32:14 growBuddy systemd[1]: soil_moisture_buddy.service: Main process exited, code=exited, status=1/FAILURE
+Oct 05 14:32:14 growBuddy systemd[1]: soil_moisture_buddy.service: Failed with result 'exit-code'.
+Oct 05 14:32:14 growBuddy systemd[1]: soil_moisture_buddy.service: Service RestartSec=100ms expired, scheduling restart.
+Oct 05 14:32:14 growBuddy systemd[1]: soil_moisture_buddy.service: Scheduled restart job, restart counter is at 5.
+Oct 05 14:32:14 growBuddy systemd[1]: Stopped growBuddy Soil Moisture Service.
 ```
 
-Because I started the service with the logging level set to DEBUG, the info in the journal file gives us what we need to fix the problem.  The `growbuddy_settings.json` is not found.  Checking out the current directory the script is in we see: `Oct 05 14:39:33 growbuddy python3.7[1832]: 2022-10-05 14:39:33,709:DEBUG:\[\]/home/pi/growbuddy/code/growbuddy.py:47  __init__   ...--> Current Directory is /`
+Because I started the service with the logging level set to DEBUG, the info in the journal file gives us what we need to fix the problem.  The `growBuddy_settings.json` is not found.  Checking out the current directory the script is in we see: `Oct 05 14:39:33 growBuddy python3.7[1832]: 2022-10-05 14:39:33,709:DEBUG:\[\]/home/pi/growBuddy/code/growBuddy.py:47  __init__   ...--> Current Directory is /`
 
-This is fixed by adding the code in `growbuddy.py` to change to the directory where `growbuddy.py` is located.
+This is fixed by adding the code in `growBuddy.py` to change to the directory where `growBuddy.py` is located.
 
 ```python
 # Set the working directory to where the Python files are located.

@@ -3,24 +3,24 @@
 The only difference between this example and the snifferbuddy_getreadings example is the storing of the
 reading into an influxDB database.
 
-The 'heavy lifter' here is the GrowBuddy class.
+The 'heavy lifter' here is the growBuddy class.
 
 
 """
 import logging
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growbuddy/code')
+sys.path.append('/home/pi/growBuddy/code')
 
 from logging_handler import LoggingHandler
-from growbuddy_code import GrowBuddy
+from growbuddy_code import growBuddy
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
 
 
 def values_callback(dict):
-    """Called by GrowBuddy when the instance receives a reading from the SnifferBuddy.
+    """Called by growBuddy when the instance receives a reading from the SnifferBuddy.
 
     Args:
         dict (dict): identical to the dict in snifferbuddy_getreadings.py
@@ -40,7 +40,7 @@ def status_callback(status):
 
 def main():
 
-    """Setting a table name is what causes GrowBuddy to store readings.  e.g.:
+    """Setting a table name is what causes growBuddy to store readings.  e.g.:
 
     .. code-block:: python
 
@@ -58,7 +58,7 @@ After this code is run, there should be entries in the influxdb database within 
 
    """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferBuddy = GrowBuddy("mqtt_snifferbuddy_topic", values_callback=values_callback, status_callback=status_callback,
+    snifferBuddy = growBuddy("growBuddy", values_callback=values_callback, status_callback=status_callback,
                              snifferbuddy_table_name="snifferbuddy")
     snifferBuddy.start()
 

@@ -2,7 +2,7 @@
 
 # Wiring Components Together
 
-Wiring components together is my biggest source of frustration.  
+Wiring components together is my biggest source of frustration.
 
 :::{figure} images/wiring_pole.jpg
 :align: center
@@ -28,7 +28,7 @@ For some reason, I found JST connectors confusing.  I oddly found some relief to
 - One man's voyage through the JST jungle:  [JST Connector Crimping Insanity](https://iotexpert.com/jst-connector-crimping-insanity/) .
 
 
-## Wiring GrowBuddy Components Together
+## Wiring growBuddy Components Together
 
 I ended up getting pre-crimped JST PH (2mm between pins...small but not that small) and SH (1 mm between pins.. smallest).  I noticed at least one of the comments expressed outrage in the high price and we should just all crimp the wires ourselves.  I guess we could.  But it would take too much practice so in my equation, the extra money was well worth the time savings.
 - [pre-crimped STEMMA/JST PH 2.0 cable kit](https://amzn.to/3SLurIX) from Amazon.

@@ -70,15 +70,15 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 
 ## Enclosure
 
-The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
+The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/growBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
 
-To make the enclosure, download and print the ([4 mesh files](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy)).
-- [WemosD1_top.stl](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/WemosD1_top.stl)
-- [WemosD1_base.3mf](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/wemosD1_base.3mf)
-- [scd_cap.3mf](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/scd_cap.3mf)
-- [scd30 enclosure.stl](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure.stl)
+To make the enclosure, download and print the ([4 mesh files](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy)).
+- [WemosD1_top.stl](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/WemosD1_top.stl)
+- [WemosD1_base.3mf](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/wemosD1_base.3mf)
+- [scd_cap.3mf](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/scd_cap.3mf)
+- [scd30 enclosure.stl](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure.stl)
 
-[The directory](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy) also includes the Fusion 360 files, including [a Fusion 360 file of a Wemos D1](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/_Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d) for modeling.
+[The directory](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy) also includes the Fusion 360 files, including [a Fusion 360 file of a Wemos D1](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/_Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d) for modeling.
 
 :::{figure} images/snifferbuddy_parts_on_printer_plate.jpg
 :align: center

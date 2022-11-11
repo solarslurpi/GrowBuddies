@@ -1,5 +1,5 @@
 """
-This example Observes vpdBuddy's output.
+This example uses vpdBuddy to turn on and off vaporBuddy in order to most efficiently maintain the ideal vpd value.
 
 vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can be instantiated:
 
@@ -13,7 +13,7 @@ vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can
 """
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growbuddy/code')
+sys.path.append('/home/pi/growBuddy/code')
 
 from vpdbuddy_code import vpdBuddy
 import logging
@@ -48,7 +48,7 @@ def main():
     # snifferbuddy_table_name.
     # To store the date/time vpdBuddy turned vaporBuddy ON and OFF, set the
     # parameter vpdbuddy_table_name.
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_30")
+    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_mqtt20")
     vpdbuddy.start()
 
 

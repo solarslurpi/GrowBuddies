@@ -21,7 +21,7 @@ Setup
 Setting up mqtt
 :::
 
-The growbuddy raspberry pi server is the mqtt broker.  The topic is named `plug_CO2` or something like it ... to identify it as the relay plug that is turning on and off the CO2 solenoid.
+The growBuddy raspberry pi server is the mqtt broker.  The topic is named `plug_CO2` or something like it ... to identify it as the relay plug that is turning on and off the CO2 solenoid.
 3. Set up the time.  We set this to PST: `Backlog Timezone 99 ; TimeDST 0,2,03,1,3,-420 ; TimeSTD 0,1,11,1,2,-480`
 4. Put the S31 back to it's original packaging.
 

@@ -3,7 +3,7 @@
 # SnifferBuddy
 
 SnifferBuddy sniffs out values for the air temperature, CO2 level, and humidity. I also put in a photoresiter on top to let me know when
-the LEDs are on or off.  The readings are sent out over wifi using mqtt to the GrowBuddy broker.
+the LEDs are on or off.  The readings are sent out over wifi using mqtt to the growBuddy broker.
 
 Putting a SnifferBuddy together is easy. The hardest part is soldering the wires to the pins!
 
@@ -69,7 +69,7 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 
 ## Enclosure
 
-The [SnifferBuddy enclosure](https://github.com/solarslurpi/GrowBuddy/tree/main/enclosures/SnifferBuddy) was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in . [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv)
+The [SnifferBuddy enclosure](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy) was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in . [SnifferBuddyParams.csv](https://github.com/solarslurpi/growBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv)
 
 ## Let's Make One!
 
@@ -84,7 +84,7 @@ The [SnifferBuddy enclosure](https://github.com/solarslurpi/GrowBuddy/tree/main/
 - [SCD30 sensor](https://www.adafruit.com/product/4867) component.
 - [ESP8286](https://www.aliexpress.us/item/2251832645039000.html) component.
 - Photoresistor and 10K through hole resistor component.
-- Print out the [case top](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/base%20and%20lid%20v14.f3d).
-- print out the SCD30 enclosure [(case bottom)](https://github.com/solarslurpi/GrowBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure%20v1.f3d).
+- Print out the [case top](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/base%20and%20lid%20v14.f3d).
+- print out the SCD30 enclosure [(case bottom)](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure%20v1.f3d).
 - USB chord to plug the ESP8286 to power.
 - USB power hub to plug the USB chord into the wall.

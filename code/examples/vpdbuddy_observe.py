@@ -13,9 +13,9 @@ vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can
 """
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growbuddy/code')
+sys.path.append('/home/pi/growduddy/code')
 
-from vpdbuddy_code import vpdBuddy
+from code.vpdbuddy_code import vpdBuddy
 import logging
 
 
