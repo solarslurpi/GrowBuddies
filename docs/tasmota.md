@@ -53,8 +53,8 @@ Restore Configuration UI
 :::
 Tasmota config files have the .dmp extension.  The backup config file is:
 - `/bin/Config_snifferbuddy_11.1.0.1.dmp` for SnifferBuddy.
-- `/bin/Config_vaporbuddy_fan_10.1.0.dmp` for the Tasmotized plug designated for VaporBuddy's fan.
-- `/bin/Config_vaporbuddy_mister_10.1.0.dmp` for the Tasmotized plug designated for VaporBuddy's mister Power Supply.
+- `/bin/Config_mistBuddy_fan_10.1.0.dmp` for the Tasmotized plug designated for mistBuddy's fan.
+- `/bin/Config_mistBuddy_mister_10.1.0.dmp` for the Tasmotized plug designated for mistBuddy's mister Power Supply.
 
 Choose the file for the component you are building and start the restore.
 
@@ -216,7 +216,7 @@ Tasmota Sensors Build Location
 
 (flash_tasmota)=
 ## Flash Tasmota Onto a Sonoff Plug
-We need a way to turn a plug on or off.  For example, VaporBuddy uses two Tasmotized plugs.  One turns VaporBuddy's fan on and off.  The other turns VaporBuddy's Mister on and off.  By Tasmotizing the plugs, other Buddies can send mqtt messages to turn a plug on or off.
+We need a way to turn a plug on or off.  For example, mistBuddy uses two Tasmotized plugs.  One turns mistBuddy's fan on and off.  The other turns mistBuddy's Mister on and off.  By Tasmotizing the plugs, other Buddies can send mqtt messages to turn a plug on or off.
 
 
 The Sonoff S31 (or S31 Lite) can be flashed so that Tasmota is running on our local network. [This YouTube video gives instructions on how to flash Tosmota](https://www.youtube.com/watch?v=9N58uy3ezvA).
@@ -233,7 +233,7 @@ Once flashed and rebooted:
 
 Tasmota Sonoff Configuration
 :::
-- [Configure mqtt](configure_mqtt).  I change the topic to match the Buddy.  E.g.: if it is VaporBuddy's fan plug, vaporbuddy_fan.  The mister, vaperbuddy_mister.  Snifferbuddy, snifferbuddy.
+- [Configure mqtt](configure_mqtt).  I change the topic to match the Buddy.  E.g.: if it is mistBuddy's fan plug, mistBuddy_fan.  The mister, vaperbuddy_mister.  Snifferbuddy, snifferbuddy.
 - [Set the date/time to your date/time](set_date_time).
 
 (wemos_challenges)=

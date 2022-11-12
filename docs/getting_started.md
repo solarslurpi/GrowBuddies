@@ -17,5 +17,5 @@ Now that the core Buddies are built, we can move on to managing the vpd level.
 
 When adjusting the vpd to the ideal value, the temperature or the humidity could be adjusted.  growBuddy adjusts the humidity but NOT the temperature.
 
-[vaporBuddy](vaporbuddy) and vpdBuddy work together to adjust the humidity level within  a grow tent.
+[mistBuddy](mistBuddy) and vpdBuddy work together to adjust the humidity level within  a grow tent.
 Once these Buddies are built, move on to build [VPD Buddy](vpdbuddy).

@@ -32,7 +32,7 @@ class vpdBuddy(growBuddy):
 
         growth_stage (growthStage Enum, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
 
-        manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning vaporBuddy ON
+        manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning mistBuddy ON
             and OFF. Defaults to False (only observe values by setting the svpd_values_callback).
 
     Raises:
@@ -54,7 +54,7 @@ class vpdBuddy(growBuddy):
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
-            "Turning VaporBuddy Plugs ON and OFF"
+            "Turning mistBuddy Plugs ON and OFF"
             if self.manage
             else "Observing SnifferBuddy Readings"
         )
@@ -88,7 +88,7 @@ class vpdBuddy(growBuddy):
             f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}"
         )
         if self.manage and nSecondsON > 0:
-            self._turn_on_vaporBuddy(nSecondsON)
+            self._turn_on_mistBuddy(nSecondsON)
 
         if self.vpd_values_callback:
             self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON)
@@ -101,13 +101,13 @@ class vpdBuddy(growBuddy):
             reading (float): The vpd value that will be compared to the setpoint.
 
         Returns:
-            int: The number of seconds to turn on vaporBuddy.
+            int: The number of seconds to turn on mistBuddy.
 
         The goals of this PID controller are:
 
         * Automatically adjust the humidity within a grow tent to the vpd setpoint.
 
-        * Be better than a "BANG-BANG" controller by not constantly turning vaporBuddy on and off.
+        * Be better than a "BANG-BANG" controller by not constantly turning mistBuddy on and off.
 
 
         More like **This**
@@ -161,37 +161,37 @@ class vpdBuddy(growBuddy):
         # Calculate the # Seconds to turn Humidifier on.  I am roughly guessing 1 second on lowers VPD by .01.
         # A Wild Guess to be sure.
         nSecondsON = abs(int((pCorrection + iCorrection + dCorrection) * 100))
-        # Tapping off the max number of seconds VaporBuddy can be on
+        # Tapping off the max number of seconds mistBuddy can be on
         # nSecondsON = nSecondsON if nSecondsON < 10 else 10
         self.logger.debug(
             f"Number of seconds to turn on the Humdifier is {nSecondsON}."
         )
         return nSecondsON
 
-    def _turn_on_vaporBuddy(self, nSecondsON: int) -> None:
-        """Send mqtt messages to vaporBuddy's plugs to turn ON.
+    def _turn_on_mistBuddy(self, nSecondsON: int) -> None:
+        """Send mqtt messages to mistBuddy's plugs to turn ON.
 
         Args:
             nSecondsON (int): The number of seconds to turn the plugs on.
 
         """
         # Set up a timer with the callback on completion.
-        timer = threading.Timer(nSecondsON, self._turn_off_vaporBuddy)
+        timer = threading.Timer(nSecondsON, self._turn_off_mistBuddy)
         # The command to a Sonoff plug can be either TOGGLE, ON, OFF.
         # Send the command to power ON.
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "ON")
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "ON")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_fan_topic"], "ON")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_mister_topic"], "ON")
         self.logger.debug(
-            f"...Sent mqtt messages to the two vaporBuddy plugs to turn ON for {nSecondsON} seconds."
+            f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds."
         )
         timer.start()
 
-    def _turn_off_vaporBuddy(self):
-        """The timer set in _turn_on_vaporBuddy has expired.  Send messages to the
-        vaporBuddy plugs to turn OFF."""
+    def _turn_off_mistBuddy(self):
+        """The timer set in _turn_on_mistBuddy has expired.  Send messages to the
+        mistBuddy plugs to turn OFF."""
 
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "OFF")
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "OFF")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_fan_topic"], "OFF")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_mister_topic"], "OFF")
         self.logger.debug(
-            "...Sent mqtt messages to the two vaporBuddy plugs to turn OFF."
+            "...Sent mqtt messages to the two mistBuddy plugs to turn OFF."
         )

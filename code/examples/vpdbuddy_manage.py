@@ -1,9 +1,9 @@
 """
-This example uses vpdBuddy to turn on and off vaporBuddy in order to most efficiently maintain the ideal vpd value.
+This example uses vpdBuddy to turn on and off mistBuddy in order to most efficiently maintain the ideal vpd value.
 
 vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can be instantiated:
 
-* **Observe** - A good idea to run first to get an idea on how the number of seconds vaporBuddy will be
+* **Observe** - A good idea to run first to get an idea on how the number of seconds mistBuddy will be
   turned on.
 
 * **Maintain** - A "set and forget" method.  Maintain tells vpdBuddy to maintain the ideal vpd without any
@@ -13,7 +13,8 @@ vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can
 """
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growBuddy/code')
+sys.path.append('/home/pi/growbuddy/code')
+
 
 from vpdbuddy_code import vpdBuddy
 import logging
@@ -28,12 +29,12 @@ logger = LoggingHandler(logging.DEBUG)
 
 def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
     """vpdBuddy() calls this function when it has updated vpd values on how
-    many seconds to turn vaporBuddy on.
+    many seconds to turn mistBuddy on.
 
     """
     values = (f'vpd setpoint: {setpoint}'
               f'| vpd value: {vpd}'
-              f' | n seconds to turn on vaporBuddy: {nSecondsON}')
+              f' | n seconds to turn on mistBuddy: {nSecondsON}')
     logger.info(values)
 
 
@@ -46,9 +47,9 @@ def main():
     """
     # To store snifferBuddy readings into the database, set the parameter
     # snifferbuddy_table_name.
-    # To store the date/time vpdBuddy turned vaporBuddy ON and OFF, set the
+    # To store the date/time vpdBuddy turned mistBuddy ON and OFF, set the
     # parameter vpdbuddy_table_name.
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_mqtt20")
+    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_run1")
     vpdbuddy.start()
 
 

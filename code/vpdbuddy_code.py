@@ -33,7 +33,7 @@ class vpdBuddy(growBuddy):
 
         growth_stage (growthStage Enum, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
 
-        manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning vaporBuddy ON
+        manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning mistBuddy ON
             and OFF. Defaults to False (only observe values by setting the svpd_values_callback).
 
     Raises:
@@ -50,12 +50,12 @@ class vpdBuddy(growBuddy):
         manage=False,
     ):
         # vpdBuddy needs the snifferBuddy values.  This is why the growBuddy callback is set to
-        # the internal _values_callback() method.
+        # the internal vpd_values_callback() method.
         super().__init__(growBuddy_values_callback=self._values_callback, snifferbuddy_table_name=snifferbuddy_table_name, log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
-            "Turning VaporBuddy Plugs ON and OFF"
+            "Turning mistBuddy Plugs ON and OFF"
             if self.manage
             else "Observing SnifferBuddy Readings"
         )
@@ -80,9 +80,9 @@ class vpdBuddy(growBuddy):
         Kp = self.settings["PID_settings"]["Kp"]
         Ki = self.settings["PID_settings"]["Ki"]
         Kd = self.settings["PID_settings"]["Kd"]
-        sampling_interval = self.settings["PID_settings"]["sampling_interval"]
-        self.pid = PID(Kp, Ki, Kd, self.setpoint, sampling_interval)
-        self.logger.debug(f"PID Kp = {Kp}, Ki = {Ki}, Kd = {Kd}, Setpoint = {self.setpoint}, Sampling interval = {sampling_interval}")
+        # By default mqtt_time is used for time between sampling.
+        self.pid = PID(Kp=Kp, Ki=Ki, Kd=Kd, setpoint=self.setpoint)
+        self.logger.debug(self.pid)
         self.logger.debug("--> PID has been initialized.")
 
     def _values_callback(self, s: snifferBuddy):
@@ -93,17 +93,17 @@ class vpdBuddy(growBuddy):
 
 
         """
-        nSecondsON = self._pid(self.setpoint, s.vpd)
+        nSecondsON = self._pid(s.vpd)
         self.logger.debug(
             f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}"
         )
         if self.manage and nSecondsON > 0:
-            self._turn_on_vaporBuddy(nSecondsON)
+            self._turn_on_mistBuddy(nSecondsON)
 
         if self.vpd_values_callback:
             self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON)
 
-    def _pid(self, setpoint: float, reading: float) -> int:
+    def _pid(self, reading: float) -> int:
         """This is the code for the PID controller.
 
         Args:
@@ -111,13 +111,13 @@ class vpdBuddy(growBuddy):
             reading (float): The vpd value that will be compared to the setpoint.
 
         Returns:
-            int: The number of seconds to turn on vaporBuddy.
+            int: The number of seconds to turn on mistBuddy.
 
         The goals of this PID controller are:
 
         * Automatically adjust the humidity within a grow tent to the vpd setpoint.
 
-        * Be better than a "BANG-BANG" controller by not constantly turning vaporBuddy on and off.
+        * Be better than a "BANG-BANG" controller by not constantly turning mistBuddy on and off.
 
 
         More like **This**
@@ -146,37 +146,37 @@ class vpdBuddy(growBuddy):
 
         nSecondsOn = self.pid(reading)
         # if nSecondsOn is negative, it means the vpd value says the environment is too dry.
-        # if positive, it is too humid since we only know about vaporBuddy.
+        # if positive, it is too humid since we only know about mistBuddy.
         nSecondsOn = abs(int(nSecondsOn)) if nSecondsOn < 0 else 0
 
         self.logger.debug(
             f"Number of seconds to turn on the Humdifier is {nSecondsOn}.")
         return nSecondsOn
 
-    def _turn_on_vaporBuddy(self, nSecondsON: int) -> None:
-        """Send mqtt messages to vaporBuddy's plugs to turn ON.
+    def _turn_on_mistBuddy(self, nSecondsON: int) -> None:
+        """Send mqtt messages to mistBuddy's plugs to turn ON.
 
         Args:
             nSecondsON (int): The number of seconds to turn the plugs on.
 
         """
         # Set up a timer with the callback on completion.
-        timer = threading.Timer(nSecondsON, self._turn_off_vaporBuddy)
+        timer = threading.Timer(nSecondsON, self._turn_off_mistBuddy)
         # The command to a Sonoff plug can be either TOGGLE, ON, OFF.
         # Send the command to power ON.
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "ON")
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "ON")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_fan_topic"], "ON")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_mister_topic"], "ON")
         self.logger.debug(
-            f"...Sent mqtt messages to the two vaporBuddy plugs to turn ON for {nSecondsON} seconds."
+            f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds."
         )
         timer.start()
 
-    def _turn_off_vaporBuddy(self):
-        """The timer set in _turn_on_vaporBuddy has expired.  Send messages to the
-        vaporBuddy plugs to turn OFF."""
+    def _turn_off_mistBuddy(self):
+        """The timer set in _turn_on_mistBuddy has expired.  Send messages to the
+        mistBuddy plugs to turn OFF."""
 
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_fan_topic"], "OFF")
-        self.mqtt_client.publish(self.settings["mqtt_vaporbuddy_mister_topic"], "OFF")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_fan_topic"], "OFF")
+        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_mister_topic"], "OFF")
         self.logger.debug(
-            "...Sent mqtt messages to the two vaporBuddy plugs to turn OFF."
+            "...Sent mqtt messages to the two mistBuddy plugs to turn OFF."
         )

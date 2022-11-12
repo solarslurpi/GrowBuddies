@@ -3,8 +3,8 @@
     "log_level": "DEBUG",
     "mqtt":{
         "snifferBuddy_topic": "tele/snifferbuddy/SENSOR",
-        "mistBuddy_fan_topic": "cmnd/vaporbuddy_fan/POWER",
-        "mistBuddy_mister_topic": "cmnd/vaporbuddy_mister/POWER"
+        "mistBuddy_fan_topic": "cmnd/mistBuddy_fan/POWER",
+        "mistBuddy_mister_topic": "cmnd/mistBuddy_mister/POWER"
     },
     "readSoilMoisture": "tele/soil_moisture/SENSOR",
     "calibrateSoilMoisture": "calibrate",
@@ -19,8 +19,7 @@
     "PID_settings": {
         "Kp": 50,
         "Ki": 0,
-        "Kd": 0,
-        "sampling_interval": 30
+        "Kd": 0
     }
 
 }

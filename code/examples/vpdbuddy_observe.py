@@ -3,7 +3,7 @@ This example Observes vpdBuddy's output.
 
 vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can be instantiated:
 
-* **Observe** - A good idea to run first to get an idea on how the number of seconds vaporBuddy will be
+* **Observe** - A good idea to run first to get an idea on how the number of seconds mistBuddy will be
   turned on.
 
 * **Maintain** - A "set and forget" method.  Maintain tells vpdBuddy to maintain the ideal vpd without any
@@ -13,9 +13,9 @@ vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can
 """
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growduddy/code')
+sys.path.append('/home/pi/growbuddy/code')
 
-from code.vpdbuddy_code import vpdBuddy
+from vpdbuddy_code import vpdBuddy
 import logging
 
 
@@ -28,12 +28,12 @@ logger = LoggingHandler(logging.DEBUG)
 
 def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
     """vpdBuddy() calls this function when it has updated vpd values on how
-    many seconds to turn vaporBuddy on.
+    many seconds to turn mistBuddy on.
 
     """
     values = (f'vpd setpoint: {setpoint}'
               f'| vpd value: {vpd}'
-              f' | n seconds to turn on vaporBuddy: {nSecondsON}')
+              f' | n seconds to turn on mistBuddy: {nSecondsON}')
     logger.info(values)
 
 

@@ -1,5 +1,7 @@
 import time
 import warnings
+import logging
+from logging_handler import LoggingHandler
 
 
 def _clamp(value, limits):
@@ -36,7 +38,8 @@ class PID(object):
         auto_mode=True,
         proportional_on_measurement=False,
         error_map=None,
-        mqqt_time=True
+        mqqt_time=True,
+        log_level=logging.DEBUG
     ):
         """
         Initialize a new PID controller.
@@ -62,6 +65,7 @@ class PID(object):
         :param error_map: Function to transform the error value in another constrained value.
         """
         self.mqtt_time = mqqt_time
+        self.logger = LoggingHandler(log_level)
         self.Kp, self.Ki, self.Kd = Kp, Ki, Kd
         self.setpoint = setpoint
         self.sample_time = sample_time
@@ -101,17 +105,16 @@ class PID(object):
             dt = now - self._last_time if (now - self._last_time) else 1e-16
         elif dt <= 0:
             raise ValueError('dt has negative value {}, must be positive'.format(dt))
-        print(f"--> in PID CONTROLLER.  dt: {dt}")
+        which_timing_method = "mqtt" if self.mqtt_time else "system clock"
+        self.logger.debug(f"--> in PID CONTROLLER.  Using the {which_timing_method} timing method...dt: {dt}")
         if not self.mqtt_time:
             if self.sample_time is not None and dt < self.sample_time and self._last_output is not None:
                 # Only update every sample_time seconds
-                print("not calculating - time too soon.")
+                self.logger.debug("not calculating - time too soon.")
                 return self._last_output
-        print("calculating....")
         # Compute error terms
         error = self.setpoint - input_
         d_input = input_ - (self._last_input if (self._last_input is not None) else input_)
-
         # Check if must map the error
         if self.error_map is not None:
             error = self.error_map(error)
@@ -130,6 +133,7 @@ class PID(object):
 
         self._derivative = -self.Kd * d_input / dt
 
+        self.logger.debug(f"error: {error}, P: {self._proportional}, I: {self._integral}, D: {self._derivative}")
         # Compute final output
         output = self._proportional + self._integral + self._derivative
         output = _clamp(output, self.output_limits)
@@ -147,8 +151,9 @@ class PID(object):
             'Kp={self.Kp!r}, Ki={self.Ki!r}, Kd={self.Kd!r}, '
             'setpoint={self.setpoint!r}, sample_time={self.sample_time!r}, '
             'output_limits={self.output_limits!r}, auto_mode={self.auto_mode!r}, '
-            'proportional_on_measurement={self.proportional_on_measurement!r},'
-            'error_map={self.error_map!r}'
+            'proportional_on_measurement={self.proportional_on_measurement!r}, '
+            'error_map={self.error_map!r}, '
+            'mqtt_time={self.mqtt_time!r}'
             ')'
         ).format(self=self)
 

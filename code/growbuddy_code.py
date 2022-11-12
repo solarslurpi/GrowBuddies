@@ -1,9 +1,10 @@
 import json
 import logging
+from logging_handler import LoggingHandler
 import os
 from threading import Thread
 import paho.mqtt.client as mqtt
-from logging_handler import LoggingHandler
+
 
 from influxdb import InfluxDBClient
 import random
@@ -42,7 +43,7 @@ class growBuddy(Thread):
     def __init__(
         self,
         subscribe_to_sensor=True,
-        topic_key="snifferbuddy_topic",
+        topic_key="snifferBuddy_topic",
         msg_value=None,
         growBuddy_values_callback=None,
         status_callback=None,
@@ -151,14 +152,14 @@ class growBuddy(Thread):
 
         """
         self.logger.debug(f"-> Mqtt connection returned {rc}")
+        mqtt_topic = self.settings["mqtt"][self.topic_key]
         if not self.subscribe_to_sensor:
-            mqtt_topic = self.settings["mqtt"][self.topic_key]
             self.mqtt_client.publish(mqtt_topic, self.msg_value)
             return
         if self.subscribe_to_sensor:
-            client.subscribe(self.topic_key)
+            client.subscribe(mqtt_topic)
             self.logger.info(f"-> Subscribed to -->{self.topic_key}<--")
-        LWT_topic = self.settings[self.topic_key].rsplit('/', 1)[0] + "/LWT"
+        LWT_topic = mqtt_topic.rsplit('/', 1)[0] + "/LWT"
         client.subscribe(LWT_topic)
         # Set a callback to handle LWT
         client.message_callback_add(LWT_topic, self._LWT_callback)
@@ -178,16 +179,18 @@ class growBuddy(Thread):
         # Send the message contents as a dictionary back to the values_callback.
         try:
             mqtt_dict = json.loads(message)
-            if self.topic_key == "mqtt_growBuddy":
+            if self.topic_key == "snifferBuddy_topic":
                 # Since this is a SnifferBuddy reading, put in a simple dictionary.
                 s = snifferBuddy(mqtt_dict)
                 self.values_callback(s)
                 # Write reading to database table if desired.
             if self.snifferbuddy_table_name:
-                self.db_write(s.dict)
-
+                try:
+                    self.db_write(s.dict)
+                except Exception as e:
+                    self.logger.error(f"ERROR! Could not write the snifferBuddy Values.  error: {e}")
         except Exception as e:
-            self.logger.error(f"ERROR! Could not read the  measurement. ERROR: {e}")
+            self.logger.error(f"ERROR! {e}")
 
         return
 

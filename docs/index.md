@@ -10,7 +10,7 @@ growBuddy is an Open DIY project.
 
 growBuddy Buddies monitor and maintain the best grow experience.
 
-TODO: picture of grow tent with snifferbuddy.  Then to the side a picture of vaporbuddy....
+TODO: picture of grow tent with snifferbuddy.  Then to the side a picture of mistBuddy....
 
 The available features will evolve incrementally over time.  Currently available Buddies:
 - [SnifferBuddy](snifferbuddy.md)
@@ -66,7 +66,7 @@ getting_started
 examples
 growBuddyServer
 snifferbuddy
-vaporbuddy
+mistBuddy
 flash_S31
 wiring
 tasmota
