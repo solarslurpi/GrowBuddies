@@ -10,10 +10,7 @@ from growbuddy_code import growBuddy
 def main():
     """We'll use growBuddy to send mqtt messages that turn the two Sonoff switches off.
     """
-    # To store snifferBuddy readings into the database, set the parameter
-    # snifferbuddy_table_name.
-    # To store the date/time vpdBuddy turned vaporBuddy ON and OFF, set the
-    # parameter vpdbuddy_table_name.
+
     on_or_off = None
     fan_or_mister = None
     mqtt_topic_key = None
