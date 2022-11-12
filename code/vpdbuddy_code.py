@@ -6,7 +6,7 @@ import threading
 from snifferbuddy_code import snifferBuddy
 
 
-settings_filename = "code/growBuddy_settings.json"
+settings_filename = "code/growbuddy_settings.json"
 
 
 class growthStage(Enum):
@@ -55,9 +55,9 @@ class vpdBuddy(growBuddy):
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
-            "Turning mistBuddy Plugs ON and OFF"
+            "Managing vpd."
             if self.manage
-            else "Observing SnifferBuddy Readings"
+            else "Observing vpd."
         )
         self.logger.debug(msg)
         # Set up the setpoint to the ideal vpd value.
@@ -71,7 +71,6 @@ class vpdBuddy(growBuddy):
             raise Exception(
                 "The vpd setpoint should be a floating point number between 0.0 and less than 2.0"
             )
-        self.logger.debug(f"The value for the vpd setpoint is: {self.setpoint}")
         # These are used in the _pid() routine.
         self.pid_cum_error = 0.0
         self.pid_last_error = 0.0
@@ -82,8 +81,8 @@ class vpdBuddy(growBuddy):
         Kd = self.settings["PID_settings"]["Kd"]
         # By default mqtt_time is used for time between sampling.
         self.pid = PID(Kp=Kp, Ki=Ki, Kd=Kd, setpoint=self.setpoint)
+        # The PID class as a __repr__() method.
         self.logger.debug(self.pid)
-        self.logger.debug("--> PID has been initialized.")
 
     def _values_callback(self, s: snifferBuddy):
         """growBuddy calls this method when it receives a reading from the requested sensor.
@@ -164,8 +163,8 @@ class vpdBuddy(growBuddy):
         timer = threading.Timer(nSecondsON, self._turn_off_mistBuddy)
         # The command to a Sonoff plug can be either TOGGLE, ON, OFF.
         # Send the command to power ON.
-        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_fan_topic"], "ON")
-        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_mister_topic"], "ON")
+        self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_fan_topic"], "ON")
+        self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_mister_topic"], "ON")
         self.logger.debug(
             f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds."
         )
@@ -175,8 +174,8 @@ class vpdBuddy(growBuddy):
         """The timer set in _turn_on_mistBuddy has expired.  Send messages to the
         mistBuddy plugs to turn OFF."""
 
-        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_fan_topic"], "OFF")
-        self.mqtt_client.publish(self.settings["mqtt_mistBuddy_mister_topic"], "OFF")
+        self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_fan_topic"], "OFF")
+        self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_mister_topic"], "OFF")
         self.logger.debug(
             "...Sent mqtt messages to the two mistBuddy plugs to turn OFF."
         )

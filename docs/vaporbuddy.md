@@ -23,6 +23,14 @@ The materials I used to make the humidifier in the image include:
 - Fan from a PC.  We have an electronics parts store near me that has a box full of PC fans.  The one I am using is quite strong, running at 24V.
     - A 24 V Power Supply will be needed to drive the fan.
 - [Mist maker from Aliexpress](https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6).  After trying out the one I got, I could imagine getting one half the strength.  Someday I'll figure out how to do the back of the envelope calculations to get exactly what I need...but for now I do what I alwasy do, I bumble on!
+
+:::{image} https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6
+:align: center
+:scale: 80
+
+
+
+
 ![aliexpress 12 head mist maker](images/aliexpress12headmister.jpg)
 The one I got specifies a 48VDC power source rated at 350W.  Looking at `Power(P) = Voltage(V)*Current(I)`, I'm interested in how much current is needed. I = 350W/48VDC = 7.3 Amps.  Which is a significant amount!  I had a 48V 250W power supply that I am using which works.  In fact, it is overkill for my space!
     - A 48V Power Supply rated at at least 250W is needed to drive the mister.
@@ -36,6 +44,7 @@ The one I got specifies a 48VDC power source rated at 350W.  Looking at `Power(P
 For the base and continuous fill, get the popcorn ... it's time for a [How To YouTube Video on making a DIY Humidifier](https://www.youtube.com/watch?v=vmiO6Z_HLCE)
 
 The water level for the float valve is 1 cm above the sensor line.
+
 :::{figure} images/mister_water_level.jpg
 :align: center
 :scale: 80

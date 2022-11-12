@@ -1,15 +1,15 @@
 {
-    "hostname": "growBuddy",
+    "hostname": "growbuddy",
     "log_level": "DEBUG",
     "mqtt":{
         "snifferBuddy_topic": "tele/snifferbuddy/SENSOR",
-        "mistBuddy_fan_topic": "cmnd/mistBuddy_fan/POWER",
-        "mistBuddy_mister_topic": "cmnd/mistBuddy_mister/POWER"
+        "mistBuddy_fan_topic": "cmnd/vaporbuddy_fan/POWER",
+        "mistBuddy_mister_topic": "cmnd/vaporbuddy_mister/POWER"
     },
     "readSoilMoisture": "tele/soil_moisture/SENSOR",
     "calibrateSoilMoisture": "calibrate",
     "influxdb": {
-        "db_name": "growBuddy"
+        "db_name": "growbuddy"
     },
     "vpd_setpoints": {
         "veg": 0.8,

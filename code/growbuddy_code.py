@@ -58,7 +58,7 @@ class growBuddy(Thread):
             random.choice(string.ascii_lowercase) for i in range(10)
         )
         Thread.__init__(self, name=self.unique_name)
-        self.values_callback = growBuddy_values_callback
+        self.growBuddy_values_callback = growBuddy_values_callback
         self.status_callback = status_callback
         self.snifferbuddy_table_name = snifferbuddy_table_name
 
@@ -182,7 +182,8 @@ class growBuddy(Thread):
             if self.topic_key == "snifferBuddy_topic":
                 # Since this is a SnifferBuddy reading, put in a simple dictionary.
                 s = snifferBuddy(mqtt_dict)
-                self.values_callback(s)
+                if self.growBuddy_values_callback:
+                    self.growBuddy_values_callback(s)
                 # Write reading to database table if desired.
             if self.snifferbuddy_table_name:
                 try:
@@ -195,8 +196,10 @@ class growBuddy(Thread):
         return
 
     def _on_publish(self, client, userdata, msg_id):
-        self.logger.debug(f"message ID {msg_id} was published.  Exiting.")
-        exit(0)
+        self.logger.debug(f"message ID {msg_id} was published.")
+        # If the caller hasn't subscribed to anything, exit the app.
+        if not self.subscribe_to_sensor:
+            exit(0)
 
     def _on_disconnect(self, client, userdata, rc):
         self.logger.debug(f"Disconnected result code {rc}")
