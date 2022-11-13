@@ -1,0 +1,13 @@
+# vpd_manage.service
+#
+
+[Unit]
+Description=vpd_manage service
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/growbuddy/py_env/bin/python  /home/pi/growbuddy/code/examples/vpdbuddy_manage.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

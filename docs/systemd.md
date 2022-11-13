@@ -21,7 +21,7 @@ I found the following info useful to figure out how to get systemd to do what I 
 :linenos: true
 ```
 
-3. Copy the systemd service file to `/lib/systemd/system`.  `sudo` priviledges are need.  For example, `sudo cp soil_moisture_buddy.service /lib/systemd/system/.`
+3. Copy the systemd service file to `/lib/systemd/system`.  `sudo` priviledges are needed.  For example, `sudo cp soil_moisture_buddy.service /lib/systemd/system/.`
 4. Enable the service with `sudo systemctl enable soil_moisture_buddy.service`.
 5. Check to make sure the service has been enabled with `systemctl is-enabled soil_moisture_buddy.service`.
 6. Start the service with `sudo systemctl start soil_moisture_buddy.service`.
