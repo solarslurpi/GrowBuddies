@@ -49,7 +49,7 @@ def main():
     # snifferbuddy_table_name.
     # To store the date/time vpdBuddy turned mistBuddy ON and OFF, set the
     # parameter vpdbuddy_table_name.
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_run1")
+    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_run2")
     vpdbuddy.start()
 
 
