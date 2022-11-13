@@ -47,8 +47,15 @@ VPDBuddy ties the:
  sends it's readings to the growBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController
 
  ## Tuning the PID
- vpdBuddy implements an extremely simple PID.  Since I am new to PIDs, I am using this section to
- document my PID tuning
+ ### PID Python Code
+ vpdBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification moves the sampling time from the code.  Instead sampling time is defined by the time between receiving snifferBuddy readings via mqtt messages.
+ ### Tuning
+ I haven't tuned a PID before.  I'm starting by isolating the P (Proportonal Gain) value.  A challenge for vpdBuddy is the PID error is in terms of vpd units.  For example:
+ - vpd setpoint = 0.8
+ - vpd reading = 1.2
+ - the vpd error is -0.4
+ The negative error says mistBuddy needs to be turned on for a number of seconds.  But how many seconds?  The vpd error units are mapped into the Kp value such that the output from the PID controller is the number of seconds to turn on mistBuddy. This requires calibration between the seconds to turn mistBuddy on and the vpd error as well as experimentation to determine how agressive to increase the humidity.
+ #### Test 1
 
  ### Understand P
  My goal is to understand the Proportional constant effect.
