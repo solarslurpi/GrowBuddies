@@ -9,6 +9,7 @@ The term "Vapor Pressure Deficit" is not that obvious to immediately understand 
 - [YouTube video that I found best explained water vapor, temperature's relationship to Relative Humidity and VPD](https://www.youtube.com/watch?v=-bYPGr1TJQY&t=1s).
 - [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
 
+(vpd_chart)=
 ## What VPDBuddy Does
 
 VPDBuddy works to make sure the [Vapor Pressure Deficit (VPD)](https://en.wikipedia.org/wiki/Vapour-pressure_deficit) is within an "ideal" range.  The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .
@@ -48,9 +49,16 @@ VPDBuddy ties the:
 
  ## Tuning the PID
  ### PID Python Code
- vpdBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification moves the sampling time from the code.  Instead sampling time is defined by the time between receiving snifferBuddy readings via mqtt messages.
+ vpdBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
  ### Tuning
- I haven't tuned a PID before.  I'm starting by isolating the P (Proportonal Gain) value.  A challenge for vpdBuddy is the PID error is in terms of vpd units.  For example:
+#### Challenges
+- The input, setpoint, and error terms are all in floating point units relative to vpd readings.  vpd readings are typically between 0.0 and 2.0.  The output is the number of seconds to turn on mistBuddy.  Thus, the output includes a conversion from vpd (floating point) to number of seconds (integer)
+- Spewing out vapor into the air using mistBuddy is imprecise.  Luckily, the vpd does not have to be precise as shown in the [vpd range chart](vpd_chart)
+
+
+
+
+  I'm starting by isolating the P (Proportonal Gain) value.  A challenge for vpdBuddy is the PID error is in terms of vpd units.  For example:
  - vpd setpoint = 0.8
  - vpd reading = 1.2
  - the vpd error is -0.4
