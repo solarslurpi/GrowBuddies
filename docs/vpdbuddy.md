@@ -66,8 +66,15 @@ VPDBuddy ties the:
  #### Test 1
 
  ### Understand P
- My goal is to understand the Proportional constant effect.
- ####  Kp = 50, Ki = 0, Kd = 0
+ I ran two runs with setting just the P gain.  As shown in the two plots below, setting just the P gain gives an output with a steady state error.
+
+ As noted [by a StackOverflow answer](https://softwareengineering.stackexchange.com/questions/214912/why-does-a-proportional-controller-have-a-steady-state-error)
+
+ _The reason for a steady state error with P only is that as your system approaches the set-point the error signal gets smaller and smaller. Your control is Kp times that error signal and eventually the error will be small enough that Kp times the error won't be enough to force it all the way to zero._
+ _An Integrator "saves the day" by accumulating the error over time and therefore even the tiniest error will eventually accumulate to something large enough to force the controller to correct for it._
+
+ From these results, I added in a Ki of 0.1.
+ ####  JUST P: Kp = 50, Ki = 0, Kd = 0
 I'm expecting an very gradual increase.
  - Set the K settings in [growBuddy_settings.json](https://github.com/solarslurpi/growBuddy/blob/main/code/growBuddy_settings.json).
 ```
@@ -89,7 +96,7 @@ def main():
 (pyenv) $ python code/examples/vpdbuddy_manage.py
 ```
 - View a graph.
-### Kp=50, Ki=0, Kd=0
+### JUST P: Kp=50, Ki=0, Kd=0
 ```
 PID(Kp=50, Ki=0, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, None), auto_mode=True, proportional_on_measurement=False, error_map=None, mqtt_time=True)
 ```
@@ -100,7 +107,7 @@ PID(Kp=50, Ki=0, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, None
 
 vpdBuddy Kp=50, Ki=0, Kd=0
 :::
-### Kp=25, Ki=0, Kd=0
+### JUST P: Kp=25, Ki=0, Kd=0
 
 :::{figure} images/grafana_vpd_08_25_0_0.jpg
 :align: center
@@ -109,7 +116,7 @@ vpdBuddy Kp=50, Ki=0, Kd=0
 vpdBuddy Kp=25, Ki=0, Kd=0
 :::
 
-### Kp=45, Ki=0.1, Kd=0
+### PI: Kp=45, Ki=0.1, Kd=0
 ```
 PID(Kp=45, Ki=0.1, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, None), auto_mode=True, proportional_on_measurement=False, error_map=None, mqtt_time=True)
 ```
