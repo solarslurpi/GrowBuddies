@@ -67,14 +67,14 @@ VPDBuddy ties the:
 
  ### Understand P
  My goal is to understand the Proportional constant effect.
- #### First Run: Kp = 0.1
+ ####  Kp = 50, Ki = 0, Kd = 0
 I'm expecting an very gradual increase.
- - Set the Kp in [growBuddy_settings.json](https://github.com/solarslurpi/growBuddy/blob/main/code/growBuddy_settings.json) to 0.1.
+ - Set the K settings in [growBuddy_settings.json](https://github.com/solarslurpi/growBuddy/blob/main/code/growBuddy_settings.json).
 ```
      "PID_settings": {
-        "Kp": 0.01,
-        "Ki": 0.1,
-        "Kd": 0.1
+        "Kp": 50.0,
+        "Ki": 0.0,
+        "Kd": 0.0
     }
 ```
 - Add `sniferbuddy_table_name` input when instantiating a vpdBuddy instance in the [vpdbuddy_manage.py](https://github.com/solarslurpi/growBuddy/blob/main/code/examples/vpdbuddy_manage.py).  This will store the snifferBuddy readings into the snifferBuddy measurement table of the growBuddy influxdb database.
@@ -89,3 +89,57 @@ def main():
 (pyenv) $ python code/examples/vpdbuddy_manage.py
 ```
 - View a graph.
+### Kp=50, Ki=0, Kd=0
+```
+PID(Kp=50, Ki=0, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, None), auto_mode=True, proportional_on_measurement=False, error_map=None, mqtt_time=True)
+```
+
+:::{figure} images/grafana_vpd_08_50_0_0.jpg
+:align: center
+:scale: 60
+
+vpdBuddy Kp=50, Ki=0, Kd=0
+:::
+### Kp=25, Ki=0, Kd=0
+
+:::{figure} images/grafana_vpd_08_25_0_0.jpg
+:align: center
+:scale: 60
+
+vpdBuddy Kp=25, Ki=0, Kd=0
+:::
+
+### Kp=45, Ki=0.1, Kd=0
+```
+PID(Kp=45, Ki=0.1, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, None), auto_mode=True, proportional_on_measurement=False, error_map=None, mqtt_time=True)
+```
+
+:::{figure} images/grafana_vpd_08_45_01_0.jpg
+:align: center
+:scale: 60
+
+vpdBuddy Kp=45, Ki=0.1, Kd=0
+:::
+
+#### Kp=45, Ki=0.1, Kd=0.1
+```
+PID(Kp=45, Ki=0.1, Kd=0.1, setpoint=0.8, sample_time=0.01, output_limits=(None, None), auto_mode=True, proportional_on_measurement=False, error_map=None, mqtt_time=True)
+```
+:::{figure} images/grafana_vpd_08_45_01_01.jpg
+:align: center
+:scale: 60
+
+vpdBuddy Kp=45, Ki=0.1, Kd=0.1
+:::
+Woops!  mistBuddy stopped working for a bit and...as expected...
+
+#### Kp=40, Ki=0.1, Kd=0.01
+```
+PID(Kp=45, Ki=0.1, Kd=0.1, setpoint=0.8, sample_time=0.01, output_limits=(None, None), auto_mode=True, proportional_on_measurement=False, error_map=None, mqtt_time=True)
+```
+:::{figure} images/grafana_vpd_08_40_01_001.jpg
+:scale: 60
+
+vpdBuddy Kp=40, Ki=0.1, Kd=0.01
+:::
+

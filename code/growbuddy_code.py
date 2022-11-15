@@ -116,8 +116,9 @@ class growBuddy(Thread):
                 f"...In the midst of mqtt traffic.  Exiting due to Error: {e}")
             os._exit(1)
 
-    def settings(self):
-        return dict
+    @property
+    def settings_dict(self):
+        return self.settings
 
     def _LWT_callback(self, client, userdata, msg):
         """mqtt callback we set up earlier to be called when a Last Will and Testament (LWT) message
@@ -187,7 +188,7 @@ class growBuddy(Thread):
                 # Write reading to database table if desired.
             if self.snifferbuddy_table_name:
                 try:
-                    self.db_write(s.dict)
+                    self.db_write(self.snifferbuddy_table_name, s.dict)
                 except Exception as e:
                     self.logger.error(f"ERROR! Could not write the snifferBuddy Values.  error: {e}")
         except Exception as e:
@@ -227,7 +228,7 @@ class growBuddy(Thread):
             )
         return dict_of_settings
 
-    def db_write(self, dict) -> None:
+    def db_write(self, table_name, dict) -> None:
         """Write reading to the InfluxDB table (which is refered to as a measurement).
 
         Args:
@@ -239,14 +240,13 @@ class growBuddy(Thread):
         """
         # TODO: Other context specific writes to tables...
         try:
-            if self.snifferbuddy_table_name:
-                influxdb_data = [{"measurement": self.snifferbuddy_table_name,
-                                  "fields": dict
-                                  }
-                                 ]
-                # influxdb_dict.update(dict)
+            influxdb_data = [{"measurement": table_name,
+                              "fields": dict
+                              }
+                             ]
+            # influxdb_dict.update(dict)
             self.influx_client.write_points(influxdb_data)
-            self.logger.debug("Successfully added the reading to Influxdb.")
+            self.logger.debug(f"Successfully added the reading to Influxdb table {table_name}.")
         except Exception as e:
             self.logger.error(
                 f"ERROR! Was not able to add the data to Influxdb. ERROR: {e}"

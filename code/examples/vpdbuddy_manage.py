@@ -19,7 +19,6 @@ sys.path.append('/home/pi/growbuddy/code')
 from vpdbuddy_code import vpdBuddy
 import logging
 
-
 from logging_handler import LoggingHandler
 
 
@@ -32,10 +31,22 @@ def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
     many seconds to turn mistBuddy on.
 
     """
+    global vpdbuddy
+
+    # Write the vpd values to log as info.
     values = (f'vpd setpoint: {setpoint}'
               f'| vpd value: {vpd}'
               f' | n seconds to turn on mistBuddy: {nSecondsON}')
     logger.info(values)
+    # Store number of seconds to turn on mistBuddy in influxdb.
+    try:
+        fields = {"vpd": vpd,
+                  "setpoint": setpoint,
+                  "seconds_on": nSecondsON
+                  }
+        vpdbuddy.db_write("vpdBuddy_40_01_001", fields)
+    except Exception as e:
+        logger.error(f"Error!  Could not write to to the vpdBuddy table in influxdb.  Error: {e}")
 
 
 def main():
@@ -49,7 +60,9 @@ def main():
     # snifferbuddy_table_name.
     # To store the date/time vpdBuddy turned mistBuddy ON and OFF, set the
     # parameter vpdbuddy_table_name.
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_run3")
+    global vpdbuddy
+    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_40_01_001")
+
     vpdbuddy.start()
 
 
