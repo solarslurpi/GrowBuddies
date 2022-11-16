@@ -1,13 +1,15 @@
 # VPDBuddy
-```
-sniffer_dict: {'Time': '2022-10-23T06:37:32', 'ANALOG': {'A0': 7}, 'SCD30': {'CarbonDioxide': 610, 'eCO2': 589, 'Temperature': 68.0, 'Humidity': 58.4, 'DewPoint': 52.8}, 'TempUnit': 'F', 'vpd': 0.8257631298494408, 'seconds_on': 0}
-```
+VPDBuddy maintains the ideal vpd level identified in [the vpd chart](vpd_chart) by turning on and off mistBuddy for the right amount of time.  The method vpdBuddy uses is a [PID controller](https://en.wikipedia.org/wiki/PID_controller).
 
 ## Resources
+### vpd
 The term "Vapor Pressure Deficit" is not that obvious to immediately understand (at least for me).  I found these resources helpful to better understand VPD:
 
 - [YouTube video that I found best explained water vapor, temperature's relationship to Relative Humidity and VPD](https://www.youtube.com/watch?v=-bYPGr1TJQY&t=1s).
 - [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
+### PID controller
+- [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out if we just use the P term there is a steady state error, etc.
+-  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). The Python library vpdBuddy uses [simple-pid](https://github.com/m-lundberg/simple-pid) was a port of this work.  A reason to love and support the Open Source Community.
 
 (vpd_chart)=
 ## What VPDBuddy Does
