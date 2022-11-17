@@ -88,13 +88,12 @@ class growBuddy(Thread):
         except Exception as e:
             self.logger.error(f"...Exiting due to Error: {e}")
             os._exit(1)
-        # Get a connection to the influxdb database, if needed.
+        # Get a connection to the influxdb database.
         # The database must exist on the "hostname" Server (which is most likely named "growBuddy").
-        if self.snifferbuddy_table_name is not None:
-            try:
-                self.influx_client = InfluxDBClient(host=self.settings["hostname"], database=self.settings["influxdb"]["db_name"])
-            except ValueError as e:
-                self.logger.error(f"ERROR! Was not able to connect to Influxdb.  Error: {e}")
+        try:
+            self.influx_client = InfluxDBClient(host=self.settings["hostname"], database=self.settings["influxdb"]["db_name"])
+        except ValueError as e:
+            self.logger.error(f"ERROR! Was not able to connect to Influxdb.  Error: {e}")
 
     def start(self):
         """Starts up an mqtt client on a unique thread.
@@ -244,7 +243,6 @@ class growBuddy(Thread):
                               "fields": dict
                               }
                              ]
-            # influxdb_dict.update(dict)
             self.influx_client.write_points(influxdb_data)
             self.logger.debug(f"Successfully added the reading to Influxdb table {table_name}.")
         except Exception as e:

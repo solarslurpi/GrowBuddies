@@ -111,8 +111,10 @@ class PID(object):
                 # Only update every sample_time seconds
                 self.logger.debug("not calculating - time too soon.")
                 return self._last_output
-        # Compute error terms
+        # Compute error terms - Note: When the error is negative, the humidity is too low.
         error = self.setpoint - input_
+        if error > 0:
+            return 0, 0
         d_input = input_ - (self._last_input if (self._last_input is not None) else input_)
         # Check if must map the error
         if self.error_map is not None:
@@ -128,21 +130,22 @@ class PID(object):
 
         # Compute integral and derivative terms
         self._integral += self.Ki * error * dt
-        self._integral = _clamp(self._integral, self.output_limits)  # Avoid integral windup
+        self._integral = -_clamp(abs(self._integral), self.output_limits)  # Avoid integral windup
 
         self._derivative = -self.Kd * d_input / dt
 
         self.logger.debug(f"error: {error}, P: {self._proportional}, I: {self._integral}, D: {self._derivative}")
-        # Compute final output
-        output = self._proportional + self._integral + self._derivative
-        output = _clamp(output, self.output_limits)
+        # Compute number of seconds to turn on mistBuddy, which is 0 or a positive number of seconds.
+        output = abs(self._proportional + self._integral + self._derivative)
+        nSecondsOn = int(output)
+        nSecondsOn = _clamp(nSecondsOn, self.output_limits)
 
         # Keep track of state
         self._last_output = output
         self._last_input = input_
         self._last_time = now
 
-        return output
+        return nSecondsOn, error
 
     def __repr__(self):
         return (

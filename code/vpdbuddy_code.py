@@ -80,7 +80,8 @@ class vpdBuddy(growBuddy):
         Ki = self.settings["PID_settings"]["Ki"]
         Kd = self.settings["PID_settings"]["Kd"]
         # By default mqtt_time is used for time between sampling.
-        self.pid = PID(Kp=Kp, Ki=Ki, Kd=Kd, setpoint=self.setpoint)
+        clamp = (self.settings["PID_settings"]["output_limits"][0], self.settings["PID_settings"]["output_limits"][1])
+        self.pid = PID(Kp=Kp, Ki=Ki, Kd=Kd, setpoint=self.setpoint, output_limits=(clamp))
         # The PID class as a __repr__() method.
         self.logger.debug(self.pid)
 
@@ -92,15 +93,15 @@ class vpdBuddy(growBuddy):
 
 
         """
-        nSecondsON = self._pid(s.vpd)
+        nSecondsON, error = self._pid(s.vpd)
         self.logger.debug(
-            f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}"
+            f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. Error value: {error}"
         )
         if self.manage and nSecondsON > 0:
             self._turn_on_mistBuddy(nSecondsON)
 
         if self.vpd_values_callback:
-            self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON)
+            self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON, error)
 
     def _pid(self, reading: float) -> int:
         """This is the code for the PID controller.
@@ -143,14 +144,8 @@ class vpdBuddy(growBuddy):
               humidity is typically around 40-50%.
         """
 
-        nSecondsOn = self.pid(reading)
-        # if nSecondsOn is negative, it means the vpd value says the environment is too dry.
-        # if positive, it is too humid since we only know about mistBuddy.
-        nSecondsOn = abs(int(nSecondsOn)) if nSecondsOn < 0 else 0
-
-        self.logger.debug(
-            f"Number of seconds to turn on the Humdifier is {nSecondsOn}.")
-        return nSecondsOn
+        nSecondsOn, error = self.pid(reading)
+        return nSecondsOn, error
 
     def _turn_on_mistBuddy(self, nSecondsON: int) -> None:
         """Send mqtt messages to mistBuddy's plugs to turn ON.

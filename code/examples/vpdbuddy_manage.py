@@ -26,7 +26,7 @@ from logging_handler import LoggingHandler
 logger = LoggingHandler(logging.DEBUG)
 
 
-def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
+def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int, error: float) -> None:
     """vpdBuddy() calls this function when it has updated vpd values on how
     many seconds to turn mistBuddy on.
 
@@ -36,15 +36,18 @@ def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
     # Write the vpd values to log as info.
     values = (f'vpd setpoint: {setpoint}'
               f'| vpd value: {vpd}'
-              f' | n seconds to turn on mistBuddy: {nSecondsON}')
+              f' | n seconds to turn on mistBuddy: {nSecondsON}',
+              f' | error value: {error}')
     logger.info(values)
     # Store number of seconds to turn on mistBuddy in influxdb.
     try:
         fields = {"vpd": vpd,
                   "setpoint": setpoint,
-                  "seconds_on": nSecondsON
+                  "error": error,
+                  "seconds_on": nSecondsON,
+                  "error": error
                   }
-        vpdbuddy.db_write("vpdBuddy_40_01_001", fields)
+        vpdbuddy.db_write("vpdBuddy_40_01_error_eval_1", fields)
     except Exception as e:
         logger.error(f"Error!  Could not write to to the vpdBuddy table in influxdb.  Error: {e}")
 
@@ -61,7 +64,7 @@ def main():
     # To store the date/time vpdBuddy turned mistBuddy ON and OFF, set the
     # parameter vpdbuddy_table_name.
     global vpdbuddy
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy_40_01_001")
+    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True)
 
     vpdbuddy.start()
 

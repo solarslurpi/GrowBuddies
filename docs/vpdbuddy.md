@@ -1,7 +1,8 @@
 # VPDBuddy
-VPDBuddy maintains the ideal vpd level identified in [the vpd chart](vpd_chart) by turning on and off mistBuddy for the right amount of time.  The method vpdBuddy uses is a [PID controller](https://en.wikipedia.org/wiki/PID_controller).
+VPDBuddy maintains the ideal [vpd level](https://www.canr.msu.edu/uploads/resources/pdfs/vpd-vs-rh.pdfs) identified in [the vpd chart](vpd_chart) by turning on and off mistBuddy for the right amount of time.  The method vpdBuddy uses is a [PID controller](https://en.wikipedia.org/wiki/PID_controller).
 
 ## Resources
+I found these resources helpful in my learnings.
 ### vpd
 The term "Vapor Pressure Deficit" is not that obvious to immediately understand (at least for me).  I found these resources helpful to better understand VPD:
 
@@ -12,9 +13,9 @@ The term "Vapor Pressure Deficit" is not that obvious to immediately understand 
 -  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). The Python library vpdBuddy uses [simple-pid](https://github.com/m-lundberg/simple-pid) was a port of this work.  A reason to love and support the Open Source Community.
 
 (vpd_chart)=
-## What VPDBuddy Does
+## VPD Chart
 
-VPDBuddy works to make sure the [Vapor Pressure Deficit (VPD)](https://en.wikipedia.org/wiki/Vapour-pressure_deficit) is within an "ideal" range.  The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .
+The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .  vpdBuddy gets the ideal vpd levels from the `growbuddy_settings.json` file.
 
 ```{image} images/vpd_chart.jpg
 :align: center
@@ -29,7 +30,7 @@ From Germination until ready for the vegetative state, the plants germinate unde
 If the ideal VPD values are maintained during vegetative and flowering state, VPDBuddy is doing it's job!
 
 
-## System Overview
+## vpdBuddy System Overview
 
 :::{figure} images/vpdbuddy_system_overview.jpg
 :align: center
@@ -57,17 +58,16 @@ VPDBuddy ties the:
 - The input, setpoint, and error terms are all in floating point units relative to vpd readings.  vpd readings are typically between 0.0 and 2.0.  The output is the number of seconds to turn on mistBuddy.  Thus, the output includes a conversion from vpd (floating point) to number of seconds (integer)
 - Spewing out vapor into the air using mistBuddy is imprecise.  Luckily, the vpd does not have to be precise as shown in the [vpd range chart](vpd_chart)
 
+#### Settings
+I start with the P value.  Given the vpd in my grow tent with the lights on is around 1.2, I'll use a vpd setpoint of 0.8 to adjust.
 
-
-
-  I'm starting by isolating the P (Proportonal Gain) value.  A challenge for vpdBuddy is the PID error is in terms of vpd units.  For example:
+For example:
  - vpd setpoint = 0.8
  - vpd reading = 1.2
  - the vpd error is -0.4
- The negative error says mistBuddy needs to be turned on for a number of seconds.  But how many seconds?  The vpd error units are mapped into the Kp value such that the output from the PID controller is the number of seconds to turn on mistBuddy. This requires calibration between the seconds to turn mistBuddy on and the vpd error as well as experimentation to determine how agressive to increase the humidity.
- #### Test 1
+ The negative error says mistBuddy needs to be turned on for a number of seconds.  But how many seconds?  The vpd error units are mapped into the Kp value such that the output from the PID controller is the number of seconds to turn on mistBuddy.
 
- ### Understand P
+ ### Tuning - Starting with P
  I ran two runs with setting just the P gain.  As shown in the two plots below, setting just the P gain gives an output with a steady state error.
 
  As noted [by a StackOverflow answer](https://softwareengineering.stackexchange.com/questions/214912/why-does-a-proportional-controller-have-a-steady-state-error)
@@ -98,7 +98,7 @@ def main():
 (pyenv) $ python code/examples/vpdbuddy_manage.py
 ```
 - View a graph.
-### JUST P: Kp=50, Ki=0, Kd=0
+#### JUST P: Kp=50, Ki=0, Kd=0
 ```
 PID(Kp=50, Ki=0, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, None), auto_mode=True, proportional_on_measurement=False, error_map=None, mqtt_time=True)
 ```
