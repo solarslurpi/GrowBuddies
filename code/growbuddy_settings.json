@@ -4,10 +4,10 @@
     "mqtt":{
         "snifferBuddy_topic": "tele/snifferbuddy/SENSOR",
         "mistBuddy_fan_topic": "cmnd/vaporbuddy_fan/POWER",
-        "mistBuddy_mister_topic": "cmnd/vaporbuddy_mister/POWER"
+        "mistBuddy_mister_topic": "cmnd/vaporbuddy_mister/POWER",
+        "soil_moisture_calibration_topic": "tele/soil_moisture/SENSOR"
     },
-    "readSoilMoisture": "tele/soil_moisture/SENSOR",
-    "calibrateSoilMoisture": "calibrate",
+
     "influxdb": {
         "db_name": "growbuddy"
     },
@@ -19,7 +19,7 @@
     "PID_settings": {
         "Kp": 43,
         "Ki": 0.1,
-        "Kd": 0.0,
+        "Kd": 0.1,
         "output_limits": [0, 30]
     }
 

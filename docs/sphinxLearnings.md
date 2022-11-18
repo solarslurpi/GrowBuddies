@@ -74,6 +74,8 @@ In this example, we start with a file in rst format and convert to markdown.  To
 ```
 rst2myst convert ../rst-test-files/* .
 ```
+## Record Screen Gifs
+This isn't from Sphinx.  However, it seems superuseful. _[LICEcap](https://www.cockos.com/licecap/) can capture an area of your desktop and save it directly to .GIF_
 ## Cross-Linking Between Sphinx Docs
 
 Where the link is use \{ref\}\`Custom title \<anchor name\>\`.  Before the m(H1, H2...) Heading, use `(anchor name)=` .

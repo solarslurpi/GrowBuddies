@@ -43,11 +43,11 @@ class growBuddy(Thread):
     def __init__(
         self,
         subscribe_to_sensor=True,
-        topic_key="snifferBuddy_topic",
-        msg_value=None,
+        topic_key="snifferBuddy_topic",  # Many times the caller will want to get snifferBuddy readings.
+        msg_value=None,  # Used when publishing a message.
         growBuddy_values_callback=None,
         status_callback=None,
-        snifferbuddy_table_name=None,
+        snifferbuddy_table_name=None,  # In case you want to save these readings.  The growBuddy class is used a lot.
         settings_filename="growbuddy_settings.json",
         log_level=logging.DEBUG,
     ):

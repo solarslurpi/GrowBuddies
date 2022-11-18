@@ -47,7 +47,7 @@ def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int, error: flo
                   "seconds_on": nSecondsON,
                   "error": error
                   }
-        vpdbuddy.db_write("vpdBuddy_40_01_error_eval_1", fields)
+        vpdbuddy.db_write("vpdBuddy_40_01_01_error_eval_1", fields)
     except Exception as e:
         logger.error(f"Error!  Could not write to to the vpdBuddy table in influxdb.  Error: {e}")
 

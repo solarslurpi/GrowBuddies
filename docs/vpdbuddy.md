@@ -1,3 +1,52 @@
+::::{grid} 1 2 3 4
+:outline:
+
+:::{grid-item}
+A
+:::
+:::{grid-item}
+B
+:::
+:::{grid-item}
+C
+:::
+:::{grid-item}
+D
+:::
+::::
+
+{bdg}`plain badge`
+
+{bdg-primary}`primary`, {bdg-primary-line}`primary-line`
+
+{bdg-secondary}`secondary`, {bdg-secondary-line}`secondary-line`
+
+{bdg-success}`success`, {bdg-success-line}`success-line`
+
+{bdg-info}`info`, {bdg-info-line}`info-line`
+
+{bdg-warning}`warning`, {bdg-warning-line}`warning-line`
+
+{bdg-danger}`danger`, {bdg-danger-line}`danger-line`
+
+{bdg-light}`light`, {bdg-light-line}`light-line`
+
+{bdg-dark}`dark`, {bdg-dark-line}`dark-line`
+
+- An icon {fas}`spinner;sd-text-primary`, some more text.
+- An icon {fab}`github`, some more text.
+- An icon {fab}`gitkraken;sd-text-success fa-xl`, some more text.
+- An icon {fas}`skull;sd-text-danger`, some more text.
+
+A coloured icon: {octicon}`report;1em;sd-text-info`, some more text.
+
+:::{div} sd-avatar-xl
+<img src="docs/images/ebp-logo.png" class="sd-avatar-xs sd-border-1">
+:::
+
+:::{div} sd-text-center sd-font-italic sd-text-primary
+Some CSS styled text
+:::
 # VPDBuddy
 VPDBuddy maintains the ideal [vpd level](https://www.canr.msu.edu/uploads/resources/pdfs/vpd-vs-rh.pdfs) identified in [the vpd chart](vpd_chart) by turning on and off mistBuddy for the right amount of time.  The method vpdBuddy uses is a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  It runs as a [systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.  Configuration settings are in `growbuddy_settings.json`.
 

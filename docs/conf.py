@@ -27,7 +27,8 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx_autodoc_typehints',
     'myst_parser',
-    'sphinx.ext.autosectionlabel'
+    'sphinx.ext.autosectionlabel',
+    'sphinx_design'
 ]
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
