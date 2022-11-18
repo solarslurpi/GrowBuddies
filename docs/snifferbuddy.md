@@ -1,4 +1,9 @@
 
+```{image} images/snifferbuddy_dog.jpg
+:align: center
+:height: 200
+```
+
 (snifferbuddy_page)=
 # SnifferBuddy
 
@@ -10,7 +15,29 @@ A Happy snifferBuddy hanging about
 :::
 SnifferBuddy happily hangs around in a grow tent sending out mqtt messages over a home's wifi containing readings for the air's CO2 level, relative humidity, and temperature.  There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off.  This is indicated by the A0 reading of 542 in the above image.
 
+<button type="button" class="btn btn-primary">
+  Notifications <span class="badge bg-secondary">4</span>
+</button>
 
+
+
+{bdg}`plain badge`
+
+{bdg-primary}`primary`, {bdg-primary-line}`primary-line`
+
+{bdg-secondary}`secondary`, {bdg-secondary-line}`secondary-line`
+
+{bdg-success}`success`, {bdg-success-line}`success-line`
+
+{bdg-info}`info`, {bdg-info-line}`info-line`
+
+{bdg-warning}`warning`, {bdg-warning-line}`warning-line`
+
+{bdg-danger}`danger`, {bdg-danger-line}`danger-line`
+
+{bdg-light}`light`, {bdg-light-line}`light-line`
+
+{bdg-dark}`dark`, {bdg-dark-line}`dark-line`
 
 ## Outside View
 The one I made looks like this:
