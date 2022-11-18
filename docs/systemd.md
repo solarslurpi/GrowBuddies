@@ -14,9 +14,9 @@ I found the following info useful to figure out how to get systemd to do what I 
 ## Setting Up A Python Script to run as a Systemd service
 
 1. Set permissions so systemd can execute the script: `sudo chmod +x {python script}`.  For example, set permissions on  `vpdbuddy_manage.py` by `sudo chmod +x vpdbuddy_manage.py`.
-2. Create the systemd service file.  I'm no expert.  So you may want to research using the above learning resources.
+2. Create the systemd service file.  I'm no expert.  So you may want to research using the above learning resources.  Here's an example that worked for me.
 
-```{literalinclude} ../code/exmples/vpdbuddy_manage.service
+```{literalinclude} ../code/examples/vpdbuddy_manage.service
 :language: python
 :linenos: true
 ```
@@ -25,7 +25,7 @@ I found the following info useful to figure out how to get systemd to do what I 
 4. Enable the service with `sudo systemctl enable vpdbuddy_manage.service`.
 5. Check to make sure the service has been enabled with `systemctl is-enabled vpdbuddy_manage.service`.
 6. Start the service with `sudo systemctl start vpdbuddy_manage.service`.
-7. Check to make sure the service has been started with `systemctl is-active vpdbuddy_manage.servicee`.  In this example, starting the service failed.  To find out why, try `journalctl -u vpdbuddy_manage.service`.  In this case we have:
+7. Check to make sure the service has been started with `systemctl is-active vpdbuddy_manage.servicee`.  In this example, starting the service failed.  To find out why, try `journalctl -u vpdbuddy_manage.service`.  Here is log lines from one of the services I ran:
 
 ```python
 Oct 05 14:32:14 growBuddy python3.7[1286]: 2022-10-05 14:32:14,464:DEBUG:\[\]/home/pi/growBuddy/code/growBuddy.py:44  __init__   ...-> Initializing growBuddy class for task readSoilMoisture

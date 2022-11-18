@@ -41,10 +41,19 @@ D
 A coloured icon: {octicon}`report;1em;sd-text-info`, some more text.
 
 :::{div} sd-avatar-xl
-<img src="docs/images/ebp-logo.png" class="sd-avatar-xs sd-border-1">
+<img src="images/vpd_chart.jpg" class="sd-avatar-xl sd-border-1">
 :::
 
-:::{div} sd-text-center sd-font-italic sd-text-primary
+```{image} images/ebp-logo.png
+:align: center
+:scale: 20
+
+```
+```{grid-item-card} sd-avatar-xl
+<img src="images/ebp-logo.png" class="sd-avatar-xl sd-border-1">
+```
+
+:::{div} sd-text-right sd-fs-1 sd-font-weight-bolder
 Some CSS styled text
 :::
 # VPDBuddy
@@ -203,6 +212,13 @@ vpdBuddy Kp=40, Ki=0.1, Kd=0.01
 
 #### Kp=43, Ki=0.1, Kd=0
 :::{figure} images/grafana_vpd_08_43_01_0.jpg
+:scale: 60
+
+vpdBuddy Kp=43, Ki=0.1, Kd=0
+:::
+
+#### Kp=43, Ki=0.1, Kd=0.1
+:::{figure} images/grafana_vpd_08_43_01_01.jpg
 :scale: 60
 
 vpdBuddy Kp=43, Ki=0.1, Kd=0
