@@ -1,5 +1,5 @@
 # VPDBuddy
-VPDBuddy maintains the ideal [vpd level](https://www.canr.msu.edu/uploads/resources/pdfs/vpd-vs-rh.pdfs) identified in [the vpd chart](vpd_chart) by turning on and off mistBuddy for the right amount of time.  The method vpdBuddy uses is a [PID controller](https://en.wikipedia.org/wiki/PID_controller).
+VPDBuddy maintains the ideal [vpd level](https://www.canr.msu.edu/uploads/resources/pdfs/vpd-vs-rh.pdfs) identified in [the vpd chart](vpd_chart) by turning on and off mistBuddy for the right amount of time.  The method vpdBuddy uses is a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  It runs as a [systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.  Configuration settings are in `growbuddy_settings.json`.
 
 ## Resources
 I found these resources helpful in my learnings.
@@ -152,3 +152,12 @@ PID(Kp=45, Ki=0.1, Kd=0.1, setpoint=0.8, sample_time=0.01, output_limits=(None, 
 vpdBuddy Kp=40, Ki=0.1, Kd=0.01
 :::
 
+#### Kp=43, Ki=0.1, Kd=0
+:::{figure} images/grafana_vpd_08_43_01_0.jpg
+:scale: 60
+
+vpdBuddy Kp=43, Ki=0.1, Kd=0
+:::
+
+## Starting the vpdBuddy Service
+- Follow the steps to enable the

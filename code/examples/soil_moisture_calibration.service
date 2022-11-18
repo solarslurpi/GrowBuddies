@@ -2,12 +2,12 @@
 # found in /lib/systemd/system/soil_moisture_buddy.service
 
 [Unit]
-Description=growBuddy Soil Moisture Service
+Description=soil moisture calibration service.
 After=mosquitto.service
 
 [Service]
 Type=idle
-ExecStart=/home/pi/growBuddy/py_env/bin/python3.7  /home/pi/growBuddy/code/soil_moisture_buddy.py
+ExecStart=/home/pi/growbuddy/py_env/bin/python  /home/pi/growbuddy/code/examples/soil_moisture_calibration.py
 Restart=always
 [Install]
 WantedBy=multi-user.target
