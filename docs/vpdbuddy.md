@@ -1,74 +1,14 @@
 
 :::{div}
-<img src="images/snifferbuddy_dog.jpg" class="sd-avatar-md sd-border-2">
+<img src="images/whale_misty.svg" class="sd-avatar-md sd-border-3">
 :::
 
-:::{div}
-<img src="images/whale_trace.png" class="sd-avatar-md sd-border-1">
-:::
+# whaleBuddy
+whaleBuddy maintains the ideal [vpd level](https://www.canr.msu.edu/uploads/resources/pdfs/vpd-vs-rh.pdfs) identified in [the vpd chart](vpd_chart) by happily blowing mist through it's airhole for the right amount of time.  The method whaleBuddy uses to determine how many seconds to turn on sending mist uses a [PID controller](https://en.wikipedia.org/wiki/PID_controller).
 
-```{image} images/whale_trace.png
-:align: center
-:scale: 50
-
-```
-
-::::{grid} 1 2 3 4
-:outline:
-
-:::{grid-item}
-A
-:::
-:::{grid-item}
-B
-:::
-:::{grid-item}
-C
-:::
-:::{grid-item}
-D
-:::
-::::
-
-{bdg}`plain badge`
-
-{bdg-primary}`primary`, {bdg-primary-line}`primary-line`
-
-{bdg-secondary}`secondary`, {bdg-secondary-line}`secondary-line`
-
-{bdg-success}`success`, {bdg-success-line}`success-line`
-
-{bdg-info}`info`, {bdg-info-line}`info-line`
-
-{bdg-warning}`warning`, {bdg-warning-line}`warning-line`
-
-{bdg-danger}`danger`, {bdg-danger-line}`danger-line`
-
-{bdg-light}`light`, {bdg-light-line}`light-line`
-
-{bdg-dark}`dark`, {bdg-dark-line}`dark-line`
-
-- An icon {fas}`spinner;sd-text-primary`, some more text.
-- An icon {fab}`github`, some more text.
-- An icon {fab}`gitkraken;sd-text-success fa-xl`, some more text.
-- An icon {fas}`skull;sd-text-danger`, some more text.
-
-A coloured icon: {octicon}`report;1em;sd-text-info`, some more text.
-
-
-
-```{image} images/ebp-logo.png
-:align: center
-:scale: 20
-
-```
-
-
-:::{div} sd-text-right sd-fs-1 sd-font-weight-bolder
-Some CSS styled text
-:::
-# VPDBuddy
-VPDBuddy maintains the ideal [vpd level](https://www.canr.msu.edu/uploads/resources/pdfs/vpd-vs-rh.pdfs) identified in [the vpd chart](vpd_chart) by turning on and off mistBuddy for the right amount of time.  The method vpdBuddy uses is a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  It runs as a [systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.  Configuration settings are in `growbuddy_settings.json`.
+whaleBuddy consists of:
+- It's body. whaleBuddy's body
+It runs as a [systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.  Configuration settings are in `growbuddy_settings.json`.
 
 ## Resources
 I found these resources helpful in my learnings.
@@ -79,7 +19,7 @@ The term "Vapor Pressure Deficit" is not that obvious to immediately understand 
 - [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
 ### PID controller
 - [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out if we just use the P term there is a steady state error, etc.
--  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). The Python library vpdBuddy uses [simple-pid](https://github.com/m-lundberg/simple-pid) was a port of this work.  A reason to love and support the Open Source Community.
+-  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). whaleBuddy uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
 
 (vpd_chart)=
 ## VPD Chart
