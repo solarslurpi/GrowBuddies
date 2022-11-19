@@ -22,7 +22,7 @@ SnifferBuddy in Grow Tent
 :::
 SnifferBuddy happily hangs around the grow tent sending out air temperature, humidity, CO2, and light level values over a home's wifi.  The readings are picked up by the growBuddy Server. Other Buddies pick up the readings and act on them.  For example, vpdBuddy gets the SnifferBuddy readings, calculates the vpd and then adjusts the water vapor to the ideal vpd.
 - growBuddy Server
-:::{figure} images/growBuddy_Server.jpg
+:::{figure} images/GrowBuddy_Server.jpg
 :align: center
 :height: 250
 
@@ -64,7 +64,7 @@ See you in the garden!
 mygrowtent
 getting_started
 examples
-growBuddyServer
+growbuddyServer
 snifferbuddy
 mistBuddy
 flash_S31

@@ -1,3 +1,18 @@
+
+:::{div}
+<img src="images/snifferbuddy_dog.jpg" class="sd-avatar-md sd-border-2">
+:::
+
+:::{div}
+<img src="images/whale_trace.png" class="sd-avatar-md sd-border-1">
+:::
+
+```{image} images/whale_trace.png
+:align: center
+:scale: 50
+
+```
+
 ::::{grid} 1 2 3 4
 :outline:
 
@@ -40,18 +55,14 @@ D
 
 A coloured icon: {octicon}`report;1em;sd-text-info`, some more text.
 
-:::{div} sd-avatar-xl
-<img src="images/vpd_chart.jpg" class="sd-avatar-xl sd-border-1">
-:::
+
 
 ```{image} images/ebp-logo.png
 :align: center
 :scale: 20
 
 ```
-```{grid-item-card} sd-avatar-xl
-<img src="images/ebp-logo.png" class="sd-avatar-xl sd-border-1">
-```
+
 
 :::{div} sd-text-right sd-fs-1 sd-font-weight-bolder
 Some CSS styled text

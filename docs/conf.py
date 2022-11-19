@@ -38,7 +38,7 @@ autosectionlabel_prefix_document = True
 napoleon_include_private_with_doc = True
 
 # Add Myst extensions
-myst_enable_extensions = ["colon_fence"]
+myst_enable_extensions = ["colon_fence", "html_image"]
 
 # Ignore documentating these files.
 autodoc_mock_imports = ['influxdb', 'paho']
