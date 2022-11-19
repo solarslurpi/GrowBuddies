@@ -24,9 +24,9 @@ The materials I used to make the humidifier in the image include:
     - A 24 V Power Supply will be needed to drive the fan.
 - [Mist maker from Aliexpress](https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6).  After trying out the one I got, I could imagine getting one half the strength.  Someday I'll figure out how to do the back of the envelope calculations to get exactly what I need...but for now I do what I alwasy do, I bumble on!
 
-:::{image} https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6
+<!-- :::{image} https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6
 :align: center
-:scale: 80
+:scale: 80 -->
 
 
 
