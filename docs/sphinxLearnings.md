@@ -82,5 +82,8 @@ Where the link is use \{ref\}\`Custom title \<anchor name\>\`.  Before the m(H1,
 
 For example, {ref}`Let's make a SnifferBuddy <make-snifferbuddy>` is a cross reference link to the section in SnifferBuddy with the steps to make a SnifferBuddy.
 
+## new line in markdown
+I guess tools have a bunch of weird ways to do things.  The challenge is learning how they do them. From [the markdown guid](https://markdown-guide.readthedocs.io/en/latest/basics.html#line-return),
 
+_To force a line return, place two empty spaces at the end of a line._
 

@@ -6,6 +6,33 @@
 # Welcome to growBuddy!
 Hello! Thank you for stopping by.
 
+
+growBuddy is an Open DIY project that consists of software/hardware components - called Buddies - to help your indoor plants optimally grow.  The current Buddies include:
+
+::::{grid} 3
+:gutter: 1
+
+:::{grid-item-card} snifferBuddy
+:img-top: images/snifferbuddy_dog.jpg
+Sniffs out temperature, humidity, and CO2.
+:::
+:::{grid-item-card} mistBuddy
+:img-top: images/whale_misty.svg
+Pumps out mist to lower vpd.
+:::
+:::{grid-item-card} growBuddy
+:img-top: images/growbuddy_hamster.jpg
+The brains behind it all.
+:::
+::::
+
+## Looking Real
+
+
+
+
+
+
 growBuddy is an Open DIY project.
 
 growBuddy Buddies monitor and maintain the best grow experience.
@@ -14,12 +41,7 @@ TODO: picture of grow tent with snifferbuddy.  Then to the side a picture of mis
 
 The available features will evolve incrementally over time.  Currently available Buddies:
 - [SnifferBuddy](snifferbuddy.md)
-:::{figure} images/snifferbuddy_in_growtent_sm.jpg
-:align: center
-:height: 250
 
-SnifferBuddy in Grow Tent
-:::
 SnifferBuddy happily hangs around the grow tent sending out air temperature, humidity, CO2, and light level values over a home's wifi.  The readings are picked up by the growBuddy Server. Other Buddies pick up the readings and act on them.  For example, vpdBuddy gets the SnifferBuddy readings, calculates the vpd and then adjusts the water vapor to the ideal vpd.
 - growBuddy Server
 :::{figure} images/GrowBuddy_Server.jpg

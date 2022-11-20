@@ -1,45 +1,19 @@
 
-```{image} images/snifferbuddy_dog.jpg
-:align: center
-:height: 200
-```
+:::{div}
+<img src="images/snifferbuddy_dog.jpg" class="sd-avatar-md sd-border-3">
+:::
 
 (snifferbuddy_page)=
-# SnifferBuddy
+# snifferBuddy
+SnifferBuddy happily hangs around in a grow tent sending out mqtt messages over a home's wifi.  The message payload contains readings for the air's CO2 level, relative humidity, and temperature.  The messages are sent to the growBuddy broker - an mqtt broker that runs on the growBuddy server.  There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off.  The star of SnifferBuddy is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) . The sensor is what provides the temperature, RH, and CO2 values.  snifferBuddy talks with the other Buddies using mqtt which is provided by [Tasmota firmware](https://tasmota.github.io/docs/About/).  The mqtt messages must be picked up by the growBuddy broker to be useful.
 
-:::{figure} images/snifferbuddy_in_growtent.jpg
+:::{figure} images/snifferbuddy_in_growtent_sm.jpg
 :align: center
 :height: 350
 
 A Happy snifferBuddy hanging about
 :::
-SnifferBuddy happily hangs around in a grow tent sending out mqtt messages over a home's wifi containing readings for the air's CO2 level, relative humidity, and temperature.  There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off.  This is indicated by the A0 reading of 542 in the above image.
 
-<button type="button" class="btn btn-primary">
-  Notifications <span class="badge bg-secondary">4</span>
-</button>
-
-
-
-{bdg}`plain badge`
-
-{bdg-primary}`primary`, {bdg-primary-line}`primary-line`
-
-{bdg-secondary}`secondary`, {bdg-secondary-line}`secondary-line`
-
-{bdg-success}`success`, {bdg-success-line}`success-line`
-
-{bdg-info}`info`, {bdg-info-line}`info-line`
-
-{bdg-warning}`warning`, {bdg-warning-line}`warning-line`
-
-{bdg-danger}`danger`, {bdg-danger-line}`danger-line`
-
-{bdg-light}`light`, {bdg-light-line}`light-line`
-
-{bdg-dark}`dark`, {bdg-dark-line}`dark-line`
-
-## Outside View
 The one I made looks like this:
 
 :::{figure} images/Sniffer_Buddy.jpg
@@ -49,7 +23,7 @@ The one I made looks like this:
 SnifferBuddy
 :::
 
-## Schematic
+## Internals
 :::{figure} images/SnifferBuddy_wiring.jpg
 :align: center
 :scale: 100
@@ -57,8 +31,7 @@ SnifferBuddy
 SnifferBuddy Wiring
 :::
 
-The star of SnifferBuddy is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) .  I had one in my parts bin.  The SCD30 is wired to  an
-[ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
+The SCD30 is wired to  an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
 I settled on the ESP826 because I settled on [Tasmota](https://tasmota.github.io/docs/)  as the way to send sensor readings over mqtt.
 I figured if [Tasmota's goal](https://tasmota.github.io/docs/About/) was to *"provide ESP8266 based ITEAD Sonokff devices with MQTT and 'Over the Air' or OTA firmware"...*
 Then why not use the same chip?   I {ref}`ran into an issue with the Wemos D1 ESP286<wemos_challenges>` when I made the first SnifferBuddy.  But for the most part, ESP826's are very
