@@ -3,65 +3,58 @@
 % You can adapt this file completely to your liking, but it should at least
 % contain the root `toctree` directive.
 
-# Welcome to growBuddy!
+# Welcome to GrowBuddies!
 Hello! Thank you for stopping by.
 
-
-growBuddy is an Open DIY project that consists of software/hardware components - called Buddies - to help your indoor plants optimally grow.  The current Buddies include:
+# Just a bunch of Buddies
+GrowBuddies is an Open DIY project that consists of software/hardware components - called Buddies - to help your indoor plants optimally grow.  The current Buddies include:
 
 ::::{grid} 3
 :gutter: 1
 
-:::{grid-item-card} snifferBuddy
-:img-top: images/snifferbuddy_dog.jpg
+
+:::{grid-item-card} Beanie
+:link: beanie
+:link-type: doc
+
+```{image} images/beanie.jpg
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
+```
 Sniffs out temperature, humidity, and CO2.
 :::
-:::{grid-item-card} mistBuddy
-:img-top: images/whale_misty.svg
-Pumps out mist to lower vpd.
+
+:::{grid-item-card} Miha
+:link: miha
+:link-type: doc
+```{image} images/whale.svg
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
+```
+Maintains the vpd Level.
 :::
-:::{grid-item-card} growBuddy
-:img-top: images/growbuddy_hamster.jpg
+
+:::{grid-item-card} Gus
+:link: gus
+:link-type: doc
+```{image} images/hamster.jpg
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
+```
 The brains behind it all.
 :::
+
 ::::
+**They would LOVE to be your friend!**
+
+:::{div}
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=541&amp;h=261">
+:::
+
 
 ## Looking Real
 
 
-
-
-
-
-growBuddy is an Open DIY project.
-
-growBuddy Buddies monitor and maintain the best grow experience.
-
-TODO: picture of grow tent with snifferbuddy.  Then to the side a picture of mistBuddy....
-
-The available features will evolve incrementally over time.  Currently available Buddies:
-- [SnifferBuddy](snifferbuddy.md)
-
-SnifferBuddy happily hangs around the grow tent sending out air temperature, humidity, CO2, and light level values over a home's wifi.  The readings are picked up by the growBuddy Server. Other Buddies pick up the readings and act on them.  For example, vpdBuddy gets the SnifferBuddy readings, calculates the vpd and then adjusts the water vapor to the ideal vpd.
-- growBuddy Server
-:::{figure} images/GrowBuddy_Server.jpg
-:align: center
-:height: 250
-
-growBuddy Server
-:::
-
-The growBuddy Server is either a Raspberry Pi 4 (the green case encloses a Raspberry Pi 4).  Or Raspberry Pi 3 (like the Raspberry Pi 3 enclosed by the purplse case).  It can store the values in a database for later analysis.  It also runs an mqtt broker that routes the messages the buddies send.
-- [mistBuddy](mistbuddy.md)
-
-
-
-
-growBuddy is an Open DIY project that monitors and adjusts environment variables that affect plant growth within a grow tent.  Currently, growBuddy focuses on controlling an indoor plant's water needs.  Helping plants get the right amount of water - whether the water is in the form of vapor when in the air or liquid in the soil - is difficult to get right.  Besides, watering requires constant - usually daily - attention.  How does that work when I want to go on vacation?  Since I grow in Living Soil (I recommend [KIS BioChar](https://www.kisorganics.com/products/kis-organics-biochar-soil-mix)), growBuddy's solutions focus on growing in soil, but of course aren't constrained to soil based grows.
-## Current Solutions
-The current solutions (given the focus is on water) are:
-- [Vapor Pressure Deficit (VPD)](mistbuddy)
-- [Soil Moisture](SoilMoistureBuddy.md)
 
 
 Everyone is welcome. I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness there can be gained by taking care of plants. I find doing programming and hardware projects a wonderful hobby.  I also love learning and it seems to me there is A LOT I can learn.  So [Contact me](mailto:happygrowBuddy@gmail.com) with thoughts, questions, interests.
@@ -83,12 +76,12 @@ See you in the garden!
 ```{toctree}
 :maxdepth: 1
 
-mygrowtent
+
 getting_started
+gus
+beanie
+miha
 examples
-growbuddyServer
-snifferbuddy
-mistbuddy
 flash_S31
 tasmota
 systemd
@@ -97,4 +90,5 @@ sphinxLearnings
 SoilMoistureBuddy
 printing
 wiring
+mygrowtent
 ```

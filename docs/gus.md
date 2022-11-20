@@ -1,10 +1,22 @@
-# growBuddy Server
+:::{div}
+<img src="images/hamster.jpg" class="sd-avatar-md sd-border-3">
+:::
+Hi! Gladtameetcha!
+
+# Gus
+
+:::{div}
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=541&amp;h=261">
+:::
+
+Gus has been given the role of brains of growBuddy.  Gus is a Raspberry Pi
 The growBuddy Server is a Raspberry Pi running:
 - The Raspberry Pi OS with SSH for remote connecting.  [Install](raspPi_install)
 - The mosquitto mqtt broker.  [install](mqtt_install)
 - The influxdb database software. [install]influxdb_install
 - grafana.
-
+(make_gus)=
+## Let's Make One
 (growbuddyserver_install)=
 ## Materials
 - Raspberry Pi 3 or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck from [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).

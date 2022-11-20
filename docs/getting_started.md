@@ -5,7 +5,7 @@ To start, build a SnifferBuddy and a growBuddy.  These are the foundation of the
 ## Build The Core Components
 Let's start with the core components:
 - [Build the growBuddy Server](growBuddyServer.md)
-- [Build SnifferBuddy](snifferbuddy_page)
+- [Build SnifferBuddy](beanie_page)
 - [Write Python to access SnifferBuddy readings](examples)
 ## Store SnifferBuddy Readings
 Plug in the growBuddy Server and SnifferBuddy.  The growBuddy Server just needs to be in a position that it can participate in the home's wifi.  The SnifferBuddy should hang where you want to know the temperature, etc. of the air.
