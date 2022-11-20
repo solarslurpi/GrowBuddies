@@ -3,12 +3,13 @@
 <img src="images/whale_misty.svg" class="sd-avatar-md sd-border-3">
 :::
 
-# whaleBuddy
-whaleBuddy maintains the ideal [vpd level](https://www.canr.msu.edu/uploads/resources/pdfs/vpd-vs-rh.pdfs) identified in [the vpd chart](vpd_chart) by happily blowing mist through it's airhole for the right amount of time.  The method whaleBuddy uses to determine how many seconds to turn on sending mist uses a [PID controller](https://en.wikipedia.org/wiki/PID_controller).
+# mistBuddy
+mistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).  The ideal vpd levels come from [the vpd chart](vpd_chart).  When mistBuddy figures out the vpd is too high, she excitedly spouts out mist through her airhole for **just** the right amount of time.  mistBuddy's brain consists of a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  This code is run on the [growBuddy server](growbuddyServer.md).
 
-whaleBuddy consists of:
-- It's body. whaleBuddy's body
-It runs as a [systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.  Configuration settings are in `growbuddy_settings.json`.
+mistBuddy consists of:
+- It's body. mistBuddy's body is a DIY humidifier optimized for the growBuddy environment.
+- A [Systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.
+    - code: [mistbuddy_code]
 
 ## Resources
 I found these resources helpful in my learnings.
@@ -19,10 +20,10 @@ The term "Vapor Pressure Deficit" is not that obvious to immediately understand 
 - [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
 ### PID controller
 - [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out if we just use the P term there is a steady state error, etc.
--  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). whaleBuddy uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
+-  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). mistBuddy uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
 
 (vpd_chart)=
-## VPD Chart
+### VPD Chart
 
 The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .  vpdBuddy gets the ideal vpd levels from the `growbuddy_settings.json` file.
 

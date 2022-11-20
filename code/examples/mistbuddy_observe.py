@@ -1,5 +1,5 @@
 """
-This example uses vpdBuddy to turn on and off mistBuddy in order to most efficiently maintain the ideal vpd value.
+This example Observes vpdBuddy's output.
 
 vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can be instantiated:
 
@@ -15,9 +15,9 @@ vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can
 import sys
 sys.path.append('/home/pi/growbuddy/code')
 
-
-from vpdbuddy_code import vpdBuddy
+from mistbuddy_code import mistBuddy
 import logging
+
 
 from logging_handler import LoggingHandler
 
@@ -26,30 +26,15 @@ from logging_handler import LoggingHandler
 logger = LoggingHandler(logging.DEBUG)
 
 
-def vpd_values_callback(setpoint: float, vpd: float, nSecondsON: int, error: float) -> None:
+def mistBuddy_values_callback(setpoint: float, vpd: float, nSecondsON: int) -> None:
     """vpdBuddy() calls this function when it has updated vpd values on how
     many seconds to turn mistBuddy on.
 
     """
-    global vpdbuddy
-
-    # Write the vpd values to log as info.
     values = (f'vpd setpoint: {setpoint}'
               f'| vpd value: {vpd}'
-              f' | n seconds to turn on mistBuddy: {nSecondsON}',
-              f' | error value: {error}')
+              f' | n seconds to turn on mistBuddy: {nSecondsON}')
     logger.info(values)
-    # Store number of seconds to turn on mistBuddy in influxdb.
-    try:
-        fields = {"vpd": vpd,
-                  "setpoint": setpoint,
-                  "error": error,
-                  "seconds_on": nSecondsON,
-                  "error": error
-                  }
-        vpdbuddy.db_write("vpdBuddy_40_01_01_error_eval_1", fields)
-    except Exception as e:
-        logger.error(f"Error!  Could not write to to the vpdBuddy table in influxdb.  Error: {e}")
 
 
 def main():
@@ -59,14 +44,9 @@ def main():
     callback function and leave other parameters to their default.  In particular,
     the manage parameter defaults to False.  Which is what we want.
     """
-    # To store snifferBuddy readings into the database, set the parameter
-    # snifferbuddy_table_name.
-    # To store the date/time vpdBuddy turned mistBuddy ON and OFF, set the
-    # parameter vpdbuddy_table_name.
-    global vpdbuddy
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True)
 
-    vpdbuddy.start()
+    mistbuddy = mistBuddy(vpd_values_callback=mistBuddy_values_callback)
+    mistbuddy.start()
 
 
 if __name__ == "__main__":

@@ -22,7 +22,7 @@ class growthStage(Enum):
     FLOWER = 3
 
 
-class vpdBuddy(growBuddy):
+class mistBuddy(growBuddy):
 
     """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
     of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
