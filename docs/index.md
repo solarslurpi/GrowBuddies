@@ -17,7 +17,7 @@ GrowBuddies is an Open DIY project that consists of software/hardware components
 :link: beanie
 :link-type: doc
 
-```{image} images/beanie.jpg
+```{image} images/beanie_dog.jpg
 :width: 200px
 :class: sd-m-auto sd-animate-grow50-rot20
 ```
@@ -78,8 +78,9 @@ See you in the garden!
 
 
 getting_started
-gus
 beanie
+bob
+gus
 miha
 examples
 flash_S31

@@ -1,10 +1,14 @@
 
+
+
+(beanie_page)=
+# Beanie
 :::{div}
 <img src="images/beanie_dog.jpg" class="sd-avatar-md sd-border-3">
 :::
 
-(beanie_page)=
-# Beanie
+
+## About
 sniff...sniff...sniff...Beanie happily hangs around in a grow tent sending out mqtt messages over a home's wifi.  The message payload contains readings for the air's CO2 level, relative humidity, and temperature.  There is a photoresistor at the top of Beanie to indicate whether the grow lights are on or off. The messages are sent to the growBuddy broker. This is an  mqtt broker that runs on the growBuddy server.   The star of Beanie is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) . The sensor is what provides the temperature, RH, and CO2 values.  Beanie talks with the other Buddies using mqtt which is provided by [Tasmota firmware](https://tasmota.github.io/docs/About/).  The mqtt messages must be picked up by the growBuddy broker to be useful.
 
 :::{figure} images/beanie_in_growtent.jpg
@@ -93,10 +97,10 @@ Wemos D1 Wiring
 The Photoresistor is "hard wired" to the ESP286's analog pin.  The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
 
 
-# Install Tasmota
+### Install Tasmota
 Time to install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_installation).
 
-# Build Gus
+### Build Gus
 We need Gus before we can store and graph temperature, humidity, CO2, and vpd readings.  Follow [Gus's install steps](make_gus)
 - Step 6: Make a growBuddyServer with mqtt and influxdb support.
 <!-- ## Software
