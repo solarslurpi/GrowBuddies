@@ -2,7 +2,7 @@
 
 # Wiring Components Together
 
-Wiring components together is my biggest source of frustration.
+Wiring components together is a big source of frustration.
 
 :::{figure} images/wiring_pole.jpg
 :align: center
@@ -14,7 +14,7 @@ What a Mess!
 
 It has been many a time my haphazard wiring has lost the connection or caused a short.  I decided to stick to a few commonly used connectors.
 
-## Just Pick One
+## Connectors - Just Pick One
 
 I like the direction companies like Adafruit are going by standardizing on a specific connection.  I am picking up Adafruit's  [stemma](https://learn.adafruit.com/introducing-adafruit-stemma-qt)  style of connecting components.
 - STEMMA connectors are 3 or 4 pin JST PH connectors.  The pins of these connectors are 2mm apart (i.e.: 2mm pitch)

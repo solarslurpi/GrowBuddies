@@ -5,7 +5,7 @@ The growBuddy Server is a Raspberry Pi running:
 - The influxdb database software. [install]influxdb_install
 - grafana.
 
-
+(growbuddyserver_install)=
 ## Materials
 - Raspberry Pi 3 or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck from [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).
 - Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to2.5A)__

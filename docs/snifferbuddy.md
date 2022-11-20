@@ -5,7 +5,7 @@
 
 (snifferbuddy_page)=
 # snifferBuddy
-SnifferBuddy happily hangs around in a grow tent sending out mqtt messages over a home's wifi.  The message payload contains readings for the air's CO2 level, relative humidity, and temperature.  The messages are sent to the growBuddy broker - an mqtt broker that runs on the growBuddy server.  There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off.  The star of SnifferBuddy is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) . The sensor is what provides the temperature, RH, and CO2 values.  snifferBuddy talks with the other Buddies using mqtt which is provided by [Tasmota firmware](https://tasmota.github.io/docs/About/).  The mqtt messages must be picked up by the growBuddy broker to be useful.
+sniff...sniff...sniff...SnifferBuddy happily hangs around in a grow tent sending out mqtt messages over a home's wifi.  The message payload contains readings for the air's CO2 level, relative humidity, and temperature.  There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The messages are sent to the growBuddy broker. This is an  mqtt broker that runs on the growBuddy server.   The star of SnifferBuddy is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) . The sensor is what provides the temperature, RH, and CO2 values.  snifferBuddy talks with the other Buddies using mqtt which is provided by [Tasmota firmware](https://tasmota.github.io/docs/About/).  The mqtt messages must be picked up by the growBuddy broker to be useful.
 
 :::{figure} images/snifferbuddy_in_growtent_sm.jpg
 :align: center
@@ -22,8 +22,18 @@ The one I made looks like this:
 
 SnifferBuddy
 :::
+# Let's Make One!
+*Note: snifferBuddy sends out mqtt messages. This means there needs to be an mqtt broker.  Prior to plugging in snifferBuddy, you will need to [build a growBuddy server](growbuddyserver_install).*
 
-## Internals
+- Step 1: Get the materials. See [Materials](materials).
+- Step 2: Print out the [enclosure](enclosure).
+- Step 3: [Wire](scd30_wiring) the components together.
+- Step 4: Plug the ESP286 into the USB port of your PC/Mac. __Make sure to use a USB cable that handles data i/o.__
+- Step 5: Install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_installation).
+- Step 6: Make a growBuddyServer with mqtt and influxdb support.
+
+## Wiring
+The SCD30 and photoresistor are wired to  an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
 :::{figure} images/SnifferBuddy_wiring.jpg
 :align: center
 :scale: 100
@@ -31,7 +41,8 @@ SnifferBuddy
 SnifferBuddy Wiring
 :::
 
-The SCD30 is wired to  an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
+test [build a growBuddy server](growbuddyserver_install).
+
 I settled on the ESP826 because I settled on [Tasmota](https://tasmota.github.io/docs/)  as the way to send sensor readings over mqtt.
 I figured if [Tasmota's goal](https://tasmota.github.io/docs/About/) was to *"provide ESP8266 based ITEAD Sonokff devices with MQTT and 'Over the Air' or OTA firmware"...*
 Then why not use the same chip?   I {ref}`ran into an issue with the Wemos D1 ESP286<wemos_challenges>` when I made the first SnifferBuddy.  But for the most part, ESP826's are very
@@ -62,12 +73,7 @@ It is amazing what we can DIY riding on the backs of the incredible insight and 
 (make-snifferbuddy)=
 ## Let's Make One!
 
-- Step 1: Get the materials. See [Materials](materials).
-- Step 2: Print out the [enclosure](enclosure).
-- Step 3: [Wire](scd30_wiring) the components together.
-- Step 4: Plug the ESP286 into the USB port of your PC/Mac. __Make sure to use a USB cable that handles data i/o.__
-- Step 5: Install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_installation).
-
+(enclosure)=
 ## Enclosure
 
 The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/growBuddy/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
@@ -88,10 +94,10 @@ SnifferBuddy Enclosure Parts
 :::
 
 
-
+(materials)=
 ### Materials
 
-- [SCD30 sensor](https://www.adafruit.com/product/4867) component. _Note: I have successfully used and SCD40 sensor.  The challenge is it is not by default in the Tasmota Sensors build.  Other sensors can be added if needed._
+- [SCD30 sensor](https://www.adafruit.com/product/4867) component. _Note: I have successfully used and SCD40 sensor.  The challenge is it is not by default in the Tasmota Sensors build.  Other sensors can be added if needed. It takes mucking around in the code._
 - [ESP8286](https://www.aliexpress.us/item/2251832645039000.html) component.
 - Photoresistor and 10K through hole resistor.  I had alot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
 - 3D printer and PLA filament for printing out [the enclosure](enclosure).

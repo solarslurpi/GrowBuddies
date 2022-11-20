@@ -90,11 +90,11 @@ growbuddyServer
 snifferbuddy
 mistbuddy
 flash_S31
-wiring
 tasmota
 systemd
 modules
 sphinxLearnings
 SoilMoistureBuddy
 printing
+wiring
 ```
