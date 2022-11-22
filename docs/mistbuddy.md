@@ -4,13 +4,13 @@
 :::
 Happy Bubbles to You!
 
-# Miha
-Miha has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).  The ideal vpd levels come from [the vpd chart](vpd_chart).  When Miha figures out the vpd is too high, she excitedly spouts out mist through her airhole for **just** the right amount of time.  Miha's brain consists of a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  [Gus](gus.md) runs this code.
+# MistBuddy
+MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).  The ideal vpd levels come from [the vpd chart](vpd_chart).  When MistBuddy figures out the vpd is too high, she excitedly spouts out mist through her airhole for **just** the right amount of time.  MistBuddy's brain consists of a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  [Gus](gus.md) runs this code.
 
-Miha consists of:
-- It's body. Miha's body is a DIY humidifier optimized for the growBuddy environment.
+MistBuddy consists of:
+- It's body. MistBuddy's body is a DIY humidifier optimized for the growBuddy environment.
 - A [Systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.
-    - code: [Miha_code]
+
 
 ## Resources
 I found these resources helpful in my learnings.
@@ -21,7 +21,7 @@ The term "Vapor Pressure Deficit" is not that obvious to immediately understand 
 - [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
 ### PID controller
 - [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out if we just use the P term there is a steady state error, etc.
--  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). Miha uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
+-  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). MistBuddy uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
 
 (vpd_chart)=
 ### VPD Chart
@@ -52,7 +52,7 @@ VPDBuddy System Overview
 
 A  [snifferBuddy](snifferBuddy) sends out CO2, air temp, and relative humidity (RH) readings from within the grow tent to the growBuddy Broker running on a Respberry Pi.  The VPDController Python class
 - A VPD Controller Python Class running on the growBuddy Raspberry Pi.
-- A Miha tied into the grow tent
+- A MistBuddy tied into the grow tent
 
 
 VPDBuddy ties the:
@@ -66,8 +66,8 @@ VPDBuddy ties the:
  vpdBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
  ### Tuning
 #### Challenges
-- The input, setpoint, and error terms are all in floating point units relative to vpd readings.  vpd readings are typically between 0.0 and 2.0.  The output is the number of seconds to turn on Miha.  Thus, the output includes a conversion from vpd (floating point) to number of seconds (integer)
-- Spewing out vapor into the air using Miha is imprecise.  Luckily, the vpd does not have to be precise as shown in the [vpd range chart](vpd_chart)
+- The input, setpoint, and error terms are all in floating point units relative to vpd readings.  vpd readings are typically between 0.0 and 2.0.  The output is the number of seconds to turn on MistBuddy.  Thus, the output includes a conversion from vpd (floating point) to number of seconds (integer)
+- Spewing out vapor into the air using MistBuddy is imprecise.  Luckily, the vpd does not have to be precise as shown in the [vpd range chart](vpd_chart)
 
 #### Settings
 I start with the P value.  Given the vpd in my grow tent with the lights on is around 1.2, I'll use a vpd setpoint of 0.8 to adjust.
@@ -76,7 +76,7 @@ For example:
  - vpd setpoint = 0.8
  - vpd reading = 1.2
  - the vpd error is -0.4
- The negative error says Miha needs to be turned on for a number of seconds.  But how many seconds?  The vpd error units are mapped into the Kp value such that the output from the PID controller is the number of seconds to turn on Miha.
+ The negative error says MistBuddy needs to be turned on for a number of seconds.  But how many seconds?  The vpd error units are mapped into the Kp value such that the output from the PID controller is the number of seconds to turn on MistBuddy.
 
  ### Tuning - Starting with P
  I ran two runs with setting just the P gain.  As shown in the two plots below, setting just the P gain gives an output with a steady state error.
@@ -151,7 +151,7 @@ PID(Kp=45, Ki=0.1, Kd=0.1, setpoint=0.8, sample_time=0.01, output_limits=(None, 
 
 vpdBuddy Kp=45, Ki=0.1, Kd=0.1
 :::
-Woops!  Miha stopped working for a bit and...as expected...
+Woops!  MistBuddy stopped working for a bit and...as expected...
 
 #### Kp=40, Ki=0.1, Kd=0.01
 ```

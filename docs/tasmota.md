@@ -233,8 +233,8 @@ Once flashed and rebooted:
 
 Tasmota Sonoff Configuration
 :::
-- [Configure mqtt](configure_mqtt).  I change the topic to match the Buddy.  E.g.: if it is mistBuddy's fan plug, mistBuddy_fan.  The mister, vaperbuddy_mister.  Snifferbuddy, snifferbuddy.
-- [Set the date/time to your date/time](set_date_time).
+Use the Tasmota S31 configuration when you go through the [Tasmota install](tasmota_installation)
+
 
 (wemos_challenges)=
 ## ESP286/SCD30 Modifications

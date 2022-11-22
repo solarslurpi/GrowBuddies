@@ -40,6 +40,11 @@ napoleon_include_private_with_doc = True
 # Add Myst extensions
 myst_enable_extensions = ["colon_fence", "html_image"]
 
+# Needed for font awesome support using the sphinx-design extension.
+html_css_files = [
+    "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+]
+
 # Ignore documentating these files.
 autodoc_mock_imports = ['influxdb', 'paho']
 
