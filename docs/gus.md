@@ -1,9 +1,12 @@
+(gus)=
+# Gus
 :::{div}
 <img src="images/hamster.jpg" class="sd-avatar-md sd-border-3">
 :::
-Hi! Gladtameetcha! I'm Gus...
 
-# Gus
+
+
+## About
 
 :::{div}
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
@@ -28,7 +31,8 @@ First, you'll need to gather the materials.
 - A Raspberry Pi 3B+ or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck from [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).
 - A Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to2.5A)__.
 - A [microSD card with full size adapter](https://amzn.to/3W3yvHa).
-- An Enclosure needs to be printed out on a 3D printer.  The model I chose is [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used within [this folder](https://github.com/solarslurpi/growBuddy/tree/12164fa3791e3b8eb33d5ebfc06c2096fe7cf1e7/enclosures/growBuddy).
+- An Enclosure needs to be printed out on a 3D printer.  The model I chose is [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used.
+
 ### Install The Software
 #### Resources
 I found the following stuff on the web to be helpful:
@@ -57,7 +61,7 @@ Rasp Pi Lite OS
 
 Choose the cog
 :::
-- Enter growBuddy for the hostname and enable SSH with password authentication.
+- Enter gus for the hostname and enable SSH with password authentication.
 - Fill in the other options - wifi, username/password, wifi, and local settings.
 
 :::{figure} images/rasppi_lite_install_3.jpg
@@ -74,27 +78,26 @@ Setup Options
 ##### Verify the Install
 Go to a terminal window on your Mac or PC and type:
 ```
-ssh pi@growBuddy
+ssh pi@gus
 ```
 After entering your password, you should be in the command prompt:
 ```
-pi@growBuddy:~ $
+pi@gus:~ $
 ```
-If you cannot reach the growBuddy raspberry pi, first check to see if the raspberry pi is on your home wifi by using a utility like [Angry IP](https://angryip.org/).  If it is not, perhaps [this troubleshooting guide](raspi-nowifi) helps.
+If you cannot reach Gus from your Mac/PC, first check to see if the raspberry pi is on your home wifi by using a utility like [Angry IP](https://angryip.org/).  If it is not, perhaps [this troubleshooting guide](raspi-nowifi) helps.
 
 
 (mqtt_install)=
 #### Install mqtt
-mqtt is how the Buddies text message each other. For example, [SnifferBuddy](snifferbuddy.md) sends out (i.e.: publishes in mqtt terminology) over wifi an mqtt message like this:
+The buddies use mqtt to send and receive payloads and commands. For example, [SnifferBuddy](snifferbuddy.md) sends out (i.e.: publishes in mqtt terminology) over wifi an mqtt message like this:
 ```
 {"Time":"2022-09-06T08:52:59",
   "ANALOG":{"A0":542},
   "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
 }
 ```
-
+Gus runs the [Mosquitto Broker](http://www.steves-internet-guide.com/mosquitto-broker/).  Mosquitto is a lightweight open source message broker.  It works well.  Thank you to the open source community.
 ##### Configure the Mosquitto MQQT Broker
-[Mosquitto](http://www.steves-internet-guide.com/mosquitto-broker/) is a lightweight open source message broker.  It works well.  Thank you to the open source community.
 
 Before installing the service, some unique settings are needed in Mosquitto's config file.
 
@@ -114,15 +117,16 @@ allow_anonymous true
   - save and exit.
 ##### Install the Mosquitto MQQT Broker
 - Install Mosquitto [following PiMyLife's steps](https://pimylifeup.com/raspberry-pi-mosquitto-mqtt-server/)
+(mqtt_explorer)=
 ##### Observe Messages
-Open up [MQTT explorer](http://mqtt-explorer.com/) and connect to growBuddy.
-:::{figure} images/mqtt_explorer_before_snifferbuddy.jpg
+Open up [MQTT explorer](http://mqtt-explorer.com/) and connect to gus.
+:::{figure} images/mqtt_explorer.jpg
 :align: center
-:scale: 80
+:scale: 60
 
-growBuddy[1] mqtt broker
+gus mqtt broker
 :::
-_Note: The name of this server is growBuddy1 because growBuddy is being used._  Since there are no Buddies, the only traffic is the default traffic of the broker.
+The image points out there is a SnifferBuddy sending mqtt messages to gus.
 ##### Using MQTT To Determine Device Health
 You may not need to know anything about this.  I have it here so I don't forget why this is in the code!
 
@@ -141,12 +145,16 @@ The [MQTT Esentials Page 9](https://www.hivemq.com/blog/mqtt-essentials-part-9-l
 
 issuing the `status 6` command on the Tasmota command line informs us on the mqtt settings for this Tasmota device:
 ```
- MQT: stat/snifferbuddy/STATUS6 = {"StatusMQT":{"MqttHost":"growBuddy","MqttPort":1883,"MqttClientMask":"DVES_%06X","MqttClient":"DVES_25EEA5","MqttUser":"DVES_USER","MqttCount":1,"MAX_PACKET_SIZE":1200,"KEEPALIVE":30,"SOCKET_TIMEOUT":4}}
+ MQT: stat/snifferbuddy/STATUS6 = {"StatusMQT":{"MqttHost":"gus","MqttPort":1883,"MqttClientMask":"DVES_%06X","MqttClient":"DVES_25EEA5","MqttUser":"DVES_USER","MqttCount":1,"MAX_PACKET_SIZE":1200,"KEEPALIVE":30,"SOCKET_TIMEOUT":4}}
  ```
 The mqtt info lets us know the mqtt keep alive time is 30 seconds.
 (influxdb_install)=
 #### Install influxdb
-[InfluxDB (v1.8)](https://www.influxdata.com/) is a time series based database that is free to use on the Raspberry Pi.
+[InfluxDB (v1.8)](https://www.influxdata.com/) is a time series based database that is free to use on the Raspberry Pi.  There can be multiple databases.
+
+```{admonition} Gus as the database name
+I stick with the database name of Gus.  If you look in gus_settings.json, you will see influxdb setting for the database.
+```
 
 Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) to install.
 
@@ -170,7 +178,7 @@ and deleted the duplicate lines. Then `sudo apt-get update` worked.
 
 (raspi-nowifi)=
 #### Installed Raspberry Pi But Cannot SSH
-You've verified the growBuddy Rasp Pi has an IP address.  However, perhaps you accidentally entered the wrong SSID or password for your wifi.  Or you forget to enable SSH.  You can manually configure these options.
+You've verified Gus has an IP address.  However, perhaps you accidentally entered the wrong SSID or password for your wifi.  Or you forget to enable SSH.  You can manually configure these options.
 - Add "SSH" file to the root of the image.  We do this by opening a terminal on the boot partition and typing `$touch ssh`
 - Create the `wpa_supplicant.conf` file : `$touch wpa_supplicant.conf`.  Copy the contents into the file `nano wpa_supplicant.conf`:
 ```
@@ -220,8 +228,13 @@ Getting to Bash Command Line Through Explorer
 
 A wsl window will open at this location.
 ```
-sudo rsync -avh pi@growBuddy:/home/pi/growBuddy_1_data.zip  .
+sudo rsync -avh pi@gus:/home/pi/mydata.zip  .
 
+```
+#### Change Text
+From within a directory within multiple files:
+```
+find /path -type f -exec sed -i 's/oldstr/newstr/g' {} \;
 ```
 #### OSError: [Errno 98] Address already in use
 
@@ -237,7 +250,7 @@ The PID we are interested in is 2465.
 ##### Kill the Process
 Onto the kill command, which needs sudo privileges.
 ```
-pi@growBuddy:~/gus $ sudo kill -9 2465
+pi@gus:~/gus $ sudo kill -9 2465
 [1]+  Killed                  sphinx-autobuild docs docs/_build/html  (wd: ~/gus/docs)
 (wd now: ~/gus)
 ```

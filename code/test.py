@@ -1,4 +1,4 @@
-from growbuddy_code import growBuddy
+from code.gus_code import growBuddy
 
 
 i = growBuddy()

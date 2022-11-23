@@ -1,7 +1,7 @@
 """
 This example gets air quality readings from a snifferBuddy.
 
-An instance of the growBuddy class returns air quality readings from snifferBuddy to a values_callback function.  The
+An instance of Gus.asdfmaskdjflsadkjf.asl returns air quality readings from snifferBuddy to a values_callback function.  The
 status_callback function will be called by the growBuddy instance when there is an Offline or Online snifferBuddy event.
 
 The example also shows the logging feature of the growBuddy class.  It is an abstraction above
@@ -11,10 +11,10 @@ Python's logging, adding stack tracing as well as color coding.
 import logging
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growbuddy/code')
+sys.path.append('/home/pi/growbuddies/code')
 
 from logging_handler import LoggingHandler
-from growbuddy_code import growBuddy
+from gus_code import Gus
 from snifferbuddy_code import snifferBuddy
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
@@ -22,7 +22,7 @@ logger = LoggingHandler(logging.DEBUG)
 
 
 def values_callback(snifferBuddy_values: snifferBuddy):
-    """Called when growBuddy receives a reading from the SnifferBuddy.
+    """Called when Gus receives a reading from the SnifferBuddy.
 
     snifferBuddy_values (snifferBuddy class): air quality values as
     properties as well as within a dictionary.
@@ -56,7 +56,7 @@ def test_snifferbuddy_getreadings():
     callbacks so we can receive the values when SnifferBuddy publishes them and also SnifferBuddy's status.
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferbuddy = growBuddy("snifferbuddy_topic", growBuddy_values_callback=values_callback, status_callback=status_callback)
+    snifferbuddy = Gus("snifferbuddy_topic", G=values_callback, status_callback=status_callback)
     snifferbuddy.start()
 
 

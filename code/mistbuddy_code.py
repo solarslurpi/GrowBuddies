@@ -1,7 +1,7 @@
 from PID_mqtt import PID
 import logging
 from enum import Enum
-from growbuddy_code import growBuddy
+from code.gus_code import growBuddy
 import threading
 from snifferbuddy_code import snifferBuddy
 

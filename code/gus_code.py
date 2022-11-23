@@ -11,10 +11,12 @@ import random
 import string
 from snifferbuddy_code import snifferBuddy
 
+snifferbuddy_topic = "snifferbuddy_topic"
 
-class growBuddy(Thread):
 
-    """The growBuddy class provides:
+class Gus(Thread):
+
+    """The Gus class provides:
 
     * Callbacks for receiving sensor readings.  Under the covers, mqtt messaging is managed.
 
@@ -28,14 +30,14 @@ class growBuddy(Thread):
         topic_key (str, optional): The dictionary key for the full topic in the settings file.  In mqtt, the topic key is given
         to the Publish/Subscribe methods.
 
-        growBuddy_values_callback (function, optional): Function called by growBuddy to return messages received by the mqtt topic.
+        SnifferBuddy_values_callback (function, optional): Function called by Gus to return messages received by the mqtt topic.
             Defaults to snifferBuddy's topic.
 
-        status_callback (function, optional): Will be called if growBuddy detects a problem accessing the Buddy.
+        status_callback (function, optional): Will be called if Gus detects a problem accessing the Buddy.
 
         snifferbuddy_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.  Defaults to None.
 
-        settings_filename (str, optional): All the settings used by the growBuddy system. Defaults to "growBuddy_settings.json".
+        settings_filename (str, optional): All the settings used by Gus. Defaults to "gus_settings.json".
 
         log_level (constant, optional): Defined by Python's logging library. Defaults to logging.DEBUG.
 
@@ -43,12 +45,12 @@ class growBuddy(Thread):
     def __init__(
         self,
         subscribe_to_sensor=True,
-        topic_key="snifferBuddy_topic",  # Many times the caller will want to get snifferBuddy readings.
+        topic_key=snifferbuddy_topic,  # Many times the caller will want to get snifferBuddy readings.
         msg_value=None,  # Used when publishing a message.
-        growBuddy_values_callback=None,
+        SnifferBuddy_values_callback=None,
         status_callback=None,
-        snifferbuddy_table_name=None,  # In case you want to save these readings.  The growBuddy class is used a lot.
-        settings_filename="growbuddy_settings.json",
+        snifferbuddy_table_name=None,  # Provide a table name to use in influxdb to store the readings.
+        settings_filename="gus_settings.json",
         log_level=logging.DEBUG,
     ):
 
@@ -58,7 +60,7 @@ class growBuddy(Thread):
             random.choice(string.ascii_lowercase) for i in range(10)
         )
         Thread.__init__(self, name=self.unique_name)
-        self.growBuddy_values_callback = growBuddy_values_callback
+        self.SnifferBuddy_values_callback = SnifferBuddy_values_callback
         self.status_callback = status_callback
         self.snifferbuddy_table_name = snifferbuddy_table_name
 
@@ -71,7 +73,7 @@ class growBuddy(Thread):
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler(log_level)
         self.logger.debug(
-            f"-> Initializing growBuddy class for task {self.unique_name}"
+            f"-> Initializing Gus class for task {self.unique_name}"
         )
         # Set the working directory to where the Python files are located.
         self.logger.debug(
@@ -89,7 +91,7 @@ class growBuddy(Thread):
             self.logger.error(f"...Exiting due to Error: {e}")
             os._exit(1)
         # Get a connection to the influxdb database.
-        # The database must exist on the "hostname" Server (which is most likely named "growBuddy").
+        # The database must exist on the "hostname" Server (which is most likely named "Gus").
         try:
             self.influx_client = InfluxDBClient(host=self.settings["hostname"], database=self.settings["influxdb"]["db_name"])
         except ValueError as e:
@@ -137,7 +139,7 @@ class growBuddy(Thread):
     def _on_connect(self, client, userdata, flags, rc):
         """mqtt client callback called once the code has connected with the broker.
         Now we can subscribe to readings based on the topic initially passed in. We also subscribe to mqtt's
-        LWT messages coming from each Buddy and retained by the growBuddy Broker.  The LWT messages is how
+        LWT messages coming from each Buddy and retained by the Gus Broker.  The LWT messages is how
         we can determine if a Buddy is Online or Offline.
 
         Args:
@@ -179,12 +181,10 @@ class growBuddy(Thread):
         # Send the message contents as a dictionary back to the values_callback.
         try:
             mqtt_dict = json.loads(message)
-            if self.topic_key == "snifferBuddy_topic":
-                # Since this is a SnifferBuddy reading, put in a simple dictionary.
-                s = snifferBuddy(mqtt_dict)
-                if self.growBuddy_values_callback:
-                    self.growBuddy_values_callback(s)
-                # Write reading to database table if desired.
+            s = snifferBuddy(mqtt_dict)
+            if self.SnifferBuddy_values_callback:
+                self.SnifferBuddy_values_callback(s)
+            # Write reading to database table if desired.
             if self.snifferbuddy_table_name:
                 try:
                     self.db_write(self.snifferbuddy_table_name, s.dict)
@@ -213,7 +213,7 @@ class growBuddy(Thread):
 
         Returns:
             dict: A dictionary of values for things like the name of the mqtt broker, mqtt topics,
-            vpd setpoints, etc.  The file provided is named "growBuddy_settings.json".
+            vpd setpoints, etc.  The file provided is named "gus_settings.json".
 
         """
         self.logger.debug(f"-> Reading in settings from {self.settings_filename} file.")

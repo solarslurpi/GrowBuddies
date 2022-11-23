@@ -1,26 +1,32 @@
 """
+This example gets air quality readings from a snifferBuddy.
 
+An instance of the growBuddy class returns air quality readings from snifferBuddy to a values_callback function.  The
+status_callback function will be called by the growBuddy instance when there is an Offline or Online snifferBuddy event.
+
+The example also shows Gus's logging feature.  It is an abstraction above
+Python's logging, adding stack tracing as well as color coding.
 The only difference between this example and the snifferbuddy_getreadings example is the storing of the
 reading into an influxDB database.
 
-The 'heavy lifter' here is the growBuddy class.
+The 'heavy lifter' here is Gus.
 
 
 """
 import logging
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growBuddy/code')
+sys.path.append('/home/pi/growbuddies/code')
 
 from logging_handler import LoggingHandler
-from growbuddy_code import growBuddy
+from gus_code import Gus
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
 
 
 def values_callback(dict):
-    """Called by growBuddy when the instance receives a reading from the SnifferBuddy.
+    """Called by Gus when a reading from the SnifferBuddy.
 
     Args:
         dict (dict): identical to the dict in snifferbuddy_getreadings.py
@@ -58,8 +64,8 @@ After this code is run, there should be entries in the influxdb database within 
 
    """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferBuddy = growBuddy("growBuddy", values_callback=values_callback, status_callback=status_callback,
-                             snifferbuddy_table_name="snifferbuddy")
+    snifferBuddy = Gus(SnifferBuddy_values_callback=values_callback, status_callback=status_callback,
+                       snifferbuddy_table_name="sniff2")
     snifferBuddy.start()
 
 

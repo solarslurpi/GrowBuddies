@@ -4,7 +4,7 @@ import logging
 import sys
 sys.path.append('/home/pi/growbuddy/code')
 from logging_handler import LoggingHandler
-from growbuddy_code import growBuddy
+from code.gus_code import growBuddy
 from snifferbuddy_code import snifferBuddy
 
 

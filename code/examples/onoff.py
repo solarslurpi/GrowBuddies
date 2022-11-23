@@ -4,7 +4,7 @@
 # TODO: These two lines can be removed when this is part of a package.
 import sys
 sys.path.append('/home/pi/growbuddy/code')
-from growbuddy_code import growBuddy
+from code.gus_code import growBuddy
 
 
 def main():

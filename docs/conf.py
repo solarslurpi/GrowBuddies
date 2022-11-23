@@ -28,7 +28,8 @@ extensions = [
     'sphinx_autodoc_typehints',
     'myst_parser',
     'sphinx.ext.autosectionlabel',
-    'sphinx_design'
+    'sphinx_design',
+    'sphinx.ext.doctest'
 ]
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
