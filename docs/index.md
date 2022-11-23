@@ -3,7 +3,7 @@
 % You can adapt this file completely to your liking, but it should at least
 % contain the root `toctree` directive.
 
-# Welcome to GrowBuddies! {fa}`leaf;sd-text-success`
+# Welcome to GrowBuddies! {material-regular}`yard;2em;sd-text-success`
 Hello! Thank you for stopping by.  The GrowBuddies project is an Open DIY project that consists of software/hardware components - called Buddies.
 
 # Just a bunch of Buddies
@@ -62,12 +62,13 @@ In the bottom left hand corner of the image, you see my growtent.  There is a Sn
 The Buddies sure love to play!  It's non-stop fun as:
 - [SnifferBuddy](snifferbuddy) happily puffs out [mqtt messages](mqtt_install) over a home's wifi containing air readings detected by it's [SCD-30 sensor](https://www.adafruit.com/product/4867).
 - Good 'ol [Gus](gus) has set up a listening "box" [aka the mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy mqtt message.  If instructed to do so, Gus can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need Gus to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
+
 - [MistBuddy](mistbuddy) is an add-on that subscribes to the SnifferBuddy messages.  MistBuddy can operate in one of two modes.
     - **Observation** - MistBuddy receives SnifferBuddy messages.  You can ask for the latest vpd value, as well as the number of seconds MistBuddy calculated the MistBuddy's humidifier to turn on.
     - **Maintenance** - Does everything **Observation** does.  Adds turning on MistBuddy's humidifier for the number of seconds the vpd calculations determined.
 
 :::{div}  sd-font-weight-bold sd-text-success
-See you in the garden.
+See you in the garden. {fa}`leaf;sd-text-success`
 :::
 
 
