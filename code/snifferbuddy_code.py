@@ -17,6 +17,7 @@ class snifferBuddyConstants:
     HUMIDITY = 1
     CO2 = 2
     LIGHT_LEVEL = 3
+    TIME = 4
     # Note: vpd is not listed because it is a function of temperature and humidity.
 
 
@@ -71,6 +72,8 @@ class snifferBuddy():
             # e.g. for temperature:
             # temperature = item = mqtt_dict["SCD30"]["Temperature"].  If the item is for
             # the temperature, the item_number is 0.
+            if item_number == snifferBuddyConstants.TIME:
+                item = self.mqtt_dict["Time"]
             if self.sensor == snifferBuddySensors.SCD30:
                 if item_number == snifferBuddyConstants.LIGHT_LEVEL:
                     # Light level is part of Snifferbuddy, but not the SCD30.
@@ -89,7 +92,8 @@ class snifferBuddy():
         Returns:
             dict: Contains values for temperature, humidity, co2, vpd, and light level.
         """
-        return {"temperature": self.temperature,
+        return {"time": self.time,
+                "temperature": self.temperature,
                 "humidity": self.humidity,
                 "co2": self.co2,
                 "vpd": self.vpd,
@@ -105,6 +109,13 @@ class snifferBuddy():
         # I set the temperature to F.
         t = self._get_item(snifferBuddyConstants.TEMPERATURE)
         return t
+
+    @property
+    def time(self) -> str:
+        """Returns a string containing the date and time that can be converted into a datetime.
+        """
+        time = self._get_item(snifferBuddyConstants.TIME)
+        return time
 
     @property
     def humidity(self) -> float:
