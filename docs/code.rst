@@ -20,10 +20,10 @@ code.PID\_mqtt module
    :undoc-members:
    :show-inheritance:
 
-code.growbuddy\_code module
----------------------------
+code.gus\_code module
+---------------------
 
-.. automodule:: code.growbuddy_code
+.. automodule:: code.gus_code
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,6 +32,14 @@ code.logging\_handler module
 ----------------------------
 
 .. automodule:: code.logging_handler
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+code.mistbuddy\_code module
+---------------------------
+
+.. automodule:: code.mistbuddy_code
    :members:
    :undoc-members:
    :show-inheritance:
@@ -56,14 +64,6 @@ code.util\_code module
 ----------------------
 
 .. automodule:: code.util_code
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-code.vpdbuddy\_code module
---------------------------
-
-.. automodule:: code.vpdbuddy_code
    :members:
    :undoc-members:
    :show-inheritance:

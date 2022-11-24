@@ -6,7 +6,7 @@
 
 
 
-## About
+## About {material-regular}`question_mark;1em;sd-text-success`
 
 :::{div}
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
@@ -25,13 +25,16 @@ Here are two Gus's I've made:
 :scale: 40
 ```
 The green one's bones (the one on the left) are made up of Raspberry 4 stuff.  The purple one is made up of Raspberry 3B+ stuff.  I found this chart noting the differences between the Raspberry Pi 3B+ and the Raspberry Pi 4
-### Gather The Materials
+### Rasp Pi + Enclosure
+#### Gather The Materials
 First, you'll need to gather the materials.
 
 - A Raspberry Pi 3B+ or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck from [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).
 - A Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to2.5A)__.
 - A [microSD card with full size adapter](https://amzn.to/3W3yvHa).
 - An Enclosure needs to be printed out on a 3D printer.  The model I chose is [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used.
+#### Put the Pi in its Enclosure
+I found it pretty simple to put the pi into the enclosure once it had printed.
 
 ### Install The Software
 #### Resources
@@ -41,6 +44,7 @@ I found the following stuff on the web to be helpful:
 - [mqtt Explorer](http://mqtt-explorer.com/) - this tool does exactly what the name implies.  It allows you to explore the mqtt traffic as it whizzes by.  You can also publish messages.  Very handy.
 - [YouTube video on mqtt Last Will and Testament](https://www.youtube.com/watch?v=dNy9GEXngoE).  Good to know how this works (and why).
 - [Clearing mqtt retained messages](https://community.openhab.org/t/clearing-mqtt-retained-messages/58221).  Another good to know.
+(tasmota_lwt)=
 - [How Tasmota handles mqtt Last Will and Testament](https://tasmota.github.io/docs/MQTT/#lwt-topic-last-will-and-testament)
 (raspPi_install)=
 #### Install The Raspberry Pi OS
@@ -174,10 +178,10 @@ $ sudo nano /etc/apt/sources.list.d/grafana.list
 ```
 and deleted the duplicate lines. Then `sudo apt-get update` worked.
 
-### Useful Raspberry Pi Stuff
+## Useful Raspberry Pi Stuff
 
 (raspi-nowifi)=
-#### Installed Raspberry Pi But Cannot SSH
+### Installed Raspberry Pi But Cannot SSH
 You've verified Gus has an IP address.  However, perhaps you accidentally entered the wrong SSID or password for your wifi.  Or you forget to enable SSH.  You can manually configure these options.
 - Add "SSH" file to the root of the image.  We do this by opening a terminal on the boot partition and typing `$touch ssh`
 - Create the `wpa_supplicant.conf` file : `$touch wpa_supplicant.conf`.  Copy the contents into the file `nano wpa_supplicant.conf`:
@@ -214,7 +218,7 @@ Changing the ssid and psk to match your network.
 - Power up the Rasp Pi.  Hopefully wireless is working!
 
 
-#### Using Rsync
+### Using Rsync
 Rsync is a very useful utiity on the Raspberry Pi.  I document my use here because I keep forgetting
 how to use it.  Currently I am on a Windows PC.  The challenge is to start an Bash session in the right directory.
 - open Explorer, go to the directory to use rsync, type in bash in the text field for the filepath.
@@ -231,14 +235,14 @@ A wsl window will open at this location.
 sudo rsync -avh pi@gus:/home/pi/mydata.zip  .
 
 ```
-#### Change Text
+### Change Text
 From within a directory within multiple files:
 ```
 find /path -type f -exec sed -i 's/oldstr/newstr/g' {} \;
 ```
-#### OSError: [Errno 98] Address already in use
+### OSError: [Errno 98] Address already in use
 
-##### Find the ProcessID
+#### Find the ProcessID
 
 Using the command:
 ```
@@ -247,7 +251,7 @@ pi        2465  0.2  0.4  25956 17520 pts/0    T    09:31   0:00 /home/pi/gus/py
 pi        2641  0.0  0.0   7344   508 pts/0    S+   09:34   0:00 grep --color=auto sphinx-autobuild
 ```
 The PID we are interested in is 2465.
-##### Kill the Process
+#### Kill the Process
 Onto the kill command, which needs sudo privileges.
 ```
 pi@gus:~/gus $ sudo kill -9 2465

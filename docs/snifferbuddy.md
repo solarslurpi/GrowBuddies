@@ -31,7 +31,7 @@ SnifferBuddy
 SnifferBuddy sends out mqtt messages in which the payload includes the sensor readings.  You can use any mqtt environment to interact with a SnifferBuddy.  If you have built [Gus](gus), Gus will know what to do with the SnifferBuddy messages.  This document assumes [Gus](gus) has been built.
 ```
 :::{div}
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
 Once plugged in and working, you will be able to (compliments of [Gus](gus)):
@@ -103,8 +103,9 @@ Time to install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_in
 #### Verify Install
 You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is sending out mqtt messages.
 ## Play!!! {material-regular}`celebration;1em;sd-text-success`
+### Code: snifferbuddy_storereadings.py
 
-
-
-```{automodule} code.examples.snifferbuddy_storereadings
+```{eval-rst}
+.. automodule:: code.examples.snifferbuddy_storereadings
+   :members:
 ```
