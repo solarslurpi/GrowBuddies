@@ -12,6 +12,14 @@ Subpackages
 Submodules
 ----------
 
+code.colors\_code module
+------------------------
+
+.. automodule:: code.colors_code
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 code.gus\_code module
 ---------------------
 
