@@ -66,7 +66,7 @@ class Gus(Thread):
         msg_value=None,  # Used when publishing a message.
         SnifferBuddyReadings_callback=None,
         status_callback=None,
-        snifferbuddy_table_name=None,  # Provide a table name to use in influxdb to store the readings.
+        SnifferBuddyReadings_table_name=None,  # Provide a table name to use in influxdb to store the readings.
         settings_filename=settings_filename,
         log_level=logging.DEBUG,
     ):
@@ -79,7 +79,7 @@ class Gus(Thread):
         Thread.__init__(self, name=self.unique_name)
         self.SnifferBuddyReadings_callback = SnifferBuddyReadings_callback
         self.status_callback = status_callback
-        self.snifferbuddy_table_name = snifferbuddy_table_name
+        self.SnifferBuddyReadings_table_name = SnifferBuddyReadings_table_name
 
         # Remember the key in the settings dictionary for the mqtt topic.
         self.topic_key = topic_key

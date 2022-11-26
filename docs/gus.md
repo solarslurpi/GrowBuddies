@@ -178,7 +178,10 @@ after bumbling about on Google/StackOverflow, I ended up:
 $ sudo nano /etc/apt/sources.list.d/grafana.list
 ```
 and deleted the duplicate lines. Then `sudo apt-get update` worked.
-
+## Playtime {material-regular}`celebration;1em;sd-text-success`
+```{note} You must build [SnifferBuddy](snifferbuddy) before playtime can begin.
+```
+Run the example code [snifferbuddy_storereadings.py](snifferbuddy_storereadings)
 ## Useful Raspberry Pi Stuff
 
 (raspi-nowifi)=

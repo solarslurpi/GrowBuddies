@@ -104,7 +104,7 @@ Time to install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_in
 You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is sending out mqtt messages.
 
 ## Store Readings {material-outlined}`storage;1em;sd-text-success`
-
+(snifferbuddy_storereadings)=
 ### code/examples/snifferbuddy_storereadings.py
 
 ```{eval-rst}

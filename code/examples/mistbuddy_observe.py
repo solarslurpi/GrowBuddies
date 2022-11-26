@@ -13,7 +13,7 @@ vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can
 """
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growbuddy/code')
+sys.path.append('/home/pi/growbuddies/code')
 
 from mistbuddy_code import mistBuddy
 import logging

@@ -83,7 +83,6 @@ See you in the garden. {fa}`leaf;sd-text-success`
 getting_started
 snifferbuddy
 gus
-logginghandler
 tasmota
 systemd
 ```
