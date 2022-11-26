@@ -1,51 +1,81 @@
+#
+# The goal of this example is to walk through the interactions with `Gus()` to access SnifferBuddy readings.
+#
+# Copyright 2022 Margaret Johnson
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
 """This example:
 
-- Stores SnifferBuddy readings into an influxdb table within the database (this is explained in Gus's documentation).
-- Returns a SnifferBuddy dict that contains the air readings as properties.  **including** vpd.
+- Returns SnifferBuddy readings **including** vpd.
+- Stores SnifferBuddy readings into an influxdb table within the database.
 - Keeps the code aware of SnifferBuddy's status.
-- Shows Gus's logging capability.
+- Shows `Gus()`'s logging capability.
 
+============================
+Return SnifferBuddy Readings
+============================
 SnifferBuddy uses Tasmota to publish air quality readings that come in as a JSON string.  The SnifferBuddy I built publishes the following
 Tasmota payload:
 
 .. code-block:: python
    :caption: A SnifferBuddy Tasmota Payload
 
-      tasmota_payload =  {"Time":"2022-09-06T08:52:59",
-       "ANALOG":{"A0":542},
-       "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
+      tasmota_payload =  "Time":"2022-11-24T13:12:37",
+       "ANALOG":{"A0":1024},
+       "SCD30":{"CarbonDioxide":630,"eCO2":661,"Temperature":73.3,"Humidity":50.0,"DewPoint":53.5},"TempUnit":"F"}
 
-Gus uses the SnifferBuddy class to convert the Tasmota payload into a SnifferBuddy dictionary.  Along with the readings provided by mqtt,
-SnifferBuddy calculates the vpd and includes this measurement within the dictionary.
+`Gus()` uses the `SnifferBuddyReadings()` class to convert the Tasmota payload into easily accessible variables.  If `Gus()` is
+passed in a `SnifferBuddyReadings_callback` function when initialized, the values will be returned within a `SnifferBuddyReadings` instance.
+
 .. code-block:: python
-   :caption: A SnifferBuddy Dictionary
+   :caption: Accessing SnifferBuddy Readings
 
-       from snifferbuddy_code import SnifferBuddy
-       s = SnifferBuddy(tasmota_payload)
-       s.time =
+       from snifferbuddy_code import SnifferBuddyReadings
 
-def __init__(self, mqtt_dict, sensor=snifferBuddySensors.SCD30, log_level=logging.DEBUG):
-.. automodule:: code.snifferbuddy_code
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Gus is used to access and store the readings.  Looking at the `main()` function below, the first thing is to get an instance of Gus.
-
-
-When Gus is started with the Gus.start() method, the code subscribes to SnifferBuddy's mqtt message as well as the [LWT Topic](tasmota_lwt)
-
-An instance of the growBuddy class returns air quality readings from snifferBuddy to a values_callback function.  The
-status_callback function will be called by the growBuddy instance when there is an Offline or Online snifferBuddy event.
-
-The example also shows Gus's logging feature.  It is an abstraction above
-Python's logging, adding stack tracing as well as color coding.
-The only difference between this example and the snifferbuddy_getreadings example is the storing of the
-reading into an influxDB database.
-
-The 'heavy lifter' here is Gus.
+       def snifferbuddyreadings(snifferBuddyReadings):
+       s = SnifferBuddyReadings(tasmota_payload)
+            print(f"Time: {s.time}, Temperature (F): {s.temp}, Humidity: {s.humidity})
+            s.time = "2022-09-06T08:52:59"
+            s.temperature = 71.8
+            s.humidity = 61.6
+            s.co2 = 814
+            s.light_level = 542
+            s.vpd = 1.23
 
 
+============================
+Store SnifferBuddy Readings
+============================
+
+.. note::
+   This example assumes you have installed influxdb and created the `gus` database as noted in `Gus()`'s page under :ref:`influxdb_install`.
+
+The table name is set to "sniff2" in `main()`
+(`SnifferBuddyReadings_table_name="sniff2"`).
+
+==========================
+Get SnifferBuddy's Status
+==========================
+
+.. note::
+   How SnifferBuddy's status is determined is discussed in :ref:`mqtt_LWT`.
+
+
+If the `status_callback` parameter is set to a function, `Gus()` will call the function when an `LWT` packet comes in.
+`Gus()` returns a string with either `online` or `offline`.
+
+Functions
+~~~~~~~~~
 """
 import logging
 # TODO: These two lines can be removed when this is part of a package.
@@ -59,37 +89,48 @@ from gus_code import Gus
 logger = LoggingHandler(logging.DEBUG)
 
 
-def values_callback(snifferbuddy_dict):
-    """Called by Gus when a reading from the SnifferBuddy.
+def snifferbuddyreadings(snifferBuddyReadings):
+    """This is the `SnifferBuddyReadings_callback` function that was set when an instance of `Gus()`
+    was initialized in `main()`.
+    The air quality values will find their way to this callback function when an instance of `Gus()` is initialized with:
 
     Args:
-        dict (dict): identical to the dict in snifferbuddy_getreadings.py
+        snifferBuddyReadings (SnifferBuddyReadings): An instance of SnifferBuddyReadings.
 
     """
-    logger.debug(f"{snifferbuddy_dict}")
+    logger.debug(f"{snifferBuddyReadings.dict}")
 
 
 def status_callback(status):
-    """Identical to the status_callback function in snifferbuddy_getreadings.py
+    """`Gus()` will call this function when an `LWT` packet comes in.  `Gus()` returns a string with either
+    `online` or `offline`.
 
     Args:
-        status (str): Either the string "Online" or "Offline".
+        status (str): `Gus()` sends either the string "Online" or "Offline".
     """
     logger.debug(f'-> SnifferBuddy is: {status}')
 
 
 def main():
-    """This example assumes there is a SnifferBuddy sending out readings.  We can ask Gus
-        to store these readings. The following parameters are passed into Gus:
-    : param SnifferBuddy_values_callback: Is set to the above values_callback() function.  When
-            this parameter is set, the function passed in will be called when a new SnifferBuddy
-            reading is received.  It converts the Tasmota version of the mqtt message into a SnifferBuddy
-            object.
+    """We initialize an instance of `Gus()` with the following parameters.  The defaults are fine for
+    the other parameters.
+
+    Args:
+
+        SnifferBuddyReadings_callback (function, optional): Function called by `Gus()` to return an instance of a SnifferBuddyReadings().
+
+        status_callback (function, optional): Function called by `Gus()` when an LWT message is received. The `status_callback` function receives
+            a string containing either `online` or `offline`.
+
+        SnifferBuddyReadings_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.
+    After getting an instance of `Gus()` with these parameters, Call the `start()` method.
+
+
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferBuddy = Gus(SnifferBuddy_values_callback=values_callback, status_callback=status_callback,
-                       snifferbuddy_table_name="sniff2")
-    snifferBuddy.start()
+    snifferBuddyReadingsInstance = Gus(SnifferBuddyReadings_callback=snifferbuddyreadings, status_callback=status_callback,
+                                       SnifferBuddyReadings_table_name="sniff2")
+    snifferBuddyReadingsInstance.start()
 
 
 if __name__ == "__main__":

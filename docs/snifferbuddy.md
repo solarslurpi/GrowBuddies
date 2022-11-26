@@ -36,7 +36,7 @@ SnifferBuddy sends out mqtt messages in which the payload includes the sensor re
 
 
 Once plugged in and working, you will be able to (compliments of [Gus](gus)):
-- Store readings into an influxdb table (referred to as a measurement within influxdb terminology) influxdb.
+- Store readings into an influxdb table (referred to as a measurement influxdb terminology) influxdb.
 - Visualize your readings using grafana.
 ### Gather The Materials
 
@@ -106,12 +106,25 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 ## Store Readings {material-outlined}`storage;1em;sd-text-success`
 (snifferbuddy_storereadings)=
 ### code/examples/snifferbuddy_storereadings.py
+```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/main/code/examples/snifferbuddy_storereadings.py
+:outline:
+:color: success
+
+ {octicon}`mark-github;1em;sd-text-success` View Code
+```
 
 ```{eval-rst}
 .. automodule:: code.examples.snifferbuddy_storereadings
    :members:
 ```
+
 ## About Logging
+```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/5942d40bff58e11be8e78d7296eb0daa9fff5a17/code/logginghandler.py
+:outline:
+:color: success
+
+ {octicon}`mark-github;1em;sd-text-success` View Code
+```
 ```{eval-rst}
 .. automodule:: code.logginghandler
    :members:
