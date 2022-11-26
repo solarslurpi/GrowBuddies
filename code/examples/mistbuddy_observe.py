@@ -19,7 +19,7 @@ from mistbuddy_code import mistBuddy
 import logging
 
 
-from logging_handler import LoggingHandler
+from logginghandler import LoggingHandler
 
 
 # Most likely you'll use DEBUG, INFO, or ERROR.

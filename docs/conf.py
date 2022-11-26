@@ -10,14 +10,13 @@ import sys
 # Add the code path
 sys.path.insert(0, os.path.abspath('../code'))
 
-project = 'growBuddy'
+project = 'GrowBuddies'
 copyright = '2022, HappyDay'
 author = 'HappyDay'
 release = '0.1'
 
-# ignore files in the virtual environment
-# https://youtu.be/gWrc4xzm45Y?list=PL2Uw4_HvXqvYk1Y5P8kryoyd83L_0Uk5K&t=1106
-exclude_patterns = ["py_env/*"]
+# ignore files
+exclude_patterns = ["py_env/*", '**/_*']
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

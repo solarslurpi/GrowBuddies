@@ -3,7 +3,7 @@ import logging
 # TODO: These two lines can be removed when this is part of a package.
 import sys
 sys.path.append('/home/pi/growbuddy/code')
-from logging_handler import LoggingHandler
+from logginghandler import LoggingHandler
 from code.gus_code import growBuddy
 from snifferbuddy_code import snifferBuddy
 

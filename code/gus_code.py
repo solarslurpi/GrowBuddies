@@ -1,6 +1,22 @@
+#
+# Gus does the heavy lifting for the GrowBuddies.
+#
+# Copyright 2022 Margaret Johnson
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
 import json
 import logging
-from logging_handler import LoggingHandler
+from logginghandler import LoggingHandler
 import os
 from threading import Thread
 import paho.mqtt.client as mqtt
@@ -9,9 +25,10 @@ import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
 import random
 import string
-from snifferbuddy_code import snifferBuddy
+from snifferbuddyreadings_code import snifferBuddyReadings
 
 snifferbuddy_topic = "snifferbuddy_topic"
+settings_filename = "growbuddies_settings.json"
 
 
 class Gus(Thread):
@@ -28,14 +45,14 @@ class Gus(Thread):
 
     Args:
         topic_key (str, optional): The dictionary key for the full topic in the settings file.  In mqtt, the topic key is given
-        to the Publish/Subscribe methods.
+        to the Publish/Subscribe methods.  Defaults to `snifferbuddy_topic`.
 
-        SnifferBuddy_values_callback (function, optional): Function called by Gus to return messages received by the mqtt topic.
-            Defaults to snifferBuddy's topic.
+        SnifferBuddyReadings_callback (function, optional): Function called by Gus to return an instance of a SnifferBuddyReadings().
 
-        status_callback (function, optional): Will be called if Gus detects a problem accessing the Buddy.
+        status_callback (function, optional): Function called by Gus when an LWT message is received. The `status_callback` function receives
+        a string containing either `online` or `offline`.
 
-        snifferbuddy_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.  Defaults to None.
+        SnifferBuddyReadings_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.  Defaults to None.
 
         settings_filename (str, optional): All the settings used by Gus. Defaults to "gus_settings.json".
 
@@ -47,10 +64,10 @@ class Gus(Thread):
         subscribe_to_sensor=True,
         topic_key=snifferbuddy_topic,  # Many times the caller will want to get snifferBuddy readings.
         msg_value=None,  # Used when publishing a message.
-        SnifferBuddy_values_callback=None,
+        SnifferBuddyReadings_callback=None,
         status_callback=None,
         snifferbuddy_table_name=None,  # Provide a table name to use in influxdb to store the readings.
-        settings_filename="gus_settings.json",
+        settings_filename=settings_filename,
         log_level=logging.DEBUG,
     ):
 
@@ -60,7 +77,7 @@ class Gus(Thread):
             random.choice(string.ascii_lowercase) for i in range(10)
         )
         Thread.__init__(self, name=self.unique_name)
-        self.SnifferBuddy_values_callback = SnifferBuddy_values_callback
+        self.SnifferBuddyReadings_callback = SnifferBuddyReadings_callback
         self.status_callback = status_callback
         self.snifferbuddy_table_name = snifferbuddy_table_name
 
@@ -181,7 +198,7 @@ class Gus(Thread):
         # Send the message contents as a dictionary back to the values_callback.
         try:
             mqtt_dict = json.loads(message)
-            s = snifferBuddy(mqtt_dict)
+            s = snifferBuddyReadings(mqtt_dict)
             if self.SnifferBuddy_values_callback:
                 self.SnifferBuddy_values_callback(s)
             # Write reading to database table if desired.

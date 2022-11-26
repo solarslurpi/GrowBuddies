@@ -1,6 +1,4 @@
 
-
-
 (snifferbuddy)=
 # SnifferBuddy
 :::{div}
@@ -9,7 +7,11 @@
 
 
 ## About {material-regular}`question_mark;1em;sd-text-success`
-sniff...sniff...sniff...SnifferBuddy happily hangs around in a grow tent sending out mqtt messages over a home's wifi.  The message payload contains readings for the air's CO2 level, relative humidity, and temperature.  There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The messages are sent to the growBuddy broker. This is an  mqtt broker that runs on the growBuddy server.   The star of SnifferBuddy is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) . The sensor is what provides the temperature, RH, and CO2 values.  SnifferBuddy talks with the other Buddies using mqtt which is provided by [Tasmota firmware](https://tasmota.github.io/docs/About/).  The mqtt messages must be picked up by the growBuddy broker to be useful.
+:::{div}
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
+:::
+
+sniff...sniff...sniff...SnifferBuddy happily hangs around in a grow tent sending out mqtt messages containing air quality readings (like temperature, humidity, CO2, etc.) over a home's wifi.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The messages are sent to the growBuddy broker. This is an  mqtt broker that runs on the growBuddy server.   The star of SnifferBuddy is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) . The sensor is what provides the temperature, RH, and CO2 values.  SnifferBuddy talks with the other Buddies using mqtt which is provided by [Tasmota firmware](https://tasmota.github.io/docs/About/).  The mqtt messages must be picked up by the growBuddy broker to be useful.
 
 :::{figure} images/snifferbuddy_in_growtent.jpg
 :align: center
@@ -26,13 +28,12 @@ The one I made looks like this:
 
 SnifferBuddy
 :::
+(make_snifferbuddy)=
 ## Let's Make One {material-regular}`build;1em;sd-text-success`
 ```{note}
 SnifferBuddy sends out mqtt messages in which the payload includes the sensor readings.  You can use any mqtt environment to interact with a SnifferBuddy.  If you have built [Gus](gus), Gus will know what to do with the SnifferBuddy messages.  This document assumes [Gus](gus) has been built.
 ```
-:::{div}
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
-:::
+
 
 Once plugged in and working, you will be able to (compliments of [Gus](gus)):
 - Store readings into an influxdb table (referred to as a measurement within influxdb terminology) influxdb.
@@ -64,7 +65,6 @@ SnifferBuddy Enclosure Parts
 - [scd30 enclosure.stl](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure.stl)
 
 [The directory](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy) also includes the Fusion 360 files, including [a Fusion 360 file of a Wemos D1](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/_Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d) for modeling.
-
 
 
 ### Wire the Components Together
@@ -102,10 +102,17 @@ Time to install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_in
 
 #### Verify Install
 You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is sending out mqtt messages.
-## Play!!! {material-regular}`celebration;1em;sd-text-success`
-### Code: snifferbuddy_storereadings.py
+
+## Store Readings {material-outlined}`storage;1em;sd-text-success`
+
+### code/examples/snifferbuddy_storereadings.py
 
 ```{eval-rst}
 .. automodule:: code.examples.snifferbuddy_storereadings
+   :members:
+```
+## About Logging
+```{eval-rst}
+.. automodule:: code.logginghandler
    :members:
 ```

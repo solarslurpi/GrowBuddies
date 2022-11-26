@@ -12,14 +12,6 @@ Subpackages
 Submodules
 ----------
 
-code.PID\_mqtt module
----------------------
-
-.. automodule:: code.PID_mqtt
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 code.gus\_code module
 ---------------------
 
@@ -28,42 +20,18 @@ code.gus\_code module
    :undoc-members:
    :show-inheritance:
 
-code.logging\_handler module
-----------------------------
+code.logginghandler module
+--------------------------
 
-.. automodule:: code.logging_handler
+.. automodule:: code.logginghandler
    :members:
    :undoc-members:
    :show-inheritance:
 
-code.mistbuddy\_code module
----------------------------
+code.snifferbuddyreadings\_code module
+--------------------------------------
 
-.. automodule:: code.mistbuddy_code
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-code.snifferbuddy\_code module
-------------------------------
-
-.. automodule:: code.snifferbuddy_code
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-code.test module
-----------------
-
-.. automodule:: code.test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-code.util\_code module
-----------------------
-
-.. automodule:: code.util_code
+.. automodule:: code.snifferbuddyreadings_code
    :members:
    :undoc-members:
    :show-inheritance:

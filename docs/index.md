@@ -82,16 +82,8 @@ See you in the garden. {fa}`leaf;sd-text-success`
 
 getting_started
 snifferbuddy
-bob
 gus
-mistbuddy
-examples
+logginghandler
 tasmota
 systemd
-modules
-sphinxLearnings
-SoilMoistureBuddy
-printing
-wiring
-mygrowtent
 ```

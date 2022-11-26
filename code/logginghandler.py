@@ -1,6 +1,9 @@
 import inspect
 import logging
 import sys
+#
+# See https://gist.github.com/vratiu/9780109
+#
 
 # Regular Colors
 Black = "\[\033[0;30m\]"  # Black
@@ -36,13 +39,24 @@ BIWhite = "\[\033[1;97m\]"  # White
 class LoggingHandler:
     """The LoggingHandler class simplifies logging so that we can have insight
     into what is going on when our Python Script is run.  While debugging, the code
-    is typically liberally sprinkled with debug log entries.  For example:
-    Let's say we left the default log level (debug)
-    log_level = logging.DEBUG
-    self.logger = LoggingHandler(log_level)
-    self.logger.debug(f"-> Initializing growBuddy class for task {self.task}")
+    is typically liberally sprinkled with debug log entries.
 
-    The logfile would contain a line similar to:\n
+    .. tip::
+        If you are new to Python logging, it helps to get an overview - particularly about log levels from
+        :ref:`The Python logging documentation <https://docs.python.org/3/howto/logging.html>`.
+
+    For example, let's make an instance of a `SnifferBuddyReadings()` with logging sent to informational:
+
+    .. code-block:: python
+         :caption: Initializing `Gus()` with the log level set to INFO.
+
+         snifferBuddyReadingsInstance = Gus(SnifferBuddyReadings_callback=snifferbuddyreadings, status_callback=status_callback,
+                                        SnifferBuddyReadings_table_name="sniff2",log_level=logging.INFO)
+
+
+    By default, `Gus()` sets the logging level to logging.DEFAULT.  By setting the log level to info, any of the logging calls
+    set to logging.DEBUG will not occur.  This is how [Python logging normally works](https://docs.python.org/3/howto/logging.html).
+
     ```
     Oct 05 14:32:14 growBuddy python3.7[1286]: 2022-10-05 14:32:14,464:DEBUG:\[\]/home/pi/growBuddy/code/growBuddy.py:44  __init__
     ...-> Initializing growBuddy class for task readSoilMoisture
@@ -77,6 +91,13 @@ class LoggingHandler:
         i = inspect.getframeinfo(f.f_back)
         self.logger.info(
             f"{Yellow}{i.filename}:{i.lineno}  {i.function}   ...{message}{Original}"
+        )
+
+    def warning(self, message):
+        f = inspect.currentframe()
+        i = inspect.getframeinfo(f.f_back)
+        self.logger.error(
+            f"{BIRed}{i.filename}:{i.lineno}  {i.function}   ...{message}{Original}"
         )
 
     def error(self, message):

@@ -1,3 +1,5 @@
+```{only} internal
+```
 
 # Sphinx Learnings
 
@@ -26,8 +28,10 @@ The command assumes the md or rst files are in the docs directory and the output
 1. From a command line change to the docs directory.
 2. Type in and execute the command:
 ```console
- $  sphinx-apidoc -f -o . ../code
+ $  sphinx-apidoc -f -o . ../code ../code/mistbuddy_code.py ../code/PID_mqtt.py ../code/test.py ../code/examples/mistbuddy_manage.py ../code/examples/mistbuddy_observe.py  ../code/examples/onoff.py  ../code/examples/soil_moisture_calibration.py
 ```
+Which points out the output is the current directory (which is why we went to the`docs` directory before starting the command.).  The list of python files is in the `../code` directory.
+After telling the command the directory where the python files are located, the last thing we identify are files we want to ignore (in this case `PID_mqtt.py` and `test.py`)
 The command creates .rst files in the docs folder (that's why we start there) for each code file it finds in the \code directory.  It also creates the modules.rst and code.rst files.
 This will create a [modules.rst file](modules.rst), as well as .rst files for the other growBuddy modules.
 
@@ -80,10 +84,17 @@ This isn't from Sphinx.  However, it seems superuseful. _[LICEcap](https://www.c
 
 Where the link is use \{ref\}\`Custom title \<anchor name\>\`.  Before the m(H1, H2...) Heading, use `(anchor name)=` .
 
-For example, {ref}`Let's make a SnifferBuddy <make-snifferbuddy>` is a cross reference link to the section in SnifferBuddy with the steps to make a SnifferBuddy.
+For example, {ref}`Let's make a SnifferBuddy <make_snifferbuddy>` is a cross reference link to the section in SnifferBuddy with the steps to make a SnifferBuddy.
 
 ## new line in markdown
 I guess tools have a bunch of weird ways to do things.  The challenge is learning how they do them. From [the markdown guid](https://markdown-guide.readthedocs.io/en/latest/basics.html#line-return),
 
-_To force a line return, place two empty spaces at the end of a line._
+_To force a line return, place two empty spaces at the end of a line._ Then hit a line return
+
+## Material Design Icons
+This documentation extends Sphinx to include [sphinx design](https://sphinx-design.readthedocs.io/en/rtd-theme/). One of the features added, is the ability to use Material Design icons.  Not all are
+supported.  Here is [the full list of Material Design icons](https://fonts.google.com/icons).
+
+## Directives versus Roles
+Directives work on blocks of text (whole paragraphs); roles are for inline text (within paragraphs).
 

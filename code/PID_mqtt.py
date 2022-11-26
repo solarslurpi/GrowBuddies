@@ -1,7 +1,7 @@
 import time
 import warnings
 import logging
-from logging_handler import LoggingHandler
+from logginghandler import LoggingHandler
 
 
 def _clamp(value, limits):

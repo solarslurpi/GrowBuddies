@@ -15,9 +15,10 @@ vpdBuddy strives to maintain an ideal vpd value.  There is two ways vpdBuddy can
 import sys
 sys.path.append('/home/pi/growbuddy/code')
 
+
 from mistbuddy_code import mistBuddy
 import logging
-from logging_handler import LoggingHandler
+from logginghandler import LoggingHandler
 
 
 # Most likely you'll use DEBUG, INFO, or ERROR.

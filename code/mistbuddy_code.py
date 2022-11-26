@@ -1,9 +1,9 @@
 from PID_mqtt import PID
 import logging
 from enum import Enum
-from code.gus_code import growBuddy
+from code.gus_code import Gus
 import threading
-from snifferbuddy_code import snifferBuddy
+from snifferbuddyreadings_code import snifferBuddyReadings
 
 
 settings_filename = "code/growbuddy_settings.json"
@@ -22,7 +22,7 @@ class growthStage(Enum):
     FLOWER = 3
 
 
-class mistBuddy(growBuddy):
+class mistBuddy(Gus):
 
     """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
     of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
@@ -51,7 +51,7 @@ class mistBuddy(growBuddy):
     ):
         # vpdBuddy needs the snifferBuddy values.  This is why the growBuddy callback is set to
         # the internal vpd_values_callback() method.
-        super().__init__(growBuddy_values_callback=self._values_callback, snifferbuddy_table_name=snifferbuddy_table_name, log_level=logging.DEBUG)
+        super().__init__(growBuddy_values_callback=self._values_callback, snifferbuddyreadings_table_name=snifferbuddy_table_name, log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (

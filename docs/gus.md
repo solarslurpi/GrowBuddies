@@ -131,6 +131,7 @@ Open up [MQTT explorer](http://mqtt-explorer.com/) and connect to gus.
 gus mqtt broker
 :::
 The image points out there is a SnifferBuddy sending mqtt messages to gus.
+(mqtt_LWT)=
 ##### Using MQTT To Determine Device Health
 You may not need to know anything about this.  I have it here so I don't forget why this is in the code!
 
@@ -157,7 +158,7 @@ The mqtt info lets us know the mqtt keep alive time is 30 seconds.
 [InfluxDB (v1.8)](https://www.influxdata.com/) is a time series based database that is free to use on the Raspberry Pi.  There can be multiple databases.
 
 ```{admonition} Gus as the database name
-I stick with the database name of Gus.  If you look in gus_settings.json, you will see influxdb setting for the database.
+I stick with the database name of Gus.  If you look in growbuddies_settings.json, you will see influxdb setting for the database.
 ```
 
 Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) to install.

@@ -1,7 +1,23 @@
+#
+# SnifferBuddyReadings takes in the air quality readings within the mqtt payload from a SnifferBuddy and converts it into a SnifferBuddy instance
+# for easier and sensor agnostic access.  Currently, only the SCD30 sensor is supported.
+#
+# Copyright 2022 Margaret Johnson
 
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
 import logging
-from logging_handler import LoggingHandler
-from util_code import calc_vpd
+from logginghandler import LoggingHandler
+import math
 
 
 class snifferBuddySensors:
@@ -21,7 +37,7 @@ class snifferBuddyConstants:
     # Note: vpd is not listed because it is a function of temperature and humidity.
 
 
-class snifferBuddy():
+class snifferBuddyReadings():
     """Takes in an mqtt air quality message from a snifferBuddy and translates into an easy to use set of properties.
 
     The mqtt air quality message is sensor specific different.  Different air quality sensors will have a different message format.
@@ -36,14 +52,14 @@ class snifferBuddy():
 
     Another air quality sensor will have a different message that needs to be understood.
 
-    Buddies access the snifferBuddy properties instead of properties within the mqtt message.
 
     .. code:: python
 
-        from snifferbuddy_code import snifferBuddy
+        from snifferbuddy_code import snifferBuddyReadings
         s = snifferBuddy(mqtt_dict)
         print({s.dict})
         print({s.vpd})
+
 
     Args:
         mqtt_dict (dict): Sensor model specific mqtt message from a snifferBuddy.
@@ -84,6 +100,41 @@ class snifferBuddy():
         except Exception as e:
             self.logger.error(f"Could not get item for {self.sensor} item number {item_number}.  Error: {e}. There should be an entry in name_dict.")
         return item
+
+    def _calc_vpd(self, temperature: float, humidity: float) -> (float):
+
+        """INTERNAL METHOD. I decided at this point not to measure the leaf temperature but take the much simpler
+        approach of assuming 2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for
+        my purposes "good enough."
+
+        Once an mqtt message is received from the growBuddy broker that a SnifferBuddy reading is available, _calc_vpd()
+        is called to calculate the VPD.  The mqtt message comes in as a JSON string.  The JSON string is converted to a
+        dictionary.  The dictionary contains the values needed for the VPD calculation.
+
+        The VPD equation comes
+        `from a Quest website <https://www.questclimate.com/vapor-pressure-deficit-indoor-growing-part-3-different-stages-vpd/>`_
+
+        Args:
+            dict (dict): Dictionary of values returned from an mqtt message.
+        Raises:
+            Exception: If one of the values needed to calculate the VPD is of a type or value that won't work.
+
+        Returns the calculated VPD value.
+        """
+        # TODO: Make usable for at least the SCD30 or SCD40
+        air_T = temperature
+        RH = humidity
+        if (
+            not isinstance(air_T, float) or not isinstance(RH, float) or air_T <= 0.0 or RH <= 0.0
+        ):
+            raise Exception(
+                f"Received unexpected values for either the temperature ({air_T}) or humidity ({RH}) or both"
+            )
+        leaf_T = air_T - 2
+        vpd = 3.386 * (
+            math.exp(17.863 - 9621 / (leaf_T + 460)) - ((RH / 100) * math.exp(17.863 - 9621 / (air_T + 460)))
+        )
+        return round(vpd, 2)
 
     @property
     def dict(self) -> dict:
@@ -131,7 +182,7 @@ class snifferBuddy():
     def vpd(self) -> float:
         h = self._get_item(snifferBuddyConstants.HUMIDITY)
         t = self._get_item(snifferBuddyConstants.TEMPERATURE)
-        v = calc_vpd(t, h)
+        v = self._calc_vpd(t, h)
         return v
 
     @property
