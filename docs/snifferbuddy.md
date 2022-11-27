@@ -119,6 +119,7 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 ```
 
 ## About Logging {material-outlined}`description;1em;sd-text-success`
+
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/5942d40bff58e11be8e78d7296eb0daa9fff5a17/code/logginghandler.py
 :outline:
 :color: success
@@ -132,15 +133,50 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 
 ## Plot Readings  {material-outlined}`multiline_chart;1em;sd-text-success`
 The data collected while running a Python Script like [snifferbuddy_storereadings.py](snifferbuddy_storereadings) can be plotted within
-Grafana.  Grafana is a very powerful graphing package that comes for free with the Raspberry Pi. The goal of this section is:
+[Grafana](https://en.wikipedia.org/wiki/Grafana).  Grafana is a very powerful graphing package that comes for free with the Raspberry Pi. The goal of this section is:
 - connect Grafana to an influxdb measurement (which to me is a table with rows of data).
 - plot the temperature and humidity.
 
-### Connect to Grafana
+### Login to Grafana
 
 ```{note}
 You must install Grafana on Gus() first.  For this step, see the [Make Gus()](make_gus) step.
 ```
+[pimylifeup](https://pimylifeup.com/raspberry-pi-grafana/) does an excellent job walking us through Grafana.  **Start at step 2**. You'll see
+the line `http://<IPADDRESS>:3000`.  Most likely you will use the URL `http://gus:3000`.
+
+- log into Grafana (go through steps 2 through 5)
+
+As pimylifeup notes: _At this point, you should now have Grafana up and running on your Raspberry Pi and now be able to access its web interface._
+```
+http://gus:3000
+```
+### Connect to the Gus Database
+```{note}
+These steps assume you kept the defaults (database, hostname) to `gus`.
+```
+Now that we can log into Grafana, let's connect to the gus database.
+
+- From the Grafana screen, choose add a data source.
+:::{figure} images/grafana_add_datasource.jpg
+:align: centerk
+:scale: 100
+
+Grafana Data Source Options
+:::
+
+You'll be greeted by a list of several data source choices.  Choose `influxDB`.
+- Fill in the URL, choose Basic Auth, then provide the Basic Auth password to `gus`.
+
+:::{figure} images/grafana_influxdb_http_config.jpg
+:align: center
+:scale: 50
+
+Grafana - InfluxDB HTTP Connection Settings
+:::
+
+
+
 
 ## Run as a Service
 TODO
