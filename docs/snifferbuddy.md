@@ -1,5 +1,4 @@
-
-(snifferbuddy)=
+(snifferbuddy_doc)=
 # SnifferBuddy
 :::{div}
 <img src="images/dog.jpg" class="sd-avatar-md sd-border-3">
@@ -11,7 +10,7 @@
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
-sniff...sniff...sniff...SnifferBuddy happily hangs around in a grow tent sending out mqtt messages containing air quality readings (like temperature, humidity, CO2, etc.) over a home's wifi.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The messages are sent to the growBuddy broker. This is an  mqtt broker that runs on the growBuddy server.   The star of SnifferBuddy is the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867) . The sensor is what provides the temperature, RH, and CO2 values.  SnifferBuddy talks with the other Buddies using mqtt which is provided by [Tasmota firmware](https://tasmota.github.io/docs/About/).  The mqtt messages must be picked up by the growBuddy broker to be useful.
+sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30 air quality sensor](https://www.adafruit.com/product/4867) measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brains behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus_doc).
 
 :::{figure} images/snifferbuddy_in_growtent.jpg
 :align: center
@@ -47,7 +46,7 @@ Once plugged in and working, you will be able to (compliments of [Gus](gus)):
 - Superglue for gluing the top Wemos part of the enclosure to the cap part of the enclosure.
 - USB chord and to plug the ESP8286 to power.
 - 4 4mm M2.5 or M3 bolts.
-
+(enclosure)=
 ### Make the Enclosure
 
 The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddies/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
@@ -85,7 +84,7 @@ if the grow lights were on or off.  I use this for knowing when to go into dayti
 (scd30_wiring)=
 #### WemosD1 to SCD30 Wiring
 
-Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amount of sensors and microcontrollers that we can connect together.  However, only a few companies (like Adafruit) include connectors on their Breakout Boards.  I like the idea of standardizing on a couple of JST connectors and discuss that more in [the wiring section](wiring)
+Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amount of sensors and microcontrollers that we can connect together.  However, only a few companies (like Adafruit) include connectors on their Breakout Boards.  I like the idea of standardizing on a couple of JST connectors and discuss that more in [the wiring section](wiring_doc)
 
 :::{figure} images/wemosd1_wiring.jpg
 :align: center
@@ -103,8 +102,9 @@ Time to install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_in
 #### Verify Install
 You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is sending out mqtt messages.
 
-## Store Readings {material-outlined}`storage;1em;sd-text-success`
 (snifferbuddy_storereadings)=
+## Store Readings {material-outlined}`storage;1em;sd-text-success`
+
 ### code/examples/snifferbuddy_storereadings.py
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/main/code/examples/snifferbuddy_storereadings.py
 :outline:
@@ -118,7 +118,7 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
    :members:
 ```
 
-## About Logging
+## About Logging {material-outlined}`description;1em;sd-text-success`
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/5942d40bff58e11be8e78d7296eb0daa9fff5a17/code/logginghandler.py
 :outline:
 :color: success
@@ -129,3 +129,18 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 .. automodule:: code.logginghandler
    :members:
 ```
+
+## Plot Readings  {material-outlined}`multiline_chart;1em;sd-text-success`
+The data collected while running a Python Script like [snifferbuddy_storereadings.py](snifferbuddy_storereadings) can be plotted within
+Grafana.  Grafana is a very powerful graphing package that comes for free with the Raspberry Pi. The goal of this section is:
+- connect Grafana to an influxdb measurement (which to me is a table with rows of data).
+- plot the temperature and humidity.
+
+### Connect to Grafana
+
+```{note}
+You must install Grafana on Gus() first.  For this step, see the [Make Gus()](make_gus) step.
+```
+
+## Run as a Service
+TODO

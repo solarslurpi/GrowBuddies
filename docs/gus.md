@@ -1,4 +1,5 @@
-(gus)=
+(gus_doc)=
+
 # Gus
 :::{div}
 <img src="images/hamster.jpg" class="sd-avatar-md sd-border-3">
@@ -39,7 +40,7 @@ I found it pretty simple to put the pi into the enclosure once it had printed.
 ### Install The Software
 #### Resources
 I found the following stuff on the web to be helpful:
-
+- [Python Virtual Environments](https://www.youtube.com/watch?v=ApDThpsr2Fw&t=1295s) at this point in the video, the difference between `virtualenv` and `venv` are explained.  More details are given in [Virtualenv RTD](https://virtualenv.pypa.io/en/latest/).
 - [Installing mosquitto on Rasp Pi](https://pimylifeup.com/raspberry-pi-mosquitto-mqtt-server/)
 - [mqtt Explorer](http://mqtt-explorer.com/) - this tool does exactly what the name implies.  It allows you to explore the mqtt traffic as it whizzes by.  You can also publish messages.  Very handy.
 - [YouTube video on mqtt Last Will and Testament](https://www.youtube.com/watch?v=dNy9GEXngoE).  Good to know how this works (and why).
@@ -178,6 +179,9 @@ after bumbling about on Google/StackOverflow, I ended up:
 $ sudo nano /etc/apt/sources.list.d/grafana.list
 ```
 and deleted the duplicate lines. Then `sudo apt-get update` worked.
+
+#### Install Gus
+`Gus()` is installed. ... TODO
 ## Playtime {material-regular}`celebration;1em;sd-text-success`
 ```{note} You must build [SnifferBuddy](snifferbuddy) before playtime can begin.
 ```
@@ -261,5 +265,16 @@ Onto the kill command, which needs sudo privileges.
 pi@gus:~/gus $ sudo kill -9 2465
 [1]+  Killed                  sphinx-autobuild docs docs/_build/html  (wd: ~/gus/docs)
 (wd now: ~/gus)
+```
+### Check which Python is in Use
+It's best practice to run Python code in a virtual environment.  To check to see which interpreter is running:
+```
+py_env) pi@gus:~/growbuddies $ python
+Python 3.7.3 (default, Jan 22 2021, 20:04:44)
+[GCC 8.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import sys
+>>> sys.executable
+'/home/pi/growbuddies/py_env/bin/python'
 ```
 

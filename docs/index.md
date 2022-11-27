@@ -60,8 +60,8 @@ In the bottom left hand corner of the image, you see my growtent.  There is a Sn
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
 :::
 The Buddies sure love to play!  It's non-stop fun as:
-- [SnifferBuddy](snifferbuddy) happily puffs out [mqtt messages](mqtt_install) over a home's wifi containing air readings detected by it's [SCD-30 sensor](https://www.adafruit.com/product/4867).
-- Good 'ol [Gus](gus) has set up a listening "box" [aka the mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy mqtt message.  If instructed to do so, Gus can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need Gus to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
+- `{doc}SnifferBuddy <snifferbuddy>_` happily puffs out [mqtt messages](mqtt_install) over a home's wifi containing air readings detected by it's [SCD-30 sensor](https://www.adafruit.com/product/4867).
+- Good 'ol `{doc}Gus <gus>_` has set up a listening "box" [aka the mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy mqtt message.  If instructed to do so, Gus can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need Gus to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
 
 - [MistBuddy](mistbuddy) is an add-on that subscribes to the SnifferBuddy messages.  MistBuddy can operate in one of two modes.
     - **Observation** - MistBuddy receives SnifferBuddy messages.  You can ask for the latest vpd value, as well as the number of seconds MistBuddy calculated the MistBuddy's humidifier to turn on.
@@ -78,11 +78,10 @@ See you in the garden. {fa}`leaf;sd-text-success`
 
 ```{toctree}
 :maxdepth: 1
-
-
 getting_started
-snifferbuddy
 gus
+snifferbuddy
+mistbuddy
 tasmota
 systemd
 ```

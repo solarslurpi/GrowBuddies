@@ -90,6 +90,7 @@ class snifferBuddyReadings():
             # the temperature, the item_number is 0.
             if item_number == snifferBuddyConstants.TIME:
                 item = self.mqtt_dict["Time"]
+                return item
             if self.sensor == snifferBuddySensors.SCD30:
                 if item_number == snifferBuddyConstants.LIGHT_LEVEL:
                     # Light level is part of Snifferbuddy, but not the SCD30.

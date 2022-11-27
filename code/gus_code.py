@@ -107,10 +107,18 @@ class Gus(Thread):
         except Exception as e:
             self.logger.error(f"...Exiting due to Error: {e}")
             os._exit(1)
-        # Get a connection to the influxdb database.
-        # The database must exist on the "hostname" Server (which is most likely named "Gus").
+
         try:
-            self.influx_client = InfluxDBClient(host=self.settings["hostname"], database=self.settings["influxdb"]["db_name"])
+            # Get a connection to the influxdb database.
+            # The database must exist on the "hostname" Server (which is most likely named "Gus").
+            self.influx_client = InfluxDBClient(host=self.settings["hostname"])
+            # Create the database - according to influxdb docs, if the database is already created
+            # nothing happens.  But if the database doesn't exist, we'll fail.  So each time try
+            # to create for the few times when it doesn't exist.
+            db_name = self.settings["influxdb"]["db_name"]
+            self.influx_client.create_database(db_name)
+            # Set the client to use this database.
+            self.influx_client.switch_database(db_name)
         except ValueError as e:
             self.logger.error(f"ERROR! Was not able to connect to Influxdb.  Error: {e}")
 
@@ -199,12 +207,12 @@ class Gus(Thread):
         try:
             mqtt_dict = json.loads(message)
             s = snifferBuddyReadings(mqtt_dict)
-            if self.SnifferBuddy_values_callback:
-                self.SnifferBuddy_values_callback(s)
+            if self.SnifferBuddyReadings_callback:
+                self.SnifferBuddyReadings_callback(s)
             # Write reading to database table if desired.
-            if self.snifferbuddy_table_name:
+            if self.SnifferBuddyReadings_table_name:
                 try:
-                    self.db_write(self.snifferbuddy_table_name, s.dict)
+                    self.db_write(self.SnifferBuddyReadings_table_name, s.dict)
                 except Exception as e:
                     self.logger.error(f"ERROR! Could not write the snifferBuddy Values.  error: {e}")
         except Exception as e:

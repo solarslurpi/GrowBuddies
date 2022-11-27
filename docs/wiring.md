@@ -1,4 +1,4 @@
-(wiring)=
+(wiring_doc)=
 
 # Wiring Components Together
 
