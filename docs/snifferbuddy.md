@@ -1,3 +1,5 @@
+#import colors_code
+
 (snifferbuddy_doc)=
 # SnifferBuddy
 :::{div}
@@ -132,18 +134,21 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 ```
 
 ## Plot Readings  {material-outlined}`multiline_chart;1em;sd-text-success`
-The data collected while running a Python Script like [snifferbuddy_storereadings.py](snifferbuddy_storereadings) can be plotted within
-[Grafana](https://en.wikipedia.org/wiki/Grafana).  Grafana is a very powerful graphing package that comes for free with the Raspberry Pi. The goal of this section is:
-- connect Grafana to an influxdb measurement (which to me is a table with rows of data).
-- plot the temperature and humidity.
+```{note}
+These steps assume you have already [installed Grafana on Gus](make_gus) and kept the defaults (database, hostname) to `gus`.
+```
+
+The data collected while running a Python Script - like the code discussed under the  {ref}`snifferbuddy_storereadings` topic - can be viewed within the powerful
+[Grafana](https://en.wikipedia.org/wiki/Grafana) graphing package.
 
 ### Login to Grafana
 
 ```{note}
 You must install Grafana on Gus() first.  For this step, see the [Make Gus()](make_gus) step.
 ```
-[pimylifeup](https://pimylifeup.com/raspberry-pi-grafana/) does an excellent job walking us through Grafana.  **Start at step 2**. You'll see
-the line `http://<IPADDRESS>:3000`.  Most likely you will use the URL `http://gus:3000`.
+[The pimylifeup web post](https://pimylifeup.com/raspberry-pi-grafana/) does an excellent job walking us through setting up Grafana login.
+
+**Start at step 2**. You'll see the line `http://<IPADDRESS>:3000`.  Most likely you will use the URL `http://gus:3000`.
 
 - log into Grafana (go through steps 2 through 5)
 
@@ -157,16 +162,27 @@ These steps assume you kept the defaults (database, hostname) to `gus`.
 ```
 Now that we can log into Grafana, let's connect to the gus database.
 
-- From the Grafana screen, choose add a data source.
+#### Choose the Data Source
+
+From the Grafana screen, choose add a data source.
 :::{figure} images/grafana_add_datasource.jpg
-:align: centerk
+:align: center
 :scale: 100
 
 Grafana Data Source Options
 :::
 
 You'll be greeted by a list of several data source choices.  Choose `influxDB`.
-- Fill in the URL, choose Basic Auth, then provide the Basic Auth password to `gus`.
+#### Name the Data Source
+Name the database `Gus` and toggle the Default switch to the ON position.
+:::{figure} images/grafana_influxdb_data_source_name.jpg
+:align: center
+:scale: 100
+
+Grafana - InfluxDB Name the Data Source
+:::
+#### Fill in HTTP Connection Parameters
+Fill in the URL, choose Basic Auth, then provide the Basic Auth password to `gus`.
 
 :::{figure} images/grafana_influxdb_http_config.jpg
 :align: center
@@ -174,9 +190,72 @@ You'll be greeted by a list of several data source choices.  Choose `influxDB`.
 
 Grafana - InfluxDB HTTP Connection Settings
 :::
+#### Fill in influxDB Parameters
+Now fill in the influxDB parameters.
 
+:::{figure} images/grafana_influxdb_influxdb_config.jpg
+:align: center
+:scale: 75
 
+Grafana - InfluxDB InfluxDB Settings
+:::
+Choose Save & Test ...and...
+_**Hopefully**_ you can smile looking at:
+:::{figure} images/grafana_influxdb_data_test_worked.jpg
+:align: center
+:scale: 75
+
+Grafana - InfluxDB Connection Success
+:::
+### Plot Readings
+Grafana's workflow to get to looking at sensor readings includes:
+#### Create a Dashboard
+:::{figure} images/grafana_new_dashboard.jpg
+:align: center
+:scale: 75
+
+Grafana - Create a New Dashboard
+:::
+#### View Readings
+Create a dashboard then create a panel within the dashboard.
+
+Now you are at what Grafana calls a Panel.  The image shows a panel set up to show vpd `SnifferBuddyReadings()`.
+1. Set the Data Source to Gus.
+2. Set the Table (InfluxDB calls a table a Measurement), which is the `From` field. is set to "sniff2" (recall this is the table created after running the {ref}`snifferbuddy_storereadings`.
+3. Set the S`Select` field to `vpd`.
+4. The time was to a range that includes `SnifferBuddyReadings()`.
+After setting the parameters similar to what is done in the image, you should see a plot similar to the one in the image.  There are a few differences based on configuring Grafana plot features.  They are all covered in the online Grafana documentation.
+
+:::{figure} images/grafana_snifferbuddyreadings_vpd.jpg
+:align: center
+:scale: 75
+
+Plot of SnifferBuddyReadings for vpd.
+:::
+
+The results point to an average vpd at that date/time range at about 1.3.
+### Analyze Readings
+Looking at [FLU's VPD Chart](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf)
+:::{figure} images/vpd_chart.jpg
+:align: center
+:scale: 75
+
+Plot of SnifferBuddyReadings for vpd.
+:::
+
+```{danger}
+A vpd reading of 1.3 is saying the grow environment is stressful for the plant.
+```
+The humidity or the temperature could be adjusted.  Here is a plot of the temperature and vpd.  While the vpd averages about 1.3, the temperature ranges between 73 and 75.  This is because my grow tent envioronment is in my house, which is climate controlled.  The LED lights raise the temperature a bit.  The fans cool the temperature a bit.  It's pretty ideal.  Thus, [MistBuddy](mistbuddy_doc) focuses on turning a humidifier on and off for just the right amount of time.
+
+:::{figure} images/grafana_snifferbuddyreadings_vpd._and_temp.jpg
+:align: center
+:scale: 65
+
+Plot of SnifferBuddyReadings for vpd and temperature.
+:::
 
 
 ## Run as a Service
-TODO
+Running {ref}`snifferbuddy_storereadings` over ssh will stop when the desktop gets connected.  What needs to happen is set up {ref}`snifferbuddy_storereadings` as a [Systemd service](systemd_doc).
+

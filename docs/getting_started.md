@@ -15,5 +15,3 @@ Let's start with the core components.  Each Buddy has it's own area of documenta
 1. [Build Gus](gus)
 2. [Build SnifferBuddy](snifferbuddy)
 
-
-## TODO...

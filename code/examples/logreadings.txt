@@ -1,0 +1,9 @@
+Nov 27 15:23:00 gus systemd[1]: Started Store SnifferBuddyReadings service..
+Nov 27 15:23:00 gus systemd[24566]: snifferbuddy_storereadings.service: Failed to execute command: No such file or directory
+Nov 27 15:23:00 gus systemd[24566]: snifferbuddy_storereadings.service: Failed at step EXEC spawning /home/pi/growbuddy/py_env/bin/python: No such f
+Nov 27 15:23:00 gus systemd[1]: snifferbuddy_storereadings.service: Main process exited, code=exited, status=203/EXEC
+Nov 27 15:23:00 gus systemd[1]: snifferbuddy_storereadings.service: Failed with result 'exit-code'.
+Nov 27 15:23:00 gus systemd[1]: snifferbuddy_storereadings.service: Service RestartSec=100ms expired, scheduling restart.
+Nov 27 15:23:00 gus systemd[1]: snifferbuddy_storereadings.service: Scheduled restart job, restart counter is at 1.
+Nov 27 15:23:00 gus systemd[1]: Stopped Store SnifferBuddyReadings service..
+Nov 27 15:23:00 gus systemd[1]: Started Store SnifferBuddyReadings service..

@@ -1,0 +1,13 @@
+
+# found in /lib/systemd/system/snifferbuddy_storereadings.service
+
+[Unit]
+Description=Store SnifferBuddyReadings service.
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/growbuddies/py_env/bin/python  /home/pi/growbuddies/code/examples/snifferbuddy_storereadings.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

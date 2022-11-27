@@ -180,8 +180,6 @@ $ sudo nano /etc/apt/sources.list.d/grafana.list
 ```
 and deleted the duplicate lines. Then `sudo apt-get update` worked.
 
-#### Install Gus
-`Gus()` is installed. ... TODO
 ## Playtime {material-regular}`celebration;1em;sd-text-success`
 ```{note} You must build [SnifferBuddy](snifferbuddy) before playtime can begin.
 ```

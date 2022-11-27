@@ -1,10 +1,13 @@
+(mistbuddy_doc)=
 
+# MistBuddy
 :::{div}
 <img src="images/whale.svg" class="sd-avatar-md sd-border-3">
 :::
 Happy Bubbles to You!
 
-# MistBuddy
+```{warning} MistBuddy is Under Construction!
+```
 MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).  The ideal vpd levels come from [the vpd chart](vpd_chart).  When MistBuddy figures out the vpd is too high, she excitedly spouts out mist through her airhole for **just** the right amount of time.  MistBuddy's brain consists of a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  [Gus](gus.md) runs this code.
 
 MistBuddy consists of:
