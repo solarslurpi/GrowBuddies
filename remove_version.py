@@ -3,6 +3,7 @@
 # This script removes the versioning from requirements.txt.
 replacement = ""
 
+
 def strip_version(line):
     substring = line.find("=")
     return line[0:substring]

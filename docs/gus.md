@@ -252,7 +252,7 @@ find /path -type f -exec sed -i 's/oldstr/newstr/g' {} \;
 
 Using the command:
 ```
- pi@gues:~/gus $ ps aux | grep sphinx-autobuild
+ pi@gus:~/gus $ ps aux | grep sphinx-autobuild
 pi        2465  0.2  0.4  25956 17520 pts/0    T    09:31   0:00 /home/pi/gus/py_env/bin/python /home/pi/gus/py_env/bin/sphinx-autobuild docs docs/_build/html
 pi        2641  0.0  0.0   7344   508 pts/0    S+   09:34   0:00 grep --color=auto sphinx-autobuild
 ```
@@ -275,4 +275,13 @@ Type "help", "copyright", "credits" or "license" for more information.
 >>> sys.executable
 '/home/pi/growbuddies/py_env/bin/python'
 ```
+### Check Rasp Pi OS Version stuff
+```
+(py_env) pi@gus:~/growbuddies/growbuddies-project $ uname -a
+Linux gus 5.10.103-v7l+ #1529 SMP Tue Mar 8 12:24:00 GMT 2022 armv7l GNU/Linux
 
+(py_env) pi@gus:~/growbuddies/growbuddies-project $ cat /etc/debian_version
+10.13
+
+(py_env) pi@gus:~/growbuddies/growbuddies-project $ cat /etc/rpi-issue
+Raspberry Pi reference 2021-12-02
