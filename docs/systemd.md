@@ -34,19 +34,7 @@ I found the following info useful to figure out how to get systemd to do what I 
 ```
 The highlighted line shows the service failed to start up /home/py/**growbuddy**/py_env... .
 
-Oh, right! our directory is growbuddies.  I changed this back in the service file.  Keep iterating stuff not working ... until ... until ... stuff starts to work!!!!
+Oh, right! our directory is growbuddies.  I changed this back in the service file.
 
-
-Because I started the service with the logging level set to DEBUG, the info in the journal file gives us what we need to fix the problem.  The `growBuddy_settings.json` is not found.  Checking out the current directory the script is in we see: `Oct 05 14:39:33 growBuddy python3.7[1832]: 2022-10-05 14:39:33,709:DEBUG:\[\]/home/pi/growBuddy/code/growBuddy.py:47  __init__   ...--> Current Directory is /`
-
-This is fixed by adding the code in `growBuddy.py` to change to the directory where `growBuddy.py` is located.
-
-```python
-# Set the working directory to where the Python files are located.
-self.logger.debug(f'--> Current Directory prior to setting to the file location is {os.getcwd()}')
-cfd = os.path.dirname(os.path.realpath(__file__))
-os.chdir(cfd)
-self.logger.debug(f'--> Current Directory is {os.getcwd()}')
-```
 
 The reason for the above example is to give a little detail on the approach I take when I can't get the service to start.  I hope it is helpful.
