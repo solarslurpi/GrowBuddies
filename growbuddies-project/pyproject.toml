@@ -1,0 +1,8 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "growbuddies"
+version = "2022.11.28"
+description = "Buddies to help maximize the growth of plants in your indoor garden."
