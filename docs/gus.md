@@ -285,3 +285,6 @@ Linux gus 5.10.103-v7l+ #1529 SMP Tue Mar 8 12:24:00 GMT 2022 armv7l GNU/Linux
 
 (py_env) pi@gus:~/growbuddies/growbuddies-project $ cat /etc/rpi-issue
 Raspberry Pi reference 2021-12-02
+```
+```{note} Debian 10 is Buster.  Debian 11 is Bullseye.
+```
