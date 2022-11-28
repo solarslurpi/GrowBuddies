@@ -28,7 +28,7 @@ I found the following info useful to figure out how to get systemd to do what I 
 6. Start the service with `sudo systemctl start snifferbuddy_storereadings.service`.
 7. Check to make sure the service has been started with `systemctl is-active snifferbuddy_storereadings.service`.  In this example, starting the service failed.  To find out why, try `journalctl -u snifferbuddy_storereadings.service`.  Here is log lines from one of the services I ran:
 
-```{literalinclude} ../code/examples/logreadings.txt
+```{literalinclude} logreadings.txt
 :language: bash
 :emphasize-lines: 3
 ```

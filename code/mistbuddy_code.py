@@ -51,7 +51,8 @@ class mistBuddy(Gus):
     ):
         # vpdBuddy needs the snifferBuddy values.  This is why the growBuddy callback is set to
         # the internal vpd_values_callback() method.
-        super().__init__(growBuddy_values_callback=self._values_callback, snifferbuddyreadings_table_name=snifferbuddy_table_name, log_level=logging.DEBUG)
+        super().__init__(growBuddy_values_callback=self._values_callback, snifferbuddyreadings_table_name=snifferbuddy_table_name,
+                         log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
@@ -85,7 +86,7 @@ class mistBuddy(Gus):
         # The PID class as a __repr__() method.
         self.logger.debug(self.pid)
 
-    def _values_callback(self, s: snifferBuddy):
+    def _values_callback(self, s: snifferBuddyReadings):
         """growBuddy calls this method when it receives a reading from the requested sensor.
 
         Args:
