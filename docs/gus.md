@@ -107,7 +107,7 @@ Gus runs the [Mosquitto Broker](http://www.steves-internet-guide.com/mosquitto-b
 Before installing the service, some unique settings are needed in Mosquitto's config file.
 
 - Create the connect.conf file. From a terminal open on the Raspberry Pi:
-  - `$ cd /etc/mosquitto/confd.`
+  - `$ cd /etc/mosquitto/conf.d`
   - `$ sudo nano connect.conf`
   - copy/ paste the following into the new connect.conf file:
 ```
@@ -161,7 +161,11 @@ The mqtt info lets us know the mqtt keep alive time is 30 seconds.
 ```{admonition} Gus as the database name
 I stick with the database name of Gus.  If you look in growbuddies_settings.json, you will see influxdb setting for the database.
 ```
+TODO: command line utility
+$influx
+show databases
 
+sudo apt install influxdb-client
 Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) to install.
 
 #### Install Grafana

@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../code'))
 project = 'GrowBuddies'
 copyright = '2022, HappyDay'
 author = 'HappyDay'
-release = '0.1'
+release = '2022.12.a'
 
 # ignore files
 exclude_patterns = ["py_env/*", '**/_*']
@@ -22,13 +22,10 @@ exclude_patterns = ["py_env/*", '**/_*']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = [
-    'sphinxcontrib.napoleon',
     'sphinx.ext.autodoc',
-    'sphinx_autodoc_typehints',
     'myst_parser',
     'sphinx.ext.autosectionlabel',
     'sphinx_design',
-    'sphinx.ext.doctest'
 ]
 # Make sure the target is unique
 autosectionlabel_prefix_document = True

@@ -2,7 +2,7 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=python
 
 
-**/py_env
+**/.venv
 **/__pycache__
 docs/_build/
 docs/_static/

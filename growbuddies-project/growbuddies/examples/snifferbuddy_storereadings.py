@@ -80,7 +80,7 @@ Functions
 import logging
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/growbuddies/code')
+sys.path.append('/home/pi/GrowBuddies/growbuddies-project/growbuddies')
 
 from logginghandler import LoggingHandler
 from gus_code import Gus
