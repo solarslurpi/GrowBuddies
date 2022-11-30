@@ -17,7 +17,7 @@ I found the following info useful to figure out how to get systemd to do what I 
 1. The first thing to do is write the .service file.  Here is the `snifferbuddy_storereadings.service` file I used for the `snifferbuddy_storereadings.py` code.
 
 
-```{literalinclude} ../code/examples/snifferbuddy_storereadings.service
+```{literalinclude} ../growbuddiesproject/growbuddies/examples/snifferbuddy_storereadings.service
 :language: python
 :linenos: true
 ```

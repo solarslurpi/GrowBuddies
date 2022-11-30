@@ -107,8 +107,8 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 (snifferbuddy_storereadings)=
 ## Store Readings {material-outlined}`storage;1em;sd-text-success`
 
-### code/examples/snifferbuddy_storereadings.py
-```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/main/code/examples/snifferbuddy_storereadings.py
+### snifferbuddy_storereadings.py
+```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/930420abc7ddd4cf4c74c408d61819eec0968a44/growbuddies-project/growbuddies/examples/snifferbuddy_storereadings.py
 :outline:
 :color: success
 
@@ -116,7 +116,7 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 ```
 
 ```{eval-rst}
-.. automodule:: code.examples.snifferbuddy_storereadings
+.. automodule:: growbuddiesproject.growbuddies.examples.snifferbuddy_storereadings
    :members:
 ```
 
@@ -129,7 +129,7 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
  {octicon}`mark-github;1em;sd-text-success` View Code
 ```
 ```{eval-rst}
-.. automodule:: code.logginghandler
+.. automodule:: growbuddiesproject.growbuddies.logginghandler
    :members:
 ```
 

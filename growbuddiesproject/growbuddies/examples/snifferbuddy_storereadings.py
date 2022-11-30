@@ -14,6 +14,7 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 #
+
 """This example:
 
 - Returns SnifferBuddy readings **including** vpd.
@@ -80,7 +81,7 @@ Functions
 import logging
 # TODO: These two lines can be removed when this is part of a package.
 import sys
-sys.path.append('/home/pi/GrowBuddies/growbuddies-project/growbuddies')
+sys.path.append('/home/pi/GrowBuddies/growbuddiesproject/growbuddies')
 
 from logginghandler import LoggingHandler
 from gus_code import Gus
