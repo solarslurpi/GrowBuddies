@@ -20,13 +20,13 @@ from logginghandler import LoggingHandler
 import math
 
 
-class snifferBuddySensors:
+class SnifferBuddySensors:
     """These are constants containing a string identifying the air quality sensor being used.
     """
     SCD30 = "SCD30"
 
 
-class snifferBuddyConstants:
+class SnifferBuddyConstants:
     """These are the constants representing the item id of a SnifferBuddy measurement.
     """
     TEMPERATURE = 0
@@ -37,8 +37,8 @@ class snifferBuddyConstants:
     # Note: vpd is not listed because it is a function of temperature and humidity.
 
 
-class snifferBuddyReadings():
-    """Takes in an mqtt air quality message from a snifferBuddy and translates into an easy to use set of properties.
+class SnifferBuddyReadings():
+    """Takes in an mqtt air quality message from a SnifferBuddy and translates into an easy to use set of properties.
 
     The mqtt air quality message is sensor specific different.  Different air quality sensors will have a different message format.
 
@@ -55,30 +55,30 @@ class snifferBuddyReadings():
 
     .. code:: python
 
-        from snifferbuddy_code import snifferBuddyReadings
-        s = snifferBuddy(mqtt_dict)
+        from snifferbuddy_code import SnifferBuddyReadings
+        s = SnifferBuddyReadings(mqtt_dict)
         print({s.dict})
         print({s.vpd})
 
 
     Args:
-        mqtt_dict (dict): Sensor model specific mqtt message from a snifferBuddy.
+        mqtt_dict (dict): Sensor model specific mqtt message from a SnifferBuddy.
         sensor (str, optional):The constant string that identifies the air quality sensor.  The sensor must be listed in
-        snifferBuddySensors(). Defaults to snifferBuddySensors.SCD30.
+        SnifferBuddySensors(). Defaults to SnifferBuddySensors.SCD30.
         log_level (logging level constant, optional):Logging level either logging.DEBUG, logging.INFO, logging.ERROR. Defaults to logging.DEBUG.
     """
 
-    def __init__(self, mqtt_dict, sensor=snifferBuddySensors.SCD30, log_level=logging.DEBUG):
+    def __init__(self, mqtt_dict, sensor=SnifferBuddySensors.SCD30, log_level=logging.DEBUG):
 
         self.sensor = sensor
         self.mqtt_dict = mqtt_dict
         # The air quality sensor's name in the mqtt message.
-        self.name_dict = {snifferBuddySensors.SCD30: ["Temperature", "Humidity", "CarbonDioxide"]
+        self.name_dict = {SnifferBuddySensors.SCD30: ["Temperature", "Humidity", "CarbonDioxide"]
                           }
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler(log_level)
         self.logger.debug(
-            "-> Initializing snifferBuddy class."
+            "-> Initializing SnifferBuddy class."
         )
 
     def _get_item(self, item_number: int):
@@ -88,11 +88,11 @@ class snifferBuddyReadings():
             # e.g. for temperature:
             # temperature = item = mqtt_dict["SCD30"]["Temperature"].  If the item is for
             # the temperature, the item_number is 0.
-            if item_number == snifferBuddyConstants.TIME:
+            if item_number == SnifferBuddyConstants.TIME:
                 item = self.mqtt_dict["Time"]
                 return item
-            if self.sensor == snifferBuddySensors.SCD30:
-                if item_number == snifferBuddyConstants.LIGHT_LEVEL:
+            if self.sensor == SnifferBuddySensors.SCD30:
+                if item_number == SnifferBuddyConstants.LIGHT_LEVEL:
                     # Light level is part of Snifferbuddy, but not the SCD30.
                     item = self.mqtt_dict["ANALOG"]["A0"]
                 else:
@@ -139,7 +139,7 @@ class snifferBuddyReadings():
 
     @property
     def dict(self) -> dict:
-        """Returns snifferBuddy readings as a dictionary.
+        """Returns SnifferBuddy readings as a dictionary.
 
         Returns:
             dict: Contains values for temperature, humidity, co2, vpd, and light level.
@@ -153,40 +153,40 @@ class snifferBuddyReadings():
 
     @property
     def temperature(self) -> float:
-        """Return snifferBuddy's temperature reading
+        """Return SnifferBuddy's temperature reading
 
         Returns:
-            float: snifferBuddy's reading of the air temperature.  Whether it is in F or C is dependent on how you set up snifferBuddy.
+            float: SnifferBuddy's reading of the air temperature.  Whether it is in F or C is dependent on how you set up SnifferBuddy.
         """
         # I set the temperature to F.
-        t = self._get_item(snifferBuddyConstants.TEMPERATURE)
+        t = self._get_item(SnifferBuddyConstants.TEMPERATURE)
         return t
 
     @property
     def time(self) -> str:
         """Returns a string containing the date and time that can be converted into a datetime.
         """
-        time = self._get_item(snifferBuddyConstants.TIME)
+        time = self._get_item(SnifferBuddyConstants.TIME)
         return time
 
     @property
     def humidity(self) -> float:
-        h = self._get_item(snifferBuddyConstants.HUMIDITY)
+        h = self._get_item(SnifferBuddyConstants.HUMIDITY)
         return h
 
     @property
     def co2(self) -> float:
-        c = self._get_item(snifferBuddyConstants.CO2)
+        c = self._get_item(SnifferBuddyConstants.CO2)
         return c
 
     @property
     def vpd(self) -> float:
-        h = self._get_item(snifferBuddyConstants.HUMIDITY)
-        t = self._get_item(snifferBuddyConstants.TEMPERATURE)
+        h = self._get_item(SnifferBuddyConstants.HUMIDITY)
+        t = self._get_item(SnifferBuddyConstants.TEMPERATURE)
         v = self._calc_vpd(t, h)
         return v
 
     @property
     def light_level(self) -> int:
-        ll = self._get_item(snifferBuddyConstants.LIGHT_LEVEL)
+        ll = self._get_item(SnifferBuddyConstants.LIGHT_LEVEL)
         return ll
