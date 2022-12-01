@@ -21,7 +21,7 @@ exclude_patterns = ["py_env/*", '**/_*']
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'myst_parser', 'sphinx.ext.autosectionlabel', 'sphinx_design']
+extensions = ['sphinx.ext.autodoc', 'myst-parser', 'sphinx.ext.autosectionlabel', 'sphinx_design']
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
 
