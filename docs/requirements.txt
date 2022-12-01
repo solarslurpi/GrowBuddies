@@ -31,7 +31,6 @@ packaging==21.3
 paho-mqtt==1.6.1
 pep517==0.13.0
 pipreqs==0.4.11
-pkg_resources==0.0.0
 pkginfo==1.9.1
 pycodestyle==2.10.0
 pycparser==2.21
