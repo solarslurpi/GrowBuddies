@@ -1,3 +1,7 @@
+```{eval-rst}
+:orphan:
+```
+
 (wiring_doc)=
 
 # Wiring Components Together

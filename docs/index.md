@@ -4,7 +4,7 @@
 % contain the root `toctree` directive.
 
 # Welcome to GrowBuddies! {material-regular}`yard;2em;sd-text-success`
-Hello! Thank you for stopping by.  The GrowBuddies project is an Open DIY project that consists of software/hardware components - called Buddies.
+Hello! Thank you for stopping by.  The GrowBuddies project is an Open DIY indoor gardening project striving to make indoor gardening as enjoyable and successful with just a little help from these Buddies.
 
 # Just a bunch of Buddies
  The Buddies are here to help optimize the outcome of your indoor plants' growth.  The current Buddies include:
@@ -43,22 +43,23 @@ Sniffs out temperature, humidity, and CO2.
 Maintains the vpd Level.
 :::
 
-
-
 ::::
-:::{div} sd-fs-3 sd-font-weight-bold sd-text-info
+:::{div} sd-font-weight-bold sd-text-success
 They would LOVE to be your friend!
 :::
 
 
+
+
 ```{note} Please [Contact me](mailto:happygrowbuddy@gmail.com) (happygrowbuddy@gmail.com) with thoughts, questions, interests.
 ```
-::::
-:::{div} sd-font-weight-bold sd-success
-Everyone is welcome.
-:::
+
+
+
+
+
 ## Play Time
-In the bottom left hand corner of the image, you see my growtent.  There is a SnifferBuddy approximately in the middle of the grow tent.  It is plugged into a power port through the pink USB cable.  If you look closely, you cann see a plume of mist coming out of MistBuddy.  Perfect timing for a Glamour shot.
+In the bottom left hand corner of the image, you see my growtent.  There is a SnifferBuddy approximately in the middle of the grow tent.  It is plugged into a power port through the pink USB cable.  If you look closely, you can see a plume of mist coming out of MistBuddy.  Perfect timing for a Glamour shot.
 :::{div}
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
 :::
@@ -74,17 +75,14 @@ The Buddies sure love to play!  It's non-stop fun as:
 See you in the garden. {fa}`leaf;sd-text-success`
 :::
 
+```{eval-rst}
+.. toctree::
+   :maxdepth: 1
 
-
-
-
-
-```{toctree}
-:maxdepth: 1
-getting_started
-gus
-snifferbuddy
-mistbuddy
-tasmota
-systemd
+   getting_started
+   gus
+   mistbuddy
+   snifferbuddy
+   tasmota
+   systemd
 ```

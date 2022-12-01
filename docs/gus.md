@@ -13,7 +13,7 @@
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
- As you can see, Gus has alot of tools to help the GrowBuddies.  These include [a mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy mqtt message.  If instructed to do so, Gus can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need Gus to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
+ As you can see, Gus has a lot of tools to help GrowBuddies.  These include [a mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy mqtt message.  If instructed to do so, Gus can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need Gus to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
 
 
 (make_gus)=
@@ -30,17 +30,17 @@ The green one's bones (the one on the left) are made up of Raspberry 4 stuff.  T
 #### Gather The Materials
 First, you'll need to gather the materials.
 
-- A Raspberry Pi 3B+ or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck from [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).
+- A Raspberry Pi 3B+ or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck with [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).
 - A Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to2.5A)__.
-- A [microSD card with full size adapter](https://amzn.to/3W3yvHa).
-- An Enclosure needs to be printed out on a 3D printer.  The model I chose is [Malolo's screw-less/snap fit Raspberry Pi 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one color slot base and the two color hex top.  You can choose what you want.  I have included the stl files I used.
+- A [microSD [card with ](https://amzn.to/3W3yvHa)full-size[ adapter](https://amzn.to/3W3yvHa).
+- An Enclosure needs to be printed out on a 3D printer.  The model I chose is [Malolo's [screw-less/](https://www.thingiverse.com/thing:3723561)snap-fit[ Raspberry Pi](https://www.thingiverse.com/thing:3723561) 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one-color slot base and the two-color hex top.  You can choose what you want.  I have included the stl files I used.
 #### Put the Pi in its Enclosure
-I found it pretty simple to put the pi into the enclosure once it had printed.
+I found it pretty simple to put the pi into the enclosure once it had been printed.
 
 ### Install The Software
 #### Resources
 I found the following stuff on the web to be helpful:
-- [Python Virtual Environments](https://www.youtube.com/watch?v=ApDThpsr2Fw&t=1295s) at this point in the video, the difference between `virtualenv` and `venv` are explained.  More details are given in [Virtualenv RTD](https://virtualenv.pypa.io/en/latest/).
+- [Python Virtual Environments](https://www.youtube.com/watch?v=ApDThpsr2Fw&t=1295s) at this point in the video, the difference between `virtualenv` and `venv` is explained.  More details are given in [Virtualenv RTD](https://virtualenv.pypa.io/en/latest/).
 - [Installing mosquitto on Rasp Pi](https://pimylifeup.com/raspberry-pi-mosquitto-mqtt-server/)
 - [mqtt Explorer](http://mqtt-explorer.com/) - this tool does exactly what the name implies.  It allows you to explore the mqtt traffic as it whizzes by.  You can also publish messages.  Very handy.
 - [YouTube video on mqtt Last Will and Testament](https://www.youtube.com/watch?v=dNy9GEXngoE).  Good to know how this works (and why).
@@ -75,7 +75,7 @@ Choose the cog
 
 Setup Options
 :::
-- Click Save, the Write to install the Rasp Pi OS Lite OS with the options you entered.
+- Click Save to install the Rasp Pi OS Lite OS with the options you entered.
 
 - Remove the SD card from the reader.
 - Insert the microSD into the Raspberry Pi.
@@ -138,25 +138,25 @@ You may not need to know anything about this.  I have it here so I don't forget 
 
 [MQTT's Last will and Testament - LWT](https://www.hivemq.com/blog/mqtt-essentials-part-9-last-will-and-testament/) is an extremely useful feature to use for mqtt error debugging.  The Buddies sending mqtt messages are all Tasmota devices. [Refer to Tasmota's page](https://tasmota.github.io/docs/MQTT/#lwt-topic-last-will-and-testament) for advice on how LWT is implemented.
 
-For example,  let's say we have a snifferbuddy up and running.
+For example,  let's say we have a SnifferBuddy up and running.
 ```
 pi@gus:~ $ mosquitto_sub -t "tele/snifferbuddy/LWT"
 Online
 Offline
 Online
 ```
-subscribing to the above topic shows initially SnifferBuddy is online.  I unplug.  Wait the 30 seconds that Tasmota by default sets the keep alive time to.  An offline message is sent by the broker.  I then plug SnifferBuddy back in. Right after SnifferBuddy boots, we receive an Online message.
+subscribing to the above topic shows initially SnifferBuddy is online.  I unplug.  Wait the 30 seconds that Tasmota by default sets the keep-alive time to.  An offline message is sent by the broker.  I then plug SnifferBuddy back in. Right after SnifferBuddy boots, we receive an Online message.
 
 The [MQTT Esentials Page 9](https://www.hivemq.com/blog/mqtt-essentials-part-9-last-will-and-testament/) article lists several states that cause the broker to publish the LWT message.
 
-issuing the `status 6` command on the Tasmota command line informs us on the mqtt settings for this Tasmota device:
+issuing the `status 6` command on the Tasmota command line informs us of the mqtt settings for this Tasmota device:
 ```
  MQT: stat/snifferbuddy/STATUS6 = {"StatusMQT":{"MqttHost":"gus","MqttPort":1883,"MqttClientMask":"DVES_%06X","MqttClient":"DVES_25EEA5","MqttUser":"DVES_USER","MqttCount":1,"MAX_PACKET_SIZE":1200,"KEEPALIVE":30,"SOCKET_TIMEOUT":4}}
  ```
 The mqtt info lets us know the mqtt keep alive time is 30 seconds.
 (influxdb_install)=
 #### Install influxdb
-[InfluxDB (v1.8)](https://www.influxdata.com/) is a time series based database that is free to use on the Raspberry Pi.  There can be multiple databases.
+[InfluxDB (v1.8)](https://www.influxdata.com/) is a time series-based database that is free to use on the Raspberry Pi.  There can be multiple databases.
 
 ```{admonition} Gus as the database name
 I stick with the database name of Gus.  If you look in growbuddies_settings.json, you will see influxdb setting for the database.
@@ -187,7 +187,7 @@ and deleted the duplicate lines. Then `sudo apt-get update` worked.
 ## Playtime {material-regular}`celebration;1em;sd-text-success`
 ```{note} You must build [SnifferBuddy](snifferbuddy) before playtime can begin.
 ```
-Run the example code [snifferbuddy_storereadings.py](snifferbuddy_storereadings)
+Run the example code {doc} found within the SnifferBuddy documentation.  {ref}`snifferbuddy_storereadings.py <snifferbuddy_storereadings>`
 ## Useful Raspberry Pi Stuff
 
 (raspi-nowifi)=
@@ -229,9 +229,9 @@ Changing the ssid and psk to match your network.
 
 
 ### Using Rsync
-Rsync is a very useful utiity on the Raspberry Pi.  I document my use here because I keep forgetting
-how to use it.  Currently I am on a Windows PC.  The challenge is to start an Bash session in the right directory.
-- open Explorer, go to the directory to use rsync, type in bash in the text field for the filepath.
+Rsync is a very useful utility on the Raspberry Pi.  I document my use here because I keep forgetting
+how to use it.  Currently, I am on a Windows PC.  The challenge is to start a Bash session in the right directory.
+- open Explorer, go to the directory to use rsync, and type in bash in the text field for the file path.
 
 :::{figure} images/explorer_with_bash.jpg
 :align: center
@@ -292,3 +292,7 @@ Raspberry Pi reference 2021-12-02
 ```
 ```{note} Debian 10 is Buster.  Debian 11 is Bullseye.
 ```
+### Ignore a Page
+If you don't want to include a document in the toctree, add :orphan: to the top of your document to get rid of the warning.
+
+This is a File-wide metadata option. Read more from the [Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html#file-wide-metadata).

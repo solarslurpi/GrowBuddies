@@ -19,5 +19,6 @@
     "python.testing.pytestEnabled": true,
     "files.trimTrailingWhitespace": true,
     "esbonio.sphinx.confDir": "",
+    "grammarly.files.include": ["**/*.md" ]
 
 }
