@@ -17,7 +17,7 @@ release = '2022.12.0'
 
 # ignore files
 exclude_patterns = ["py_env/*", '**/_*']
-
+#
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
