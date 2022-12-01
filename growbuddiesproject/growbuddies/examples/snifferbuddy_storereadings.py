@@ -79,12 +79,9 @@ Functions
 ~~~~~~~~~
 """
 import logging
-# TODO: These two lines can be removed when this is part of a package.
-import sys
-sys.path.append('/home/pi/GrowBuddies/growbuddiesproject/growbuddies')
 
-from logginghandler import LoggingHandler
-from gus_code import Gus
+from growbuddies.logginghandler import LoggingHandler
+from growbuddies.gus import Gus
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)

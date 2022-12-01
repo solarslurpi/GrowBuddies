@@ -16,7 +16,7 @@
 #
 import json
 import logging
-from logginghandler import LoggingHandler
+from growbuddies.logginghandler import LoggingHandler
 import os
 from threading import Thread
 import paho.mqtt.client as mqtt
@@ -25,7 +25,7 @@ import paho.mqtt.client as mqtt
 from influxdb import InfluxDBClient
 import random
 import string
-from snifferbuddyreadings_code import snifferBuddyReadings
+from growbuddies.snifferbuddyreadings import SnifferBuddyReadings
 
 snifferbuddy_topic = "snifferbuddy_topic"
 settings_filename = "growbuddies_settings.json"
@@ -206,7 +206,7 @@ class Gus(Thread):
         # Send the message contents as a dictionary back to the values_callback.
         try:
             mqtt_dict = json.loads(message)
-            s = snifferBuddyReadings(mqtt_dict)
+            s = SnifferBuddyReadings(mqtt_dict)
             if self.SnifferBuddyReadings_callback:
                 self.SnifferBuddyReadings_callback(s)
             # Write reading to database table if desired.

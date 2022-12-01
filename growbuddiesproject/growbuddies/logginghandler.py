@@ -17,7 +17,7 @@
 import inspect
 import logging
 import sys
-import colors_code
+import growbuddies.colors as colors
 
 
 class LoggingHandler:
@@ -61,28 +61,28 @@ class LoggingHandler:
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
         self.logger.debug(
-            f"{colors_code.Green}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors_code.Original}"
+            f"{colors.Green}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
         )
 
     def info(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
         self.logger.info(
-            f"{colors_code.Yellow}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors_code.Original}"
+            f"{colors.Yellow}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
         )
 
     def warning(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
         self.logger.error(
-            f"{colors_code.Red}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors_code.Original}"
+            f"{colors.Red}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
         )
 
     def error(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
         self.logger.error(
-            f"{colors_code.BIRed}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors_code.Original}"
+            f"{colors.BIRed}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
         )
 
     # def _get_Error_Bad_Soil_Moisture_Reading(self):

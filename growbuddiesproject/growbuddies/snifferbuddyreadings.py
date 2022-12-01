@@ -16,7 +16,7 @@
 # DEALINGS IN THE SOFTWARE.
 #
 import logging
-from logginghandler import LoggingHandler
+from growbuddies.logginghandler import LoggingHandler
 import math
 
 

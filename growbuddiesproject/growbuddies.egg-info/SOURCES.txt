@@ -1,11 +1,11 @@
 pyproject.toml
-growbuddies/PID_mqtt.py
+growbuddies/PID_code.py
 growbuddies/__init__.py
-growbuddies/colors_code.py
-growbuddies/gus_code.py
+growbuddies/colors.py
+growbuddies/gus.py
 growbuddies/logginghandler.py
-growbuddies/mistbuddy_code.py
-growbuddies/snifferbuddyreadings_code.py
+growbuddies/mistbuddy.py
+growbuddies/snifferbuddyreadings.py
 growbuddies.egg-info/PKG-INFO
 growbuddies.egg-info/SOURCES.txt
 growbuddies.egg-info/dependency_links.txt

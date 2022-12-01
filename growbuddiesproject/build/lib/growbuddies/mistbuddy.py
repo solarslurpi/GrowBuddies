@@ -1,9 +1,9 @@
-from PID_mqtt import PID
+from growbuddiesproject.growbuddies.PID_code import PID
 import logging
 from enum import Enum
 from code.gus_code import Gus
 import threading
-from snifferbuddyreadings_code import snifferBuddyReadings
+from growbuddiesproject.growbuddies.snifferbuddyreadings import snifferBuddyReadings
 
 
 settings_filename = "code/growbuddy_settings.json"
