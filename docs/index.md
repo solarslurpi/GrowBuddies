@@ -53,8 +53,10 @@ They would LOVE to be your friend!
 
 ```{note} Please [Contact me](mailto:happygrowbuddy@gmail.com) (happygrowbuddy@gmail.com) with thoughts, questions, interests.
 ```
-Everyone is welcome. I am a care giver to plants.  Five months out of the year, I grow outdoors.  The rest of the time I grow indoors.  It amazes me how much happiness there can be gained by taking care of plants. I find doing programming and hardware projects a wonderful hobby.  I also love learning and it seems to me there is A LOT I can learn.
-
+::::
+:::{div} sd-font-weight-bold sd-success
+Everyone is welcome.
+:::
 ## Play Time
 In the bottom left hand corner of the image, you see my growtent.  There is a SnifferBuddy approximately in the middle of the grow tent.  It is plugged into a power port through the pink USB cable.  If you look closely, you cann see a plume of mist coming out of MistBuddy.  Perfect timing for a Glamour shot.
 :::{div}
