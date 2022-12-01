@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../code'))
 project = 'GrowBuddies'
 copyright = '2022, HappyDay'
 author = 'HappyDay'
-release = '2022.12.a'
+release = '2022.12.0'
 
 # ignore files
 exclude_patterns = ["py_env/*", '**/_*']
