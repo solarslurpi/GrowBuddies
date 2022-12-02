@@ -12,7 +12,7 @@
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
-sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30 air quality sensor](https://www.adafruit.com/product/4867) measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brains behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus_doc).
+sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30 air quality sensor](https://www.adafruit.com/product/4867) measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brain behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus_doc).
 
 :::{figure} images/snifferbuddy_in_growtent.jpg
 :align: center
@@ -46,7 +46,7 @@ Once plugged in and working, you will be able to (compliments of [Gus](gus)):
 - Photoresistor and 10K through hole resistor.  I had alot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
 - 3D printer and PLA filament for printing out [the enclosure](enclosure).
 - Superglue for gluing the top Wemos part of the enclosure to the cap part of the enclosure.
-- USB chord and to plug the ESP8286 to power.
+- USB chord and plug the ESP8286 to power.
 - 4 4mm M2.5 or M3 bolts.
 (enclosure)=
 ### Make the Enclosure
@@ -69,7 +69,7 @@ SnifferBuddy Enclosure Parts
 
 
 ### Wire the Components Together
-The SCD30 and photoresistor are wired to  an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
+The SCD30 and photoresistor are wired to an [ESP826 D1](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1) mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
 :::{figure} images/SnifferBuddy_wiring.jpg
 :align: center
 :scale: 100
@@ -77,16 +77,16 @@ The SCD30 and photoresistor are wired to  an [ESP826 D1 mini](https://i2.wp.com/
 SnifferBuddy Wiring
 :::
 
-I settled on the ESP826 because I settled on [Tasmota](https://tasmota.github.io/docs/)  as the way to send sensor readings over mqtt.
+I settled on the ESP826 because I settled on [Tasmota](https://tasmota.github.io/docs/) as the way to send sensor readings over mqtt.
 I figured if [Tasmota's goal](https://tasmota.github.io/docs/About/) was to *"provide ESP8266 based ITEAD Sonokff devices with MQTT and 'Over the Air' or OTA firmware"...*
 Then why not use the same chip?   I {ref}`ran into an issue with the Wemos D1 ESP286<wemos_challenges>` when I made the first SnifferBuddy.  But for the most part, ESP826's are very
 inexpensive and work.  I ordered some from [Aliexpress](https://www.aliexpress.us/item/2251832645039000.html).  I put a Photoresistor on the top as a way to determine
-if the grow lights were on or off.  I use this for knowing when to go into daytime or nightime care.
+if the grow lights were on or off.  I use this for knowing when to go into daytime or nighttime care.
 
 (scd30_wiring)=
 #### WemosD1 to SCD30 Wiring
 
-Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amount of sensors and microcontrollers that we can connect together.  However, only a few companies (like Adafruit) include connectors on their Breakout Boards.  I like the idea of standardizing on a couple of JST connectors and discuss that more in [the wiring section](wiring_doc)
+Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amount of sensors and microcontrollers that we can connect together.  However, only a few companies (like Adafruit) include connectors on their Breakout Boards.  I like the idea of standardizing on a couple of JST connectors and discussing that more in [the wiring section](wiring_doc)
 
 :::{figure} images/wemosd1_wiring.jpg
 :align: center
@@ -95,7 +95,7 @@ Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amo
 Wemos D1 Wiring
 :::
 
-The Photoresistor is "hard wired" to the ESP286's analog pin.  The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
+The Photoresistor is "hard-wired" to the ESP286's analog pin.  The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
 
 
 ### Install Tasmota
@@ -150,7 +150,7 @@ You must install Grafana on Gus() first.  For this step, see the [Make Gus()](ma
 
 **Start at step 2**. You'll see the line `http://<IPADDRESS>:3000`.  Most likely you will use the URL `http://gus:3000`.
 
-- log into Grafana (go through steps 2 through 5)
+- log in to Grafana (go through steps 2 through 5)
 
 As pimylifeup notes: _At this point, you should now have Grafana up and running on your Raspberry Pi and now be able to access its web interface._
 ```
@@ -246,7 +246,7 @@ Plot of SnifferBuddyReadings for vpd.
 ```{danger}
 A vpd reading of 1.3 is saying the grow environment is stressful for the plant.
 ```
-The humidity or the temperature could be adjusted.  Here is a plot of the temperature and vpd.  While the vpd averages about 1.3, the temperature ranges between 73 and 75.  This is because my grow tent envioronment is in my house, which is climate controlled.  The LED lights raise the temperature a bit.  The fans cool the temperature a bit.  It's pretty ideal.  Thus, [MistBuddy](mistbuddy_doc) focuses on turning a humidifier on and off for just the right amount of time.
+The humidity or the temperature could be adjusted.  Here is a plot of the temperature and vpd.  While the vpd averages about 1.3, the temperature ranges between 73 and 75.  This is because my grow tent environment is in my house, which is climate controlled.  The LED lights raise the temperature a bit.  The fans cool the temperature a bit.  It's pretty ideal.  Thus, [MistBuddy](mistbuddy_doc) focuses on turning a humidifier on and off for just the right amount of time.
 
 :::{figure} images/grafana_snifferbuddyreadings_vpd._and_temp.jpg
 :align: center
