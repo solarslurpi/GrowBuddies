@@ -5,7 +5,8 @@
 
 # Welcome to GrowBuddies! {material-regular}`yard;2em;sd-text-success`
 
-Hello! Thank you for stopping by.  The GrowBuddies project is yet another Open DIY indoor gardening project.  This project's main goal is to have more fun gardening by buddying up with technology that can help us have a happier gardening experience. We get by with a little help from our Buddies...
+Hello! Thank you for stopping by.  The GrowBuddies project is yet another Open DIY indoor gardening project.  This project's main goal is to have more fun gardening by buddying up with technology that can help us have a happier gardening experience. [We get by with a little help from our Buddies](https://www.youtube.com/watch?v=0C58ttB2-Qg).
+
 
 # Just a bunch of Buddies
  The Buddies are here to help optimize the outcome of your indoor plants' growth.  The current Buddies include:
@@ -82,8 +83,8 @@ See you in the garden. {fa}`leaf;sd-text-success`
 
    getting_started
    gus
-   mistbuddy
    snifferbuddy
+   mistbuddy
    tasmota
    systemd
 ```

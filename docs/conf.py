@@ -21,7 +21,7 @@ exclude_patterns = ["py_env/*", '**/_*']
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.autosectionlabel", "sphinx_design", "myst_parser"]
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.autosectionlabel", "sphinx_design",  "myst_parser"]
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
 
@@ -47,4 +47,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = 'sphinx_rtd_theme'
-html_static_path = ['_static']
+
+# NOT using any static CSS or such...
+# html_static_path = ['_static']
