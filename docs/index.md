@@ -51,14 +51,8 @@ They would LOVE to be your friend!
 :::
 
 
-
-
 ```{note} Please [Contact me](mailto:happygrowbuddy@gmail.com) (happygrowbuddy@gmail.com) with thoughts, questions, interests.
 ```
-
-
-
-
 
 ## Play Time
 In the bottom left-hand corner of the image, you see my grow tent.  There is a SnifferBuddy approximately in the middle of the grow tent.  It is plugged into a power port through the pink USB cable.  If you look closely, you can see a plume of mist coming out of MistBuddy.  Perfect timing for a Glamour shot.
@@ -66,8 +60,8 @@ In the bottom left-hand corner of the image, you see my grow tent.  There is a S
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
 :::
 The Buddies sure love to play!  It's non-stop fun as:
-- Good 'ol `{doc}Gus <gus>_` has set up a listening "box" [aka the mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy mqtt message.  If instructed to do so, Gus can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need Gus to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
-- `{doc}SnifferBuddy <snifferbuddy>_` happily puffs out [mqtt messages](mqtt_install) over a home's wifi containing air readings detected by its [SCD-30 sensor](https://www.adafruit.com/product/4867)](https://www.adafruit.com/product/4867).
+- {doc}`Gus() <gus>` has set up an [mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy readings within the mqtt message's payload.  If instructed to do so, {doc}`Gus() <gus>` can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need {doc}`Gus() <gus>` to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
+- {doc}` SnifferBuddy <snifferbuddy>` happily puffs out [mqtt messages](mqtt_install) over a home's wifi containing air readings detected by its [SCD-30 sensor](https://www.adafruit.com/product/4867)](https://www.adafruit.com/product/4867).
 
 - [MistBuddy](mistbuddy) is an add-on that subscribes to the SnifferBuddy messages.  MistBuddy can operate in one of two modes.
     - **Observation** - MistBuddy receives SnifferBuddy messages.  You can ask for the latest vpd value, as well as the number of seconds MistBuddy calculated the MistBuddy's humidifier to turn on.

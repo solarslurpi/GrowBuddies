@@ -1,4 +1,3 @@
-(gus_doc)=
 
 # Gus
 :::{div}
