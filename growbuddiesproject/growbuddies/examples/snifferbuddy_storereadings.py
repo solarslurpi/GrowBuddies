@@ -1,17 +1,3 @@
-#
-# The goal of this example is to walk through the interactions with `Gus()` to access SnifferBuddy readings.
-#
-# Copyright 2022 Margaret Johnson
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-#   The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
-#
 
 """This example:
 
@@ -83,8 +69,6 @@ from growbuddies.gus import Gus
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
-
-
 def snifferbuddyreadings(snifferBuddyReadings):
     """This is the `SnifferBuddyReadings_callback` function that was set when an instance of `Gus()`
     was initialized in `main()`.
@@ -106,12 +90,12 @@ def status_callback(status):
     """
     logger.debug(f'-> SnifferBuddy is: {status}')
 
-
 def main():
     """We initialize an instance of `Gus()` with the following parameters.  The defaults are fine for
     the other parameters.
 
     Args:
+
 
         SnifferBuddyReadings_callback (function, optional): Function called by `Gus()` to return an instance of a SnifferBuddyReadings().
 
@@ -119,8 +103,9 @@ def main():
             a string containing either `online` or `offline`.
 
         SnifferBuddyReadings_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.
-    After getting an instance of `Gus()` with these parameters, Call the `start()` method.
 
+
+    After getting an instance of `Gus()` with these parameters, Call the `start()` method.
 
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.

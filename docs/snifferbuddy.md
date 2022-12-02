@@ -1,4 +1,3 @@
-#import colors_code
 
 (snifferbuddy_doc)=
 # SnifferBuddy
