@@ -42,7 +42,7 @@ Once plugged in and working, you will be able to (compliments of [Gus](gus)):
 
 - [SCD30 sensor](https://www.adafruit.com/product/4867) component.
 - [ESP8286](https://www.aliexpress.us/item/2251832645039000.html) component.
-- Photoresistor and 10K through hole resistor.  I had alot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
+- Photoresistor and 10K through hole resistor.  I had a lot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
 - 3D printer and PLA filament for printing out [the enclosure](enclosure).
 - Superglue for gluing the top Wemos part of the enclosure to the cap part of the enclosure.
 - USB chord and plug the ESP8286 to power.
@@ -228,8 +228,7 @@ After setting the parameters similar to what is done in the image, you should se
 :::{figure} images/grafana_snifferbuddyreadings_vpd.jpg
 :align: center
 :scale: 75
-
-Plot of SnifferBuddyReadings for vpd.
+A plot of SnifferBuddyReadings for vpd
 :::
 
 The results point to an average vpd at that date/time range of about 1.3.
@@ -239,7 +238,7 @@ Looking at [FLU's VPD Chart](https://www.canr.msu.edu/floriculture/uploads/files
 :align: center
 :scale: 75
 
-Plot of SnifferBuddyReadings for vpd.
+FLU's VPD Chart
 :::
 
 ```{danger}
@@ -251,7 +250,7 @@ The humidity or the temperature could be adjusted.  Here is a plot of the temper
 :align: center
 :scale: 65
 
-Plot of SnifferBuddyReadings for vpd and temperature.
+A plot of SnifferBuddyReadings for vpd and temperature.
 :::
 
 

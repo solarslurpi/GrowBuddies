@@ -16,20 +16,20 @@ MistBuddy consists of:
 
 
 ## Resources
-I found these resources helpful in my learnings.
+I found these resources helpful in my learning.
 ### vpd
 The term "Vapor Pressure Deficit" is not that obvious to immediately understand (at least for me).  I found these resources helpful to better understand VPD:
 
 - [YouTube video that I found best explained water vapor, temperature's relationship to Relative Humidity and VPD](https://www.youtube.com/watch?v=-bYPGr1TJQY&t=1s).
 - [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
 ### PID controller
-- [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out if we just use the P term there is a steady state error, etc.
+- [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out that if we just use the P term there is a steady state error, etc.
 -  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). MistBuddy uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
 
 (vpd_chart)=
 ### VPD Chart
 
-The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf) .  vpdBuddy gets the ideal vpd levels from the `growbuddy_settings.json` file.
+The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf).  MistBuddy gets the ideal vpd levels from the `growbuddy_settings.json` file.
 
 ```{image} images/vpd_chart.jpg
 :align: center
@@ -39,18 +39,18 @@ The source for the ideal range is the [Flu Cultivation Guide](https://github.com
 - vegetative state is 0.8 to 0.95
 - flower state is 0.96 to 1.15
 
-From Germination until ready for the vegetative state, the plants germinate under a humidity dome.  Once I take off the dome the plants are in a vegetative state.  This is when VPDBuddy starts.
+From Germination until ready for the vegetative state, the plants germinate under a humidity dome.  Once I take off the dome the plants are in a vegetative state.  This is when MistBuddy starts.
 
-If the ideal VPD values are maintained during vegetative and flowering state, VPDBuddy is doing it's job!
+If the ideal VPD values are maintained during the vegetative and flowering state, MistBuddy is doing its job!
 
 
-## vpdBuddy System Overview
+## MistBuddy System Overview
 
 :::{figure} images/vpdbuddy_system_overview.jpg
 :align: center
 :scale: 100
 
-VPDBuddy System Overview
+MistBuddy System Overview
 :::
 
 <!-- A  [snifferBuddy](snifferBuddy) sends out CO2, air temp, and relative humidity (RH) readings from within the grow tent to the growBuddy Broker running on a Respberry Pi.  The VPDController Python class -->
@@ -58,15 +58,15 @@ VPDBuddy System Overview
 - A MistBuddy tied into the grow tent
 
 
-VPDBuddy ties the:
-- CO2, Temp, and RH readings being sent out by.
+MistBuddy ties the:
+- CO2, Temp, and RH readings are being sent out by.
 - VPD Controller Python Class.
 -
  sends it's readings to the growBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController
 
  ## Tuning the PID
  ### PID Python Code
- vpdBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+ MistBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
  ### Tuning
 #### Challenges
 - The input, setpoint, and error terms are all in floating point units relative to vpd readings.  vpd readings are typically between 0.0 and 2.0.  The output is the number of seconds to turn on MistBuddy.  Thus, the output includes a conversion from vpd (floating point) to number of seconds (integer)
@@ -100,10 +100,10 @@ I'm expecting an very gradual increase.
         "Kd": 0.0
     }
 ```
-- Add `sniferbuddy_table_name` input when instantiating a vpdBuddy instance in the [vpdbuddy_manage.py](https://github.com/solarslurpi/growBuddy/blob/main/code/examples/vpdbuddy_manage.py).  This will store the snifferBuddy readings into the snifferBuddy measurement table of the growBuddy influxdb database.
+- Add `sniferbuddy_table_name` input when instantiating a MistBuddy instance in the [vpdbuddy_manage.py](https://github.com/solarslurpi/growBuddy/blob/main/code/examples/vpdbuddy_manage.py).  This will store the snifferBuddy readings into the snifferBuddy measurement table of the growBuddy influxdb database.
 ```
 def main():
-    vpdbuddy = vpdBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy")
+    vpdbuddy = MistBuddy(vpd_values_callback=vpd_values_callback, manage=True, snifferbuddy_table_name="snifferbuddy")
     vpdbuddy.start()
 ```
 - [Set the time between mqtt messages](set_time_between_readings) to be one minute.
@@ -121,7 +121,7 @@ PID(Kp=50, Ki=0, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, None
 :align: center
 :scale: 60
 
-vpdBuddy Kp=50, Ki=0, Kd=0
+MistBuddy Kp=50, Ki=0, Kd=0
 :::
 ### JUST P: Kp=25, Ki=0, Kd=0
 
@@ -129,7 +129,7 @@ vpdBuddy Kp=50, Ki=0, Kd=0
 :align: center
 :scale: 60
 
-vpdBuddy Kp=25, Ki=0, Kd=0
+MistBuddy Kp=25, Ki=0, Kd=0
 :::
 
 ### PI: Kp=45, Ki=0.1, Kd=0
@@ -141,7 +141,7 @@ PID(Kp=45, Ki=0.1, Kd=0, setpoint=0.8, sample_time=0.01, output_limits=(None, No
 :align: center
 :scale: 60
 
-vpdBuddy Kp=45, Ki=0.1, Kd=0
+MistBuddy Kp=45, Ki=0.1, Kd=0
 :::
 
 #### Kp=45, Ki=0.1, Kd=0.1
@@ -152,7 +152,7 @@ PID(Kp=45, Ki=0.1, Kd=0.1, setpoint=0.8, sample_time=0.01, output_limits=(None, 
 :align: center
 :scale: 60
 
-vpdBuddy Kp=45, Ki=0.1, Kd=0.1
+MistBuddy Kp=45, Ki=0.1, Kd=0.1
 :::
 Woops!  MistBuddy stopped working for a bit and...as expected...
 
@@ -163,22 +163,22 @@ PID(Kp=45, Ki=0.1, Kd=0.1, setpoint=0.8, sample_time=0.01, output_limits=(None, 
 :::{figure} images/grafana_vpd_08_40_01_001.jpg
 :scale: 60
 
-vpdBuddy Kp=40, Ki=0.1, Kd=0.01
+MistBuddy Kp=40, Ki=0.1, Kd=0.01
 :::
 
 #### Kp=43, Ki=0.1, Kd=0
 :::{figure} images/grafana_vpd_08_43_01_0.jpg
 :scale: 60
 
-vpdBuddy Kp=43, Ki=0.1, Kd=0
+MistBuddy Kp=43, Ki=0.1, Kd=0
 :::
 
 #### Kp=43, Ki=0.1, Kd=0.1
 :::{figure} images/grafana_vpd_08_43_01_01.jpg
 :scale: 60
 
-vpdBuddy Kp=43, Ki=0.1, Kd=0
+MistBuddy Kp=43, Ki=0.1, Kd=0
 :::
 
-## Starting the vpdBuddy Service
+## Starting the MistBuddy Service
 - Follow the steps to enable the

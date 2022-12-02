@@ -8,6 +8,7 @@
 
 
 ## About {material-regular}`question_mark;1em;sd-text-success`
+Gus is a Raspberry Pi 3 or 4 running the Bullseye OS and several free software packages for mqtt, storing sensor readings, and graphing sensor readings.
 
 :::{div}
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
@@ -18,9 +19,9 @@
 
 (make_gus)=
 ## Let's Make One {material-regular}`build;1em;sd-text-success`
-Given the heavy lifting Gus does, he has a nice set of tools available.  First we need to build Gus's body.  Next, we breathe life by installing the OS and tools...oooohhh...
+Given the heavy lifting Gus does, he has a nice set of tools available.  First, we need to build Gus's body.  Next, we breathe life by installing the OS and tools...oooohhh...
 
-Here are two Gus's I've made:
+Here are two I've made:
 ```{image} images/Gus_2.jpg
 :align: center
 :scale: 40
@@ -31,7 +32,7 @@ The green one's bones (the one on the left) are made up of Raspberry 4 stuff.  T
 First, you'll need to gather the materials.
 
 - A Raspberry Pi 3B+ or 4.  At the time of this writing, there is a shortage of Raspberry Pis.  I have had the best luck with [Adafruit](https://www.adafruit.com/?q=raspberr&sort=BestMatch).
-- A Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to2.5A)__.
+- A Power Source for the Raspberry Pi. __Note: the Raspberry Pi 4 (5V via USB type-C up to 3A) uses a different power supply than the Raspberry Pi 3 (5V via micro USB up to 2.5A)__.
 - A [microSD [card with ](https://amzn.to/3W3yvHa)full-size[ adapter](https://amzn.to/3W3yvHa).
 - An Enclosure needs to be printed out on a 3D printer.  The model I chose is [Malolo's [screw-less/](https://www.thingiverse.com/thing:3723561)snap-fit[ Raspberry Pi](https://www.thingiverse.com/thing:3723561) 3 and 4 cases](https://www.thingiverse.com/thing:3723561).  Specifically the one-color slot base and the two-color hex top.  You can choose what you want.  I have included the stl files I used.
 #### Put the Pi in its Enclosure
@@ -101,7 +102,7 @@ The buddies use mqtt to send and receive payloads and commands. For example, [Sn
   "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
 }
 ```
-Gus runs the [Mosquitto Broker](http://www.steves-internet-guide.com/mosquitto-broker/).  Mosquitto is a lightweight open source message broker.  It works well.  Thank you to the open source community.
+Gus runs the [Mosquitto Broker](http://www.steves-internet-guide.com/mosquitto-broker/).  Mosquitto is a lightweight open source message broker.  It works well.  Thank you to the open-source community.
 ##### Configure the Mosquitto MQQT Broker
 
 Before installing the service, some unique settings are needed in Mosquitto's config file.
@@ -129,9 +130,9 @@ Open up [MQTT explorer](http://mqtt-explorer.com/) and connect to gus.
 :align: center
 :scale: 60
 
-gus mqtt broker
+Gus mqtt broker
 :::
-The image points out there is a SnifferBuddy sending mqtt messages to gus.
+The image points out there is a SnifferBuddy sending mqtt messages to Gus.
 (mqtt_LWT)=
 ##### Using MQTT To Determine Device Health
 You may not need to know anything about this.  I have it here so I don't forget why this is in the code!

@@ -3,8 +3,8 @@
 
 
 (before_installation)=
-## Before You Begin Installation
-Before you begin installation, check to see if the sensor you are using is included in the binary.  There is not much space on an ESP286 so it is especially relevant for this chip.  To check, go to [Tasmota's BUILDS documentation](https://tasmota.github.io/docs/BUILDS/).  Here we have a table listing which sensors are included.  The column to look at is labeled t.  The cells in this column let us know if the sensor build contains either, both, or none of the (ESP286/ESP32) drivers for the sensor.  An x means the sensor code is include.   For example, search for SCD40. The t entry has -/x.  This is saying __the SCD40 sensor code is not in the ESP286 build but is in the ESP32 build__.  If you want to add support for a sensor, follow the steps outlined in the [Compiling using GitPod](github_compile).
+## Before You Begin the Installation
+Before you begin the installation, check to see if the sensor you are using is included in the binary.  There is not much space on an ESP286 so it is especially relevant for this chip.  To check, go to [Tasmota's BUILDS documentation](https://tasmota.github.io/docs/BUILDS/).  Here we have a table listing which sensors are included.  The column to look at is labeled t.  The cells in this column let us know if the sensor build contains either, both, or none of the (ESP286/ESP32) drivers for the sensor.  An x means the sensor code is included.   For example, search for SCD40. The t entry has -/x.  This is saying __the SCD40 sensor code is not in the ESP286 build but is in the ESP32 build__.  If you want to add support for a sensor, follow the steps outlined in the [Compiling using GitPod](github_compile).
 
 (tasmota_installation)=
 ## Install Tasmota
@@ -24,7 +24,7 @@ There are many Tasmota binaries that could be installed.  We want to install the
 Tasmota Web Install
 :::
 #### Connect to WiFi
-The install includes connecting to the home wifi.
+The installation includes connecting to the home wifi.
 
 If you want to be sure the ESP286 has been "Tasmotized" correctly, you can use a tool like [Angry IP](https://angryip.org/) to show the IP address.
 :::{figure} images/angry_ip_tasmota.jpg
@@ -76,7 +76,7 @@ SnifferBuddy Host Name
 
 Here I chose the name SnifferBuddy-SCD40 to note this is a SnifferBuddy using the SCD40 sensor.  Click on Save.  Wait for the Main Menu to come back.
 #### Configure GPIO pins
-Go back into Configure, choose Configure Module.  From here set up the GPIO pins as shown in the image below.
+Go back into Configure, and choose Configure Module.  From here set up the GPIO pins as shown in the image below.
 
 :::{figure} images/tasmota_config_gpio_pins.jpg
 :align: center
@@ -109,7 +109,7 @@ MQTT Explorer
 :::
 We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
 #### Commands
-Tasmota support A LOT of [commands](https://tasmota.github.io/docs/Commands/).  The ones listed below were used on Tasmotized Buddies (like snifferBuddy).  Commands are accessed through clicking on the Console button in the main menu.
+Tasmota supports A LOT of [commands](https://tasmota.github.io/docs/Commands/).  The ones listed below were used on Tasmotized Buddies (like snifferBuddy).  Commands are accessed by clicking on the Console button in the main menu.
 :::{figure} images/tasmota_main_screen.jpg
 :align: center
 :scale: 35
@@ -164,7 +164,7 @@ The first time I used the SCD30 with Tasmota on a Wemos D1, it didn't work.  The
 Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if the software and wiring are correct.
 
 ### i2cscan
-`i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to **show you if the i2c sensor is wired correctly**.  It is useful right after an install to see if the wiring to the ESP286 is correct.
+`i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to **show you if the i2c sensor is wired correctly**.  It is useful right after an installation to see if the wiring to the ESP286 is correct.
 ```
 21:41:54.158 CMD: i2cscan
 21:41:54.179 MQT: growBuddy/snifferbuddy/RESULT = {"I2CScan":"Device(s) found at 0x62"}
@@ -259,7 +259,7 @@ void Scd30Detect(void)
 
   scd30.begin();
 ```
-On the ESP2866 Wemos, the code doesn't get past the initial `if` statement in the scenario when the ESP8266 is powered up.  It does pass when restarting with `restart 1` on the command line.  Most likely, powering up is taking longer on the ESP286 to the point Tasmota is impatient and doesn't wait for the scd30 to be powered up.  I did not debug further to find out how to robustly fix.  I got to a build that "works for me" with simply:
+On the ESP2866 Wemos, the code doesn't get past the initial `if` statement in the scenario when the ESP8266 is powered up.  It does pass when restarting with `restart 1` on the command line.  Most likely, powering up is taking longer on the ESP286 to the point Tasmota is impatient and doesn't wait for the scd30 to be powered up.  I did not debug further to find out how to robustly fix it.  I got to a build that "works for me" with simply:
 ```
 void Scd30Detect(void)
 {
