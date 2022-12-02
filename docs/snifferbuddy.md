@@ -116,7 +116,7 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 ```
 
 ```{eval-rst}
-.. automodule:: growbuddiesproject.growbuddies.examples.snifferbuddy_storereadings
+.. automodule:: growbuddies.examples.snifferbuddy_storereadings
    :members:
 ```
 
@@ -129,7 +129,7 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
  {octicon}`mark-github;1em;sd-text-success` View Code
 ```
 ```{eval-rst}
-.. automodule:: growbuddiesproject.growbuddies.logginghandler
+.. automodule:: growbuddies.logginghandler
    :members:
 ```
 
@@ -164,7 +164,7 @@ Now that we can log into Grafana, let's connect to the gus database.
 
 #### Choose the Data Source
 
-From the Grafana screen, choose add a data source.
+From the Grafana screen, choose to add a data source.
 :::{figure} images/grafana_add_datasource.jpg
 :align: center
 :scale: 100
@@ -222,7 +222,7 @@ Create a dashboard then create a panel within the dashboard.
 Now you are at what Grafana calls a Panel.  The image shows a panel set up to show vpd `SnifferBuddyReadings()`.
 1. Set the Data Source to Gus.
 2. Set the Table (InfluxDB calls a table a Measurement), which is the `From` field. is set to "sniff2" (recall this is the table created after running the {ref}`snifferbuddy_storereadings`.
-3. Set the S`Select` field to `vpd`.
+3. Set the `Select` field to `vpd`.
 4. The time was to a range that includes `SnifferBuddyReadings()`.
 After setting the parameters similar to what is done in the image, you should see a plot similar to the one in the image.  There are a few differences based on configuring Grafana plot features.  They are all covered in the online Grafana documentation.
 
@@ -233,7 +233,7 @@ After setting the parameters similar to what is done in the image, you should se
 Plot of SnifferBuddyReadings for vpd.
 :::
 
-The results point to an average vpd at that date/time range at about 1.3.
+The results point to an average vpd at that date/time range of about 1.3.
 ### Analyze Readings
 Looking at [FLU's VPD Chart](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf)
 :::{figure} images/vpd_chart.jpg
@@ -257,5 +257,5 @@ Plot of SnifferBuddyReadings for vpd and temperature.
 
 
 ## Run as a Service
-Running {ref}`snifferbuddy_storereadings` over ssh will stop when the desktop gets connected.  What needs to happen is set up {ref}`snifferbuddy_storereadings` as a [Systemd service](systemd_doc).
+Running {ref}`snifferbuddy_storereadings` over ssh will stop when the desktop gets connected.  What needs to happen is to set up {ref}`snifferbuddy_storereadings` as a [Systemd service](systemd_doc).
 
