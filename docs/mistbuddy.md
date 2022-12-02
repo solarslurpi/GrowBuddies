@@ -53,7 +53,7 @@ If the ideal VPD values are maintained during vegetative and flowering state, VP
 VPDBuddy System Overview
 :::
 
-A  [snifferBuddy](snifferBuddy) sends out CO2, air temp, and relative humidity (RH) readings from within the grow tent to the growBuddy Broker running on a Respberry Pi.  The VPDController Python class
+<!-- A  [snifferBuddy](snifferBuddy) sends out CO2, air temp, and relative humidity (RH) readings from within the grow tent to the growBuddy Broker running on a Respberry Pi.  The VPDController Python class -->
 - A VPD Controller Python Class running on the growBuddy Raspberry Pi.
 - A MistBuddy tied into the grow tent
 

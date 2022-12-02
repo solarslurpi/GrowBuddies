@@ -12,7 +12,7 @@
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
-sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30 air quality sensor](https://www.adafruit.com/product/4867) measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brain behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus_doc).
+sniff...sniff...sniff...Inside SnifferBuddy is an [SCD30](https://www.adafruit.com/product/4867)[ air quality](https://www.adafruit.com/product/4867) sensor](https://www.adafruit.com/product/4867) measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brain behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus_doc).
 
 :::{figure} images/snifferbuddy_in_growtent.jpg
 :align: center
@@ -86,7 +86,7 @@ if the grow lights were on or off.  I use this for knowing when to go into dayti
 (scd30_wiring)=
 #### WemosD1 to SCD30 Wiring
 
-Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amount of sensors and microcontrollers that we can connect together.  However, only a few companies (like Adafruit) include connectors on their Breakout Boards.  I like the idea of standardizing on a couple of JST connectors and discussing that more in [the wiring section](wiring_doc)
+Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amount of sensors and microcontrollers that we can connect.  However, only a few companies (like Adafruit) include connectors on their Breakout Boards.  I like the idea of standardizing on a couple of JST connectors and discussing that more in [the wiring section](wiring_doc)
 
 :::{figure} images/wemosd1_wiring.jpg
 :align: center
