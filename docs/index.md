@@ -4,7 +4,7 @@
 % contain the root `toctree` directive.
 
 # Welcome to GrowBuddies! {material-regular}`yard;2em;sd-text-success`
-Hello! Thank you for stopping by.  The GrowBuddies project is an Open DIY indoor gardening project striving to make indoor gardening as enjoyable and successful with just a little help from these Buddies.
+Hello! Thank you for stopping by.  The GrowBuddies project is yet another Open DIY indoor gardening project.  This project's main goal is to have more fun gardening by buddying up with technology that can help us have a happier gardening experience. We get by with a little help from our Buddies...
 
 # Just a bunch of Buddies
  The Buddies are here to help optimize the outcome of your indoor plants' growth.  The current Buddies include:
