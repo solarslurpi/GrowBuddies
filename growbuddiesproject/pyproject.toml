@@ -17,7 +17,3 @@ dependencies = [
 [project.scripts]
 get-readings = "growbuddies.__main__:main"
 
-[tools.setuptools.packages.find]
-where = ["growbuddiesproject/growbuddies"]
-[tools.setuptools.package-data]
-settings = "growbuddies_settings.json"

@@ -1,9 +1,11 @@
+MANIFEST.in
 README.md
 pyproject.toml
 growbuddies/PID_code.py
 growbuddies/__init__.py
 growbuddies/__main__.py
 growbuddies/colors.py
+growbuddies/growbuddies_settings.json
 growbuddies/gus.py
 growbuddies/logginghandler.py
 growbuddies/mistbuddy.py
@@ -13,4 +15,4 @@ growbuddies.egg-info/dependency_links.txt
 growbuddies.egg-info/entry_points.txt
 growbuddies.egg-info/requires.txt
 growbuddies.egg-info/top_level.txt
-growbuddies/examples/__init__.py
+growbuddies/data/__init__.py

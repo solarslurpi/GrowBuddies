@@ -1,0 +1,25 @@
+{
+    "hostname": "gus",
+    "mqtt":{
+        "snifferbuddy_topic": "tele/snifferbuddy/SENSOR",
+        "mistBuddy_fan_topic": "cmnd/vaporbuddy_fan/POWER",
+        "mistBuddy_mister_topic": "cmnd/vaporbuddy_mister/POWER",
+        "soil_moisture_calibration_topic": "tele/soil_moisture/SENSOR"
+    },
+
+    "influxdb": {
+        "db_name": "gus"
+    },
+    "vpd_setpoints": {
+        "veg": 0.8,
+        "flower": 1.4
+    },
+
+    "PID_settings": {
+        "Kp": 43,
+        "Ki": 0.1,
+        "Kd": 0.1,
+        "output_limits": [0, 30]
+    }
+
+}
