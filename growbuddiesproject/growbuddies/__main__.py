@@ -113,7 +113,7 @@ def main():
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
     snifferBuddyReadingsInstance = Gus(SnifferBuddyReadings_callback=snifferbuddyreadings, status_callback=status_callback,
-                                       SnifferBuddyReadings_table_name="sniff2")
+                                       SnifferBuddyReadings_table_name="SnifferBuddyReadings")
     snifferBuddyReadingsInstance.start()
 
 

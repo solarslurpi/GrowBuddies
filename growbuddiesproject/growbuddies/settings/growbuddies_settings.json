@@ -1,6 +1,5 @@
 {
     "hostname": "gus",
-    "log_level": "DEBUG",
     "mqtt":{
         "snifferbuddy_topic": "tele/snifferbuddy/SENSOR",
         "mistBuddy_fan_topic": "cmnd/vaporbuddy_fan/POWER",

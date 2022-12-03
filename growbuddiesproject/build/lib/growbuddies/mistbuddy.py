@@ -1,9 +1,9 @@
 from growbuddiesproject.growbuddies.PID_code import PID
 import logging
 from enum import Enum
-from code.gus_code import Gus
+from growbuddies.gus import Gus
 import threading
-from growbuddiesproject.growbuddies.snifferbuddyreadings import snifferBuddyReadings
+from growbuddies.snifferbuddyreadings import SnifFerBuddyReadings
 
 
 settings_filename = "code/growbuddy_settings.json"
@@ -86,7 +86,7 @@ class mistBuddy(Gus):
         # The PID class as a __repr__() method.
         self.logger.debug(self.pid)
 
-    def _values_callback(self, s: snifferBuddyReadings):
+    def _values_callback(self, s: SnifFerBuddyReadings):
         """growBuddy calls this method when it receives a reading from the requested sensor.
 
         Args:
