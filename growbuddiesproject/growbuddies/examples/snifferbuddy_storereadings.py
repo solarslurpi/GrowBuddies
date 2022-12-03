@@ -69,6 +69,8 @@ from growbuddies.gus import Gus
 
 # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
+
+
 def snifferbuddyreadings(snifferBuddyReadings):
     """This is the `SnifferBuddyReadings_callback` function that was set when an instance of `Gus()`
     was initialized in `main()`.
@@ -89,6 +91,7 @@ def status_callback(status):
         status (str): `Gus()` sends either the string "Online" or "Offline".
     """
     logger.debug(f'-> SnifferBuddy is: {status}')
+
 
 def main():
     """We initialize an instance of `Gus()` with the following parameters.  The defaults are fine for

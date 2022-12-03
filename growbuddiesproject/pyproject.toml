@@ -10,3 +10,6 @@ dependencies = [
     "influxdb ~=5.3.1",
     "paho_mqtt ~=1.6.1",
 ]
+
+[project.urls]
+"Homepage" = "https://github.com/solarslurpi/GrowBuddies"
