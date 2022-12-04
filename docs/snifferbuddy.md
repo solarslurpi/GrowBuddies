@@ -68,7 +68,7 @@ SnifferBuddy Enclosure Parts
 
 
 ### Wire the Components Together
-The SCD30 and photoresistor are wired to an [ESP826 D1](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1) mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
+The SCD30 and photoresistor are wired to an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
 :::{figure} images/SnifferBuddy_wiring.jpg
 :align: center
 :scale: 100

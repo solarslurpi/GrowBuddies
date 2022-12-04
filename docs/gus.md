@@ -296,3 +296,6 @@ Raspberry Pi reference 2021-12-02
 If you don't want to include a document in the toctree, add :orphan: to the top of your document to get rid of the warning.
 
 This is a File-wide metadata option. Read more from the [Sphinx documentation](https://www.sphinx-doc.org/en/master/usage/restructuredtext/field-lists.html#file-wide-metadata).
+
+### Packaging
+There is so much history with Python.  Resource: [Python packaging](https://realpython.com/pypi-publish-python-package).
