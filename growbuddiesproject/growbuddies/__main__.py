@@ -67,7 +67,7 @@ import logging
 from growbuddies.logginghandler import LoggingHandler
 from growbuddies.gus import Gus
 
-# Most likely you'll use DEBUG, INFO, or ERROR.
+# # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
 
 
@@ -114,7 +114,8 @@ def main():
     # Leaving the logging level at DEBUG and the settings file to the default name.
     snifferBuddyReadingsInstance = Gus(SnifferBuddyReadings_callback=snifferbuddyreadings, status_callback=status_callback,
                                        SnifferBuddyReadings_table_name="SnifferBuddyReadings")
-    snifferBuddyReadingsInstance.start()
+    # snifferBuddyReadingsInstance.start()
+    print("hello!")
 
 
 if __name__ == "__main__":

@@ -106,7 +106,6 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 (snifferbuddy_storereadings)=
 ## Store Readings {material-outlined}`storage;1em;sd-text-success`
 
-### snifferbuddy_storereadings.py
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/930420abc7ddd4cf4c74c408d61819eec0968a44/growbuddies-project/growbuddies/examples/snifferbuddy_storereadings.py
 :outline:
 :color: success
