@@ -112,6 +112,20 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 
  {octicon}`mark-github;1em;sd-text-success` View Code
 ```
+### Set up the Python Environment
+A Python virtual environment with the growbuddies package installed must exist before running the Python script.  We'll run the script on Gus (the Raspberry Pi Server).
+1. Get to a command line prompt on Gus.
+2. Create a folder where the script will be run, e.g.:
+```
+$mkdir growbuddies
+```
+3. Change into this directory, e.g.:
+```
+$cd growbuddies
+```
+4. Make sure you have Python3 on Gus.
+
+### The store_readings Script
 
 ```{eval-rst}
 .. automodule:: growbuddies.__main__

@@ -1,5 +1,9 @@
 
-"""This example:
+"""
+========
+Overview
+========
+This example:
 
 - Returns SnifferBuddy readings **including** vpd.
 - Stores SnifferBuddy readings into an influxdb table within the database.
