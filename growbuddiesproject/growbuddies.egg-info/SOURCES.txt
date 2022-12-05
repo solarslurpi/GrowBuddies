@@ -10,6 +10,7 @@ growbuddies/gus.py
 growbuddies/logginghandler.py
 growbuddies/mistbuddy.py
 growbuddies/snifferbuddyreadings.py
+growbuddies/test.py
 growbuddies.egg-info/PKG-INFO
 growbuddies.egg-info/SOURCES.txt
 growbuddies.egg-info/dependency_links.txt

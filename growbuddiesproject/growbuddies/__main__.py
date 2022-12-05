@@ -115,11 +115,13 @@ def main():
     After getting an instance of `Gus()` with these parameters, Call the `start()` method.
 
     """
+    table_name = input("Enter the table name where SnifferBuddyReadings will be Stored (Default is SnifferBuddyReadings): ")
+    if not table_name or table_name == "":
+        table_name = "SnifferBuddyReadings"
     # Leaving the logging level at DEBUG and the settings file to the default name.
     snifferBuddyReadingsInstance = Gus(SnifferBuddyReadings_callback=snifferbuddyreadings, status_callback=status_callback,
-                                       SnifferBuddyReadings_table_name="SnifferBuddyReadings")
-    # snifferBuddyReadingsInstance.start()
-    print("hello!")
+                                       SnifferBuddyReadings_table_name= table_name)
+    snifferBuddyReadingsInstance.start()
 
 
 if __name__ == "__main__":

@@ -105,7 +105,7 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 
 (snifferbuddy_storereadings)=
 ## Store Readings {material-outlined}`storage;1em;sd-text-success`
-The `store_readings` script highlights the capabilities of the interactions between SnifferBuddy and [Gus](gus).
+The `store-readings` script highlights the capabilities of the interactions between SnifferBuddy and [Gus](gus).
 
 The script:
 
@@ -115,7 +115,9 @@ The script:
 - Shows [Gus](gus)'s logging capability.
 
 ```{attention}
-These steps assume you have already built and are running a SnifferBuddy and Gus with their software innerds installed.
+Before running the `store-readings` script:
+1. There must be a working SnifferBuddy and Gus.
+2. The steps below must be completed.
 ```
 
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/930420abc7ddd4cf4c74c408d61819eec0968a44/growbuddies-project/growbuddies/examples/snifferbuddy_storereadings.py
@@ -124,7 +126,7 @@ These steps assume you have already built and are running a SnifferBuddy and Gus
 
  {octicon}`mark-github;1em;sd-text-success` View Code
 ```
-Once you have a SnifferBuddy and Gus up and running, follow the steps below.
+
 ### 1. Get into a Python Virtual Environment
 A Python virtual environment with the growbuddies package installed must exist before running the Python script.  We'll run the script on Gus (the Raspberry Pi Server).
 - Get to a command line prompt on Gus.
@@ -155,8 +157,20 @@ Python 3.9.2
 ```
 The prompt is a visual clue we are now within the Virtual Environment.
 ### 2. Install the GrowBuddies package
-
-### The store_readings Script
+```
+(.venv) pi@gus:~/test$ pip install GrowBuddies --upgrade
+```
+```{note}
+Including the `--upgrade` option will upgrade the GrowBuddies package to the latest version.  This will matter when running the script.
+```
+### 3. Run the Script
+```
+(.venv) pi@gus:~/test$ store-readings
+```
+You should start seeing a lot of logging lines.  These give you a great idea what is going on in the code.  If you are able to store readings into influxdb,
+```{literalinclude} store-readings.txt
+:language: bash
+```
 
 ```{eval-rst}
 .. automodule:: growbuddies.__main__

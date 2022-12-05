@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "growbuddies"
-version = "2022.12.5"
+version = "2022.12.6"
 readme = "README.md"
 description = "Buddies to help maximize the growth of plants in your indoor garden."
 dependencies = [
