@@ -30,6 +30,13 @@ SnifferBuddy
 :::
 (make_snifferbuddy)=
 ## Let's Make One {material-regular}`build;1em;sd-text-success`
+```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
+:outline:
+:color: success
+
+ {octicon}`comment;1em;sd-text-success` Comments & Questions
+```
+
 ```{note}
 SnifferBuddy sends out mqtt messages in which the payload includes the sensor readings.  You can use any mqtt environment to interact with a SnifferBuddy.  If you have built [Gus](gus), Gus will know what to do with the SnifferBuddy messages.  This document assumes [Gus](gus) has been built.
 ```
@@ -105,6 +112,13 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 
 (snifferbuddy_storereadings)=
 ## Store Readings {material-outlined}`storage;1em;sd-text-success`
+```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
+:outline:
+:color: success
+
+ {octicon}`comment;1em;sd-text-success` Comments & Questions
+```
+
 The `store-readings` script highlights the capabilities of the interactions between SnifferBuddy and [Gus](gus).
 
 The script:

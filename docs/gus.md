@@ -18,7 +18,14 @@ Gus is a Raspberry Pi 3 or 4 running the Bullseye OS and several free software p
 
 (make_gus)=
 ## Let's Make One {material-regular}`build;1em;sd-text-success`
-Given the heavy lifting Gus does, he has a nice set of tools available.  First, we need to build Gus's body.  Next, we breathe life by installing the OS and tools...oooohhh...
+```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
+:outline:
+:color: success
+
+ {octicon}`comment;1em;sd-text-success` Comments & Questions
+```
+
+Given the heavy lifting Gus does, he has a nice set of tools available.  First, we need to build Gus's body.  Next, we breathe life by installing the OS and tools...
 
 Here are two I've made:
 ```{image} images/Gus_2.jpg
