@@ -105,6 +105,18 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 
 (snifferbuddy_storereadings)=
 ## Store Readings {material-outlined}`storage;1em;sd-text-success`
+The `store_readings` script highlights the capabilities of the interactions between SnifferBuddy and [Gus](gus).
+
+The script:
+
+- Returns SnifferBuddy readings **including** vpd.
+- Stores SnifferBuddy readings into an influxdb table within the database.
+- Keeps the code aware of SnifferBuddy's status.
+- Shows [Gus](gus)'s logging capability.
+
+```{attention}
+These steps assume you have already built and are running a SnifferBuddy and Gus with their software innerds installed.
+```
 
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/930420abc7ddd4cf4c74c408d61819eec0968a44/growbuddies-project/growbuddies/examples/snifferbuddy_storereadings.py
 :outline:
@@ -112,18 +124,37 @@ You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is
 
  {octicon}`mark-github;1em;sd-text-success` View Code
 ```
-### Set up the Python Environment
+Once you have a SnifferBuddy and Gus up and running, follow the steps below.
+### 1. Get into a Python Virtual Environment
 A Python virtual environment with the growbuddies package installed must exist before running the Python script.  We'll run the script on Gus (the Raspberry Pi Server).
-1. Get to a command line prompt on Gus.
-2. Create a folder where the script will be run, e.g.:
+- Get to a command line prompt on Gus.
+- Create a folder where the script will be run, e.g.:
 ```
 $mkdir growbuddies
 ```
-3. Change into this directory, e.g.:
+- Change into this directory, e.g.:
 ```
 $cd growbuddies
 ```
-4. Make sure you have Python3 on Gus.
+- Make sure you have Python3 on Gus. e.g.:
+```
+$ python3 --version
+Python 3.9.2
+```
+- Create a Python Virtual Environment using the venv Python module.  e.g.:
+```
+python3 -m venv .venv
+```
+- Activate the Virtual Environment.  e.g.:
+```
+$ source .venv/bin/activate
+(.venv) pi@gus:~/test$
+
+(.venv) pi@gus:~/test$ python --version
+Python 3.9.2
+```
+The prompt is a visual clue we are now within the Virtual Environment.
+### 2. Install the GrowBuddies package
 
 ### The store_readings Script
 
