@@ -4,65 +4,56 @@
 :::{div}
 <img src="images/whale.svg" class="sd-avatar-md sd-border-3">
 :::
-Happy Bubbles to You!
 
 ```{warning} MistBuddy is Under Construction!
 ```
-MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).  The ideal vpd levels come from [the vpd chart](vpd_chart).  When MistBuddy figures out the vpd is too high, she excitedly spouts out mist through her airhole for **just** the right amount of time.  MistBuddy's brain consists of a [PID controller](https://en.wikipedia.org/wiki/PID_controller).  [Gus](gus.md) runs this code.
-
-MistBuddy consists of:
-- It's body. MistBuddy's body is a DIY humidifier optimized for the growBuddy environment.
-- A [Systemd service](https://wiki.archlinux.org/title/Systemd#Basic_systemctl_usage) on a Raspberry Pi running the GrowBuddy service.
-
-
-## Resources
-I found these resources helpful in my learning.
-### vpd
-The term "Vapor Pressure Deficit" is not that obvious to immediately understand (at least for me).  I found these resources helpful to better understand VPD:
-
-- [YouTube video that I found best explained water vapor, temperature's relationship to Relative Humidity and VPD](https://www.youtube.com/watch?v=-bYPGr1TJQY&t=1s).
-- [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
-### PID controller
-- [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out that if we just use the P term there is a steady state error, etc.
--  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). MistBuddy uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
-
-(vpd_chart)=
-### VPD Chart
-
-The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf).  MistBuddy gets the ideal vpd levels from the `growbuddy_settings.json` file.
-
-```{image} images/vpd_chart.jpg
-:align: center
-:scale: 70
-```
-
-- vegetative state is 0.8 to 0.95
-- flower state is 0.96 to 1.15
-
-From Germination until ready for the vegetative state, the plants germinate under a humidity dome.  Once I take off the dome the plants are in a vegetative state.  This is when MistBuddy starts.
-
-If the ideal VPD values are maintained during the vegetative and flowering state, MistBuddy is doing its job!
-
-
-## MistBuddy System Overview
-
-:::{figure} images/vpdbuddy_system_overview.jpg
-:align: center
-:scale: 100
-
-MistBuddy System Overview
+## About {material-regular}`question_mark;1em;sd-text-success`
+:::{div}
+<img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
-<!-- A  [snifferBuddy](snifferBuddy) sends out CO2, air temp, and relative humidity (RH) readings from within the grow tent to the growBuddy Broker running on a Respberry Pi.  The VPDController Python class -->
-- A VPD Controller Python Class running on the growBuddy Raspberry Pi.
-- A MistBuddy tied into the grow tent
 
+MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).   When the vpd is too high, MistBuddy spouts out mist through her airhole for **just** the right amount of time.
 
-MistBuddy ties the:
-- CO2, Temp, and RH readings are being sent out by.
-- VPD Controller Python Class.
--
- sends it's readings to the growBuddy mqtt Broker running on a Raspberry Pi.  The Python Class VPDController
+```{note} While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd.
+```
+
+### MistBuddy's Body
+
+MistBuddy's body is a DIY humidifier optimized for the growBuddies environment.  Here's the one I built:
+
+```{figure} images/MistBuddy.jpeg
+:align: center
+:scale: 20
+
+MistBuddy Glamour Shot
+```
+
+Mistbuddy dispenses vapor at the end of the PVC tube by turning on a 12-head mister.  Water comes into the tub through a connection with our house's plumbing.  The water is kept to a constant level in the tub by a float valve.
+
+_TODO pic of plumbing to float pump as well as mister (i.e.: inside of tub)_
+### MistBuddy's Software
+The MistBuddy Python code runs on [Gus](gus) as a [Systemd service](systemd).  The code flow is:
+
+Keep doing until told to stop:
+- Get vpd values by subscribing to [SnifferBuddy](snifferbuddy) messages.
+- When a vpd value comes in, send it to the PID controller.   MistBuddy implements a modified version of the [simple-pid](https://github.com/m-lundberg/simple-pid) package.  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+- The PID controller returns how many seconds to turn the DIY humidifier on.
+- Turn the DIY humidifier on for the number of seconds returned.
+
+```{note} The ideal vpd levels come from [the vpd chart](vpd_chart).
+```
+
+## Let's Make One {material-regular}`build;1em;sd-text-success`
+
+```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
+:outline:
+:color: success
+
+ {octicon}`comment;1em;sd-text-success` Comments & Questions
+```
+Follow these steps to get to the point where your plants are luxuriating in vpd idealness:
+
 
  ## Tuning the PID
  ### PID Python Code
@@ -182,3 +173,32 @@ MistBuddy Kp=43, Ki=0.1, Kd=0
 
 ## Starting the MistBuddy Service
 - Follow the steps to enable the
+
+## Resources
+I found these resources helpful in my learning.
+### vpd
+The term "Vapor Pressure Deficit" is not that obvious to immediately understand (at least for me).  I found these resources helpful to better understand VPD:
+
+- [YouTube video that I found best explained water vapor, temperature's relationship to Relative Humidity and VPD](https://www.youtube.com/watch?v=-bYPGr1TJQY&t=1s).
+- [YouTube video introducing InfluxDB](https://www.youtube.com/watch?v=Vq4cDIdz_M8&list=RDCMUC4Snw5yrSDMXys31I18U3gg&index=2).
+### PID controller
+- [Udemy course](https://www.udemy.com/course/pid-controller-with-arduino/).  While the course notes arduino as the cpu/IDE, what I liked was the intuitive simplicity of this course.  For example, it is pointed out that if we just use the P term there is a steady state error, etc.
+-  [Brett Beauregard documentation on his PID](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/). MistBuddy uses a modification of the [simple-pid](https://github.com/m-lundberg/simple-pid) library, which was a port of this work (see [PID]).  A reason to love and support the Open Source Community.
+
+(vpd_chart)=
+### VPD Chart
+
+The source for the ideal range is the [Flu Cultivation Guide](https://github.com/solarslurpi/growBuddy/blob/main/docs/FLU-CultivationGuide_Cannabis_WEB_PROOF_01-2020.pdf).  MistBuddy gets the ideal vpd levels from the `growbuddy_settings.json` file.
+
+```{image} images/vpd_chart.jpg
+:align: center
+:scale: 70
+```
+
+- vegetative state is 0.8 to 0.95
+- flower state is 0.96 to 1.15
+
+From Germination until ready for the vegetative state, the plants germinate under a humidity dome.  Once I take off the dome the plants are in a vegetative state.  This is when MistBuddy starts.
+
+If the ideal VPD values are maintained during the vegetative and flowering state, MistBuddy is doing its job!
+
