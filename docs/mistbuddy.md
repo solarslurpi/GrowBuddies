@@ -26,12 +26,18 @@ MistBuddy's body is a DIY humidifier optimized for the growBuddies environment. 
 :align: center
 :scale: 20
 
-MistBuddy Glamour Shot
+MistBuddy Outer Shot
 ```
 
+```{figure} images/MistBuddy_inside.jpeg
+:align: center
+:scale: 20
+
+MistBuddy Inside Shot
+```
 Mistbuddy dispenses vapor at the end of the PVC tube by turning on a 12-head mister.  Water comes into the tub through a connection with our house's plumbing.  The water is kept to a constant level in the tub by a float valve.
 
-_TODO pic of plumbing to float pump as well as mister (i.e.: inside of tub)_
+
 ### MistBuddy's Software
 The MistBuddy Python code runs on [Gus](gus) as a [Systemd service](systemd).  The code flow is:
 
@@ -52,7 +58,21 @@ Keep doing until told to stop:
 
  {octicon}`comment;1em;sd-text-success` Comments & Questions
 ```
-Follow these steps to get to the point where your plants are luxuriating in vpd idealness:
+
+```{attention}
+Before MistBuddy can run, the following must happen:
+1. There must be a working SnifferBuddy and Gus.
+2. The steps below must be completed.
+```
+### 1. Gather The Materials
+
+The materials I used to make the humidifier in the image include:
+- A [Storage Tote from Home Depot](https://www.homedepot.com/p/HDX-14-Gal-Tough-Storage-Tote-in-Black-with-Yellow-Lid-SW111/314468098).
+- [2 in. PVC Pipe from Home Depot](https://www.homedepot.com/p/JM-EAGLE-2-in-x-10-ft-White-PVC-Schedule-40-DWV-Plain-End-Pipe-531137/100161954).
+- [2 in. PVC 90° elbow](https://www.homedepot.com/p/Charlotte-Pipe-2-in-PVC-DWV-90-Degree-Hub-x-Hub-Elbow-PVC003001000HD/203393418).
+- A PC fan.  We have an electronics parts store near me that has a box full of PC fans.  The one I am using is quite strong, running at 24V.
+- A 24 V Power Supply will be needed to drive the fan.
+- [Mist maker from Aliexpress](https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6).  I did not do any measurements to determine the ideal amount of misters.  Perhaps less can be used.
 
 
  ## Tuning the PID
