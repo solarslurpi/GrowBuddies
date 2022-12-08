@@ -1,0 +1,1 @@
+Average seedlings with sufficient light will only be an inch to 1 1/2" tall when first true leaves develop.  If they are taller at this stage, they are not getting enough (PAR) light.

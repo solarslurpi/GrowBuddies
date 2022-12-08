@@ -73,26 +73,64 @@ The materials I used to make the humidifier in the image include:
 - A PC fan.  We have an electronics parts store near me that has a box full of PC fans.  The one I am using is quite strong, running at 24V.
 - A 24 V Power Supply will be needed to drive the fan.
 - [Mist maker from Aliexpress](https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6).  I did not do any measurements to determine the ideal amount of misters.  Perhaps less can be used.
+- [Float Valve](https://www.youtube.com/watch?v=vmiO6Z_HLCE) to stop the constantly running water line from filling the tub.
+- [1/2" Barb to 1/2 " NPT female connector](https://amzn.to/3yzxlsG) _Note: The _connector fittings _assume_ 1/2"_ PEX connector to incoming water_.
 
+### 2. Build
+For the base and continuous fill, get the popcorn ... it's time for a [How To YouTube Video on making a DIY Humidifier](https://www.youtube.com/watch?v=vmiO6Z_HLCE)
 
- ## Tuning the PID
- ### PID Python Code
- MistBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
- ### Tuning
+The water level for the float valve is 1 cm above the sensor line.
+
+:::{figure} images/mister_water_level.jpg
+:align: center
+:scale: 80
+
+Mister Water Level
+:::
+## Software {material-regular}`terminal;1em;sd-text-success`
+The core component of the MistBuddy software is the [PID controller](https://en.wikipedia.org/wiki/PID_controller).  MistBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+
+The job of a PID controller is to keep a value at a setpoint defined by the user.  In this case, the setpoints MistBuddy cares about are in the `growbuddy_settings.json` file:
+```
+    "vpd_setpoints": {
+        "veg": 0.9,
+        "flower": 1.0
+    }
+```
+
+This sets the ideal vpd in the vegetative stage to 0.9 and the flowering stage to 1.0.
+
+### Tuning the PID
+I came up with the following values for Kp, Ki, Kd after runs I made in my attempt to tune the PID controller:
+```
+    "PID_settings": {
+        "Kp": 43,
+        "Ki": 0.1,
+        "Kd": 0.1,
+        "output_limits": [0, 30]
+    }
+```
+Using 43 for the Kp gain includes converting from vpd errors that are in tenths values to number of seconds to turn on the humidifier.
+
+The following discusses my tuning steps.
+```{note} For tuning purposes, I used a value of 0.8 for the vpd setpoint.  This was because I knew the vpd in the grow tent was about 1.2, which makes the PID controller kick into action to adjust the vpd down.
+```
+
 #### Challenges
-- The input, setpoint, and error terms are all in floating point units relative to vpd readings.  vpd readings are typically between 0.0 and 2.0.  The output is the number of seconds to turn on MistBuddy.  Thus, the output includes a conversion from vpd (floating point) to number of seconds (integer)
+- The input, setpoint, and error terms are all in floating point units relative to vpd readings.  vpd readings are typically between 0.0 and 2.0.  The output is the number of seconds to turn on MistBuddy.  Thus, the output includes a conversion from vpd (floating point) to the number of seconds (integer)
 - Spewing out vapor into the air using MistBuddy is imprecise.  Luckily, the vpd does not have to be precise as shown in the [vpd range chart](vpd_chart)
 
 #### Settings
+
 I start with the P value.  Given the vpd in my grow tent with the lights on is around 1.2, I'll use a vpd setpoint of 0.8 to adjust.
 
 For example:
  - vpd setpoint = 0.8
  - vpd reading = 1.2
  - the vpd error is -0.4
- The negative error says MistBuddy needs to be turned on for a number of seconds.  But how many seconds?  The vpd error units are mapped into the Kp value such that the output from the PID controller is the number of seconds to turn on MistBuddy.
+ The negative error says MistBuddy needs to be turned on for several seconds.  But how many seconds?  The vpd error units are mapped into the Kp value such that the output from the PID controller is the majority of the number of seconds to turn on MistBuddy.
 
- ### Tuning - Starting with P
+ #### Starting with P
  I ran two runs with setting just the P gain.  As shown in the two plots below, setting just the P gain gives an output with a steady state error.
 
  As noted [by a StackOverflow answer](https://softwareengineering.stackexchange.com/questions/214912/why-does-a-proportional-controller-have-a-steady-state-error)
@@ -101,7 +139,7 @@ For example:
  _An Integrator "saves the day" by accumulating the error over time and therefore even the tiniest error will eventually accumulate to something large enough to force the controller to correct for it._
 
  From these results, I added in a Ki of 0.1.
- ####  JUST P: Kp = 50, Ki = 0, Kd = 0
+ #####  Kp = 50
 I'm expecting an very gradual increase.
  - Set the K settings in [growBuddy_settings.json](https://github.com/solarslurpi/growBuddy/blob/main/code/growBuddy_settings.json).
 ```

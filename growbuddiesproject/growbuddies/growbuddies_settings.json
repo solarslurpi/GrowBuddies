@@ -11,8 +11,8 @@
         "db_name": "gus"
     },
     "vpd_setpoints": {
-        "veg": 0.8,
-        "flower": 1.4
+        "veg": 0.9,
+        "flower": 1.0
     },
 
     "PID_settings": {
