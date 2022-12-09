@@ -34,7 +34,7 @@ class mistBuddy(Gus):
         growth_stage (growthStage Enum, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
 
         manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning mistBuddy ON
-            and OFF. Defaults to False (only observe values by setting the svpd_values_callback).
+            and OFF. Defaults to False (only observe values by setting the vpd_values_callback).
 
     Raises:
         Exception: Code checks if the vpd setpoint it reads from the settings file is within expected values.  If it isn't, an exception
@@ -87,19 +87,23 @@ class mistBuddy(Gus):
         self.logger.debug(self.pid)
 
     def _values_callback(self, s: SnifFerBuddyReadings):
-        """growBuddy calls this method when it receives a reading from the requested sensor.
+        """growBuddy calls this method when it receives a reading from the requested sensor. vpd adjustment occurs during
+        transpiration.  Transpiration is occuring when the grow lights are on.  The vpd will not be adjusted when the grow
+        lights are off.
 
         Args:
-            vpd (float): The calculated vpd value from the most recent snifferBuddy reading.
-
-
+            s (SnifferBuddyReadings): A reading from SnifferBuddy within an instance of SnifferBuddyReadings.
         """
-        nSecondsON, error = self._pid(s.vpd)
-        self.logger.debug(
-            f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. Error value: {error}"
-        )
-        if self.manage and nSecondsON > 0:
-            self._turn_on_mistBuddy(nSecondsON)
+        if s.light_level < 700:  # A light strong enough to start transpiration is assumed if the photoresister is between 700 and 1024.
+            nSecondsON, error = self._pid(s.vpd)
+            self.logger.debug(
+                f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. Error value: {error}"
+            )
+            if self.manage and nSecondsON > 0:
+                self._turn_on_mistBuddy(nSecondsON)
+
+        else:
+            self.logger.debug(f"The grow lights are OFF. No vpd adjustment.  The Light Level is ({s.light_level} ")
 
         if self.vpd_values_callback:
             self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON, error)
@@ -108,7 +112,6 @@ class mistBuddy(Gus):
         """This is the code for the PID controller.
 
         Args:
-            setpoint (float): The ideal vpd value.
             reading (float): The vpd value that will be compared to the setpoint.
 
         Returns:
