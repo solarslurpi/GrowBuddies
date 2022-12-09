@@ -216,7 +216,7 @@ Tasmota Sensors Build Location
 
 (flash_tasmota)=
 ## Flash Tasmota Onto a Sonoff Plug
-We need a way to turn a plug on or off.  For example, mistBuddy uses two Tasmotized plugs.  One turns mistBuddy's fan on and off.  The other turns mistBuddy's Mister on and off.  By Tasmotizing the plugs, other Buddies can send mqtt messages to turn a plug on or off.
+We need a way to turn a plug on or off.  For example, MistBuddy uses two Tasmotized plugs.  One turns MistBuddy's fan on and off.  The other turns MistBuddy's mister on and off.  By Tasmotizing the plugs, other Buddies can send mqtt messages to turn a plug on or off.
 
 
 The Sonoff S31 (or S31 Lite) can be flashed so that Tasmota is running on our local network. [This YouTube video gives instructions on how to flash Tosmota](https://www.youtube.com/watch?v=9N58uy3ezvA).
