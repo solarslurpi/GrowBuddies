@@ -1,12 +1,9 @@
-from growbuddiesproject.growbuddies.PID_code import PID
+from growbuddies.PID_code import PID
 import logging
 from enum import Enum
 from growbuddies.gus import Gus
+from growbuddies.snifferbuddyreadings import SnifferBuddyReadings
 import threading
-from growbuddies.snifferbuddyreadings import SnifFerBuddyReadings
-
-
-settings_filename = "code/growbuddy_settings.json"
 
 
 class growthStage(Enum):
@@ -22,7 +19,7 @@ class growthStage(Enum):
     FLOWER = 3
 
 
-class mistBuddy(Gus):
+class MistBuddy(Gus):
 
     """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
     of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
@@ -34,7 +31,7 @@ class mistBuddy(Gus):
         growth_stage (growthStage Enum, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
 
         manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning mistBuddy ON
-            and OFF. Defaults to False (only observe values by setting the vpd_values_callback).
+            and OFF. Defaults to True.
 
     Raises:
         Exception: Code checks if the vpd setpoint it reads from the settings file is within expected values.  If it isn't, an exception
@@ -46,12 +43,12 @@ class mistBuddy(Gus):
         self,
         vpd_values_callback=None,
         growth_stage=growthStage.VEG,
-        snifferbuddy_table_name=None,
-        manage=False,
+        table_name=None,
+        manage=True,
     ):
         # vpdBuddy needs the snifferBuddy values.  This is why the growBuddy callback is set to
         # the internal vpd_values_callback() method.
-        super().__init__(growBuddy_values_callback=self._values_callback, snifferbuddyreadings_table_name=snifferbuddy_table_name,
+        super().__init__(growBuddy_values_callback=self._values_callback, SnifferBuddyReadings_table_name=table_name,
                          log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
@@ -86,7 +83,7 @@ class mistBuddy(Gus):
         # The PID class as a __repr__() method.
         self.logger.debug(self.pid)
 
-    def _values_callback(self, s: SnifFerBuddyReadings):
+    def _values_callback(self, s: SnifferBuddyReadings):
         """growBuddy calls this method when it receives a reading from the requested sensor. vpd adjustment occurs during
         transpiration.  Transpiration is occuring when the grow lights are on.  The vpd will not be adjusted when the grow
         lights are off.

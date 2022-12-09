@@ -3,12 +3,8 @@
 ========
 Overview
 ========
-This script is run by the gogrowbuddies.service
+This script is run by the gogrowbuddies.service.  The goal is to maintain the vpd level within the grow tent.
 
-- Returns SnifferBuddy readings **including** vpd.
-- Stores SnifferBuddy readings into an influxdb table within the database.
-- Keeps the code aware of SnifferBuddy's status.
-- Shows `Gus()`'s logging capability.
 
 ============================
 Return SnifferBuddy Readings
@@ -69,25 +65,13 @@ Functions
 import logging
 
 from growbuddies.logginghandler import LoggingHandler
-from growbuddies.gus import Gus
+from growbuddies.mistbuddy import MistBuddy
 
 # # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
 
 
-def snifferbuddyreadings(snifferBuddyReadings):
-    """This is the `SnifferBuddyReadings_callback` function that was set when an instance of `Gus()`
-    was initialized in `main()`.
-    The air quality values will find their way to this callback function when an instance of `Gus()` is initialized with:
-
-    Args:
-        snifferBuddyReadings (SnifferBuddyReadings): An instance of SnifferBuddyReadings.
-
-    """
-    logger.debug(f"{snifferBuddyReadings.dict}")
-
-
-def status_callback(status):
+def snifferbuddy_status_callback(status):
     """`Gus()` will call this function when an `LWT` packet comes in.  `Gus()` returns a string with either
     `online` or `offline`.
 
@@ -115,13 +99,9 @@ def main():
     After getting an instance of `Gus()` with these parameters, Call the `start()` method.
 
     """
-    table_name = input("Enter the table name where SnifferBuddyReadings will be Stored (Default is SnifferBuddyReadings): ")
-    if not table_name or table_name == "":
-        table_name = "SnifferBuddyReadings"
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferBuddyReadingsInstance = Gus(SnifferBuddyReadings_callback=snifferbuddyreadings, status_callback=status_callback,
-                                       SnifferBuddyReadings_table_name= table_name)
-    snifferBuddyReadingsInstance.start()
+    mistBuddyInstance = MistBuddy(status_callback=snifferbuddy_status_callback,  manage=False)
+    mistBuddyInstance.start()
 
 
 if __name__ == "__main__":

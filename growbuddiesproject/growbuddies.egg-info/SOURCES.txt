@@ -5,12 +5,12 @@ growbuddies/PID_code.py
 growbuddies/__init__.py
 growbuddies/__main__.py
 growbuddies/colors.py
+growbuddies/gogrowbuddies.py
 growbuddies/growbuddies_settings.json
 growbuddies/gus.py
 growbuddies/logginghandler.py
 growbuddies/mistbuddy.py
 growbuddies/snifferbuddyreadings.py
-growbuddies/test.py
 growbuddies.egg-info/PKG-INFO
 growbuddies.egg-info/SOURCES.txt
 growbuddies.egg-info/dependency_links.txt

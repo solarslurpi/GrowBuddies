@@ -93,7 +93,7 @@ class SnifferBuddyReadings():
                 return item
             if self.sensor == SnifferBuddySensors.SCD30:
                 if item_number == SnifferBuddyConstants.LIGHT_LEVEL:
-                    # Light level is part of Snifferbuddy, but not the SCD30.
+                    # Light level is part of SnifferBuddy, but not the SCD30.
                     item = self.mqtt_dict["ANALOG"]["A0"]
                 else:
                     item_name = self.name_dict[self.sensor][item_number]
