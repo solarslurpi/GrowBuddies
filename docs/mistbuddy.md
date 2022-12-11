@@ -13,9 +13,9 @@
 :::
 
 
-MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).   When the vpd is too high, MistBuddy spouts out mist through her airhole for **just** the right amount of time.
+MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).   When the vpd level is too high, MistBuddy spouts out mist through her airhole for **just** the right amount of time.  When the vpd is too low or just right, MistBuddy shuts off until the vpd level is higher than the ideal vpd level (also known as the setpoint).
 
-```{note} While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd.
+```{note} While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd. The temperature stays within the 70
 ```
 
 ### MistBuddy's Body

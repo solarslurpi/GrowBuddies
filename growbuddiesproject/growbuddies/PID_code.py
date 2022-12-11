@@ -86,7 +86,7 @@ class PID(object):
         self.output_limits = output_limits
         self.reset()
 
-    def __call__(self, input_, dt=None):
+    def __call__(self, input_, light_just_turned_on, dt=None):
         """
         Update the PID controller.
 
@@ -106,14 +106,15 @@ class PID(object):
         elif dt <= 0:
             raise ValueError('dt has negative value {}, must be positive'.format(dt))
         self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
+        self._last_time = now
         if not self.mqtt_time:
             if self.sample_time is not None and dt < self.sample_time and self._last_output is not None:
                 # Only update every sample_time seconds
                 self.logger.debug("not calculating - time too soon.")
                 return self._last_output
-        # Compute error terms - Note: When the error is negative, the humidity is too low.
+        # Compute error terms - Note: When the error is positive, the humidity is too low.
         error = self.setpoint - input_
-        if error > 0:
+        if error > 0.02:
             return 0, 0
         d_input = input_ - (self._last_input if (self._last_input is not None) else input_)
         # Check if must map the error
@@ -129,10 +130,18 @@ class PID(object):
             self._proportional -= self.Kp * d_input
 
         # Compute integral and derivative terms
-        self._integral += self.Ki * error * dt
-        self._integral = -_clamp(abs(self._integral), self.output_limits)  # Avoid integral windup
-
-        self._derivative = -self.Kd * d_input / dt
+        # Since we are not using PID during the night, we reset the error terms and start over.
+        #
+        if light_just_turned_on:
+            self.integral = 0
+            self.derivative = 0
+        else:
+            self._integral += self.Ki * error * dt
+            # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
+            # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
+            # watching the vpd values, I'm clamping the contribution to a maximum of 2 seconds.
+            self._integral = -_clamp(abs(self._integral), [0, 6])  # Avoid integral windup
+            self._derivative = -self.Kd * d_input / dt
 
         self.logger.debug(f"error: {error}, P: {self._proportional}, I: {self._integral}, D: {self._derivative}")
         # Compute number of seconds to turn on mistBuddy, which is 0 or a positive number of seconds.
@@ -143,7 +152,6 @@ class PID(object):
         # Keep track of state
         self._last_output = output
         self._last_input = input_
-        self._last_time = now
 
         return nSecondsOn, error
 

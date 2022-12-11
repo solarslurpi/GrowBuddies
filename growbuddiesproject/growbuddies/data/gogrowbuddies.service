@@ -7,7 +7,7 @@ After=mosquitto.service
 
 [Service]
 Type=idle
-ExecStart=/home/pi/growbuddies/py_env/bin/python  /home/pi/growbuddies/gogrowbuddies.py
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/gogrowbuddies.py
 Restart=always
 [Install]
 WantedBy=multi-user.target

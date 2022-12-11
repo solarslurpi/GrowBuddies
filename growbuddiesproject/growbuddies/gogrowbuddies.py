@@ -100,7 +100,7 @@ def main():
 
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    mistBuddyInstance = MistBuddy(status_callback=snifferbuddy_status_callback,  manage=False)
+    mistBuddyInstance = MistBuddy(snifferbuddy_status_callback=snifferbuddy_status_callback, readings_table_name="gogrow_43_01_01_4")
     mistBuddyInstance.start()
 
 

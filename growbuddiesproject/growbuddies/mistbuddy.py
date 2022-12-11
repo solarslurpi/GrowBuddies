@@ -4,6 +4,7 @@ from enum import Enum
 from growbuddies.gus import Gus
 from growbuddies.snifferbuddyreadings import SnifferBuddyReadings
 import threading
+import signal
 
 
 class growthStage(Enum):
@@ -42,14 +43,16 @@ class MistBuddy(Gus):
     def __init__(
         self,
         vpd_values_callback=None,
+        snifferbuddy_status_callback=None,
         growth_stage=growthStage.VEG,
-        table_name=None,
+        readings_table_name=None,
         manage=True,
     ):
-        # vpdBuddy needs the snifferBuddy values.  This is why the growBuddy callback is set to
-        # the internal vpd_values_callback() method.
-        super().__init__(growBuddy_values_callback=self._values_callback, SnifferBuddyReadings_table_name=table_name,
-                         log_level=logging.DEBUG)
+        # Set up for a Systemd stop command by setting up a SIGTERM handler
+        signal.signal(signal.SIGTERM, self._exit_gracefully)
+        # MistBuddy uses Gus to get SnifferBuddy values.s
+        super().__init__(SnifferBuddyReadings_callback=self._values_callback, SnifferBuddyReadings_table_name=readings_table_name,
+                         status_callback=snifferbuddy_status_callback, log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
         msg = (
@@ -58,6 +61,9 @@ class MistBuddy(Gus):
             else "Observing vpd."
         )
         self.logger.debug(msg)
+        # Checking if the light changed from off to on.  If it did, the PID controller should know this so it can reset the error part
+        # that accumulates.
+        self.prev_light_on_or_off = None
         # Set up the setpoint to the ideal vpd value.
         self.setpoint = 0.0
         if growth_stage == growthStage.VEG:
@@ -83,6 +89,14 @@ class MistBuddy(Gus):
         # The PID class as a __repr__() method.
         self.logger.debug(self.pid)
 
+    def _has_light_just_turned_on(self):
+        if self.prev_light_on_or_off is None or not self.prev_light_on_or_off:
+            self.logger.debug("The grow lights just turned on.")
+            return True
+        # if the values are the same, return False indicating no change
+
+        return False
+
     def _values_callback(self, s: SnifferBuddyReadings):
         """growBuddy calls this method when it receives a reading from the requested sensor. vpd adjustment occurs during
         transpiration.  Transpiration is occuring when the grow lights are on.  The vpd will not be adjusted when the grow
@@ -91,21 +105,22 @@ class MistBuddy(Gus):
         Args:
             s (SnifferBuddyReadings): A reading from SnifferBuddy within an instance of SnifferBuddyReadings.
         """
-        if s.light_level < 700:  # A light strong enough to start transpiration is assumed if the photoresister is between 700 and 1024.
-            nSecondsON, error = self._pid(s.vpd)
+        if s.light_level > 700:  # A light strong enough to start transpiration is assumed if the photoresister is between 700 and 1024.
+            nSecondsON, error = self._pid(s.vpd, self._has_light_just_turned_on())
+            self.prev_light_on_or_off = True
             self.logger.debug(
-                f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. Error value: {error}"
+                f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. "
             )
             if self.manage and nSecondsON > 0:
                 self._turn_on_mistBuddy(nSecondsON)
 
         else:
-            self.logger.debug(f"The grow lights are OFF. No vpd adjustment.  The Light Level is ({s.light_level} ")
-
+            self.logger.debug(f"The grow lights are OFF. No vpd adjustment.  The Light Level is {s.light_level} ")
+            self.prev_light_on_or_off = False
         if self.vpd_values_callback:
             self.vpd_values_callback(self.setpoint, s.vpd, nSecondsON, error)
 
-    def _pid(self, reading: float) -> int:
+    def _pid(self, reading: float, light_just_turned_on: bool) -> int:
         """This is the code for the PID controller.
 
         Args:
@@ -145,7 +160,7 @@ class MistBuddy(Gus):
               humidity is typically around 40-50%.
         """
 
-        nSecondsOn, error = self.pid(reading)
+        nSecondsOn, error = self.pid(reading, light_just_turned_on)
         return nSecondsOn, error
 
     def _turn_on_mistBuddy(self, nSecondsON: int) -> None:
@@ -175,3 +190,7 @@ class MistBuddy(Gus):
         self.logger.debug(
             "...Sent mqtt messages to the two mistBuddy plugs to turn OFF."
         )
+
+    def _exit_gracefully(self):
+        self._turn_off_mistBuddy(self)
+        exit(0)

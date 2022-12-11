@@ -221,7 +221,6 @@ class Gus(Thread):
         return
 
     def _on_publish(self, client, userdata, msg_id):
-        self.logger.debug(f"message ID {msg_id} was published.")
         # If the caller hasn't subscribed to anything, exit the app.
         if not self.subscribe_to_sensor:
             exit(0)
