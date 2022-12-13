@@ -20,7 +20,7 @@ MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level]
 
 ### MistBuddy's Body
 
-MistBuddy's body is a DIY humidifier optimized for the growBuddies environment.  Here's the one I built:
+MistBuddy's body is a DIY humidifier and two Tasmotized plugs.  Here's the one I built:
 
 ```{figure} images/MistBuddy.jpeg
 :align: center
@@ -31,24 +31,19 @@ MistBuddy Outer Shot
 
 ```{figure} images/MistBuddy_inside.jpeg
 :align: center
-:scale: 20
+:scale: 20p
 
 MistBuddy Inside Shot
 ```
+```{figure} images/sonoffplugs.jpeg
+:align: center
+:scale: 50
+
+Tasmotized Sonoff Plugs Ready for Action
+```
+
 Mistbuddy dispenses vapor at the end of the PVC tube by turning on a 12-head mister.  Water comes into the tub through a connection with our house's plumbing.  The water is kept to a constant level in the tub by a float valve.
 
-
-### MistBuddy's Software
-The MistBuddy Python code runs on [Gus](gus) as a [Systemd service](systemd).  The code flow is:
-
-Keep doing until told to stop:
-- Get vpd values by subscribing to [SnifferBuddy](snifferbuddy) messages.
-- When a vpd value comes in, send it to the PID controller.   MistBuddy implements a modified version of the [simple-pid](https://github.com/m-lundberg/simple-pid) package.  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
-- The PID controller returns how many seconds to turn the DIY humidifier on.
-- Turn the DIY humidifier on for the number of seconds returned.
-
-```{note} The ideal vpd levels come from [the vpd chart](vpd_chart).
-```
 
 ## Let's Make One {material-regular}`build;1em;sd-text-success`
 
@@ -106,17 +101,33 @@ Mister Water Level
 MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmota which handles all the mqtt messages.  Two [Sonoff [S31 plugs](https://amzn.to/3xnPWYc) need to be [flashed with Tasmota](flash_tasmota).
 
 ## Software {material-regular}`terminal;1em;sd-text-success`
-The core component of the MistBuddy software is the [PID controller](https://en.wikipedia.org/wiki/PID_controller).  MistBuddy implements a modified version of [simple-pid](https://github.com/m-lundberg/simple-pid).  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+The MistBuddy Python code runs on [Gus](gus) as a [Systemd service](systemd).  Its job is to maintain the ideal vpd level.
+```{note} The ideal vpd levels come from [the vpd chart](vpd_chart).
+```
 
-The job of a PID controller is to keep a value at a setpoint defined by the user.  In this case, the setpoints MistBuddy cares about are in the `growbuddy_settings.json` file:
+The code flow is:
+
+Keep doing these steps until told to stop:
+- if the lights aren't on skip the steps.  vpd monitoring is not on when the lights are off.  Otherwise:
+    - Get temperature and humidity values by subscribing to [SnifferBuddy](snifferbuddy) messages.
+    ```{note} I set the SnifferBuddy time between readings to be 30 seconds using [the Tasmota Teleperiod command](set_time_between_readings).
+    ```
+    - When a SnifferBuddy reading comes in, calculate the vpd based on the temperature and humidity readings.  Send the vpd value to the PID controller.   MistBuddy implements a modified version of the [simple-pid](https://github.com/m-lundberg/simple-pid) package.  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+    - The PID controller returns how many seconds to turn the DIY humidifier on.
+    - MistBuddy turns the humidifier on for the number of seconds returned.  The humidifier is turned off after the number of seconds expires.
+
+
+MistBuddy relies on a modified version of the [simple-pid](https://github.com/m-lundberg/simple-pid) Python [PID control](https://en.wikipedia.org/wiki/PID_controller) code to maintain the ideal vpd.  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+
+In this case, the setpoints MistBuddy cares about are in the `growbuddy_settings.json` file:
 ```
     "vpd_setpoints": {
         "veg": 0.9,
         "flower": 1.0
     }
 ```
+According to the [vpd chart](vpd_chart), the ideal vpd value when the plant is in the vegetative growth stage ranges between 0.8 and 0.95.  The ideal vpd value when the plant is in the flowering growth stage ranges between 0.95 and 1.15.  The setpoints comfortably fit within these ranges.
 
-This sets the ideal vpd in the vegetative stage to 0.9 and the flowering stage to 1.0.
 
 I came up with the following values for Kp, Ki, Kd after runs I made in my attempt to tune the PID controller:
 ```
