@@ -16,10 +16,9 @@
     },
 
     "PID_settings": {
-        "Kp": 43,
-        "Ki": 0.1,
+        "Kp": 50,
+        "Ki": 0.5,
         "Kd": 0.1,
-        "output_limits": [0, 20]
+        "output_limits": [0, 15]
     }
-
 }

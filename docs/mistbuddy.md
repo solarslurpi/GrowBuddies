@@ -15,7 +15,7 @@
 
 MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).   When the vpd level is too high, MistBuddy spouts out mist through her airhole for **just** the right amount of time.  When the vpd is too low or just right, MistBuddy shuts off until the vpd level is higher than the ideal vpd level (also known as the setpoint).
 
-```{note} While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd. The temperature stays within the 70
+```{note} Our indoor gardening environment is climate controlled.  The temperature with the LED lights on is around 75&#8457;.  While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd.
 ```
 
 ### MistBuddy's Body
@@ -70,16 +70,29 @@ The materials I used to make the humidifier in the image include:
 - A [Storage Tote from Home Depot](https://www.homedepot.com/p/HDX-14-Gal-Tough-Storage-Tote-in-Black-with-Yellow-Lid-SW111/314468098).
 - [2 in. PVC Pipe from Home Depot](https://www.homedepot.com/p/JM-EAGLE-2-in-x-10-ft-White-PVC-Schedule-40-DWV-Plain-End-Pipe-531137/100161954).
 - [2 in. PVC 90° elbow](https://www.homedepot.com/p/Charlotte-Pipe-2-in-PVC-DWV-90-Degree-Hub-x-Hub-Elbow-PVC003001000HD/203393418).
-- A PC fan.  We have an electronics parts store near me that has a box full of PC fans.  The one I am using is quite strong, running at 24V.
-- A 24 V Power Supply will be needed to drive the fan.
+- [Waterproof IP67 12v Fan](https://amzn.to/3WgADKK).  The first fan I used was a leftover fan.  It broke pretty soon.  I got this fan.  It is more powerful and waterproof.  It also has a nice, solid connector connecting the power source to the fan.  What's not to like?
+- [Power source for the fan](https://amzn.to/3VT9pKp).  This is a very compact power source that has the right connector to connect the fan.
 - [Mist maker from Aliexpress](https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6).  I did not do any measurements to determine the ideal amount of misters.  Perhaps less can be used.
+- Power source for the mist maker.   The    [Aliexpress listing](https://www.aliexpress.us/item/3256803543458943.html) notes a power source of 350W and 48V is needed.  I have an old power supply that is less powerful than this that works fine.
+:::{figure} images/power__supply.jpeg
+:align: center
+:scale: 30
+
+250W 48V
+:::
 - [Float Valve](https://www.youtube.com/watch?v=vmiO6Z_HLCE) to stop the constantly running water line from filling the tub.
 - [1/2" Barb to 1/2 " NPT female connector](https://amzn.to/3yzxlsG) _Note: The _connector fittings _assume_ 1/2"_ PEX connector to incoming water_.
 - Two [Sonoff [S31 plugs](https://amzn.to/3xnPWYc) need to be [flashed with Tasmota](flash_tasmota).  One plug is used to turn on/off the 48V power supply for the mister.  The other is to turn on/off the power supply to the fan.
+:::{figure} images/sonoffplugs.jpeg
+:align: center
+:scale: 50
+
+Tasmotized Sonoff Plugs Ready for Action
+:::
 
 ### 2. Build
 #### Base and Continuous Fill
-For the base and continuous fill, get the popcorn ... it's time for a [How To YouTube Video on making a DIY Humidifier](https://www.youtube.com/watch?v=vmiO6Z_HLCE)
+For the base and continuous fill, get the popcorn ... it's time for a [How To YouTube Video on making a DIY Humidifier](https://www.youtube.com/watch?v=vmiO6Z_HLCE).
 
 The water level for the float valve is 1 cm above the sensor line.
 
