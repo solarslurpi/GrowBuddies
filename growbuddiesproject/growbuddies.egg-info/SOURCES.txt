@@ -4,6 +4,7 @@ pyproject.toml
 growbuddies/PID_code.py
 growbuddies/__init__.py
 growbuddies/__main__.py
+growbuddies/calibrate_dripbuddy.py
 growbuddies/colors.py
 growbuddies/gogrowbuddies.py
 growbuddies/growbuddies_settings.json

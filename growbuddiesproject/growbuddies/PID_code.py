@@ -1,7 +1,7 @@
 import time
 import warnings
 import logging
-from logginghandler import LoggingHandler
+from growbuddies.logginghandler import LoggingHandler
 
 
 def _clamp(value, limits):
@@ -166,7 +166,7 @@ class PID(object):
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, I'm clamping the contribution to a maximum of 2 seconds.
-        self._integral = -_clamp(abs(self._integral), [0, 3])  # Avoid integral windup.  Set to max after experiments.
+        self._integral = -_clamp(abs(self._integral), [0, 4.5])  # Avoid integral windup.  Set to max after experiments.
         self._derivative = -self.Kd * d_input / dt
 
     def __repr__(self):

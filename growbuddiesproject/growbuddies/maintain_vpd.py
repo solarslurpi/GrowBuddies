@@ -3,11 +3,17 @@
 ========
 Overview
 ========
-This script is run by the gogrowbuddies.service.  The goal is to maintain the vpd level within the grow tent.
+This Python script (maintain_vpd.py) is run as a systemd service (see maintain_vpd.service).  The goal is to maintain the ideal vpd level within the grow tent.
+
+The ideal vpd level is determined from this vpd chart:
 
 
+       .. image:: ../docs/images/vpd_chart.jpg
+            :scale: 50
+            :alt: Flu's vpd chart
+            :align: center
 ============================
-Return SnifferBuddy Readings
+The many things
 ============================
 SnifferBuddy uses Tasmota to publish air quality readings that come in as a JSON string.  The SnifferBuddy I built publishes the following
 Tasmota payload:
@@ -100,7 +106,7 @@ def main():
 
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    mistBuddyInstance = MistBuddy(snifferbuddy_status_callback=snifferbuddy_status_callback, readings_table_name="gogrow_45_01_01_a")
+    mistBuddyInstance = MistBuddy(snifferbuddy_status_callback=snifferbuddy_status_callback, readings_table_name="gogrow_45_05_01_a4_5")
     mistBuddyInstance.start()
 
 

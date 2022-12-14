@@ -73,9 +73,8 @@ In the bottom left-hand corner of the image, you see my grow tent.  There is a S
 :::
 The Buddies sure love to play!  It's non-stop fun as:
 - {doc}`Gus() <gus>` has set up an [mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy readings within the mqtt message's payload.  If instructed to do so, {doc}`Gus() <gus>` can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need {doc}`Gus() <gus>` to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
-- {doc}` SnifferBuddy <snifferbuddy>` happily puffs out [mqtt messages](mqtt_install) over a home's wifi containing air readings detected by its [SCD-30 sensor](https://www.adafruit.com/product/4867).
-
-- [MistBuddy](mistbuddy) is an add-on that subscribes to the SnifferBuddy messages.  MistBuddy can operate in one of two modes.
+- {doc}` SnifferBuddy <snifferbuddy>` happily puffs out [mqtt messages](mqtt_install) over a home's wifi containing air readings detected by its [SCD-30 sensor](https://www.adafruit.com/product/4867
+- {doc}` MistBuddy <mistbuddy>` is an add-on that subscribes to the SnifferBuddy messages.  MistBuddy can operate in one of two modes.
     - **Observation** - MistBuddy receives SnifferBuddy messages.  You can ask for the latest vpd value, as well as the number of seconds MistBuddy calculated the MistBuddy's humidifier to turn on.
     - **Maintenance** - Does everything **Observation** does.  Adds turning on MistBuddy's humidifier for the number of seconds the vpd calculations determined.
 
