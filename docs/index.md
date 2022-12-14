@@ -8,15 +8,13 @@ Hello, fellow indoor gardeners!
 
 The GrowBuddies project is designed to help geeky gardeners like us maximize the health and enjoyment of our indoor gardens.
 
-GrowBuddies are smart and interactive companions that work alongside you to provide personalized care and advice for your plants. They can monitor your plants' conditions and real-time monitor and adjust environmental factors like humidity and other important factors.
-
 Not only do GrowBuddies make gardening easier and more fun, but they also help ensure that your plants are healthy and happy. Whether you're a seasoned green thumb or just starting, GrowBuddies are the perfect partner for your indoor garden.
 
 Stay tuned for more updates. In the meantime, happy gardening!
 
 
 # Just a bunch of Buddies
- The Buddies are here to help optimize the outcome of your indoor plants' growth.  The current Buddies include:
+ The Buddies are a team of smart and interactive companions that are here to help you optimize the growth and health of your indoor plants.  The current Buddies include:
 
 ::::{grid} 3
 :gutter: 1
@@ -28,7 +26,7 @@ Stay tuned for more updates. In the meantime, happy gardening!
 :width: 200px
 :class: sd-m-auto sd-animate-grow50-rot20
 ```
-The Heavy Lifter.
+Collect, Store, Analyze Data
 :::
 
 :::{grid-item-card} SnifferBuddy
@@ -39,7 +37,7 @@ The Heavy Lifter.
 :width: 200px
 :class: sd-m-auto sd-animate-grow50-rot20
 ```
-Sniffs out temperature, humidity, and CO2.
+Uses an Air Quality Sensor to send readings over MQTT
 :::
 
 :::{grid-item-card} MistBuddy
@@ -49,7 +47,7 @@ Sniffs out temperature, humidity, and CO2.
 :width: 200px
 :class: sd-m-auto sd-animate-grow50-rot20
 ```
-Maintains the vpd Level.
+Uses SnifferBuddy Readings to Maintain the Ideal vpd
 :::
 
 ::::
