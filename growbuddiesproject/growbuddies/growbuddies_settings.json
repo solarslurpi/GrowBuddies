@@ -4,7 +4,8 @@
         "snifferbuddy_topic": "tele/snifferbuddy/SENSOR",
         "mistBuddy_fan_topic": "cmnd/mistbuddy_fan/POWER",
         "mistBuddy_mister_topic": "cmnd/mistbuddy_mister/POWER",
-        "soil_moisture_calibration_topic": "tele/soil_moisture/SENSOR"
+        "dripBuddy_topic": "tele/dripbuddy/SENSOR",
+        "dripBuddy_calibrate_topic": "calibrate"
     },
 
     "influxdb": {
@@ -16,8 +17,8 @@
     },
 
     "PID_settings": {
-        "Kp": 50,
-        "Ki": 0.5,
+        "Kp": 45,
+        "Ki": 0.1,
         "Kd": 0.1,
         "output_limits": [0, 15]
     }

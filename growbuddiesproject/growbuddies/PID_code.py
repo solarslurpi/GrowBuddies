@@ -79,6 +79,8 @@ class PID(object):
         self._integral = 0
         self._derivative = 0
 
+        self._prev_error = None
+
         self._count = 0
         self._sum = 0
 
@@ -133,10 +135,9 @@ class PID(object):
             error = self.error_map(error)
 
         # Compute number of seconds to turn on mistBuddy, which is 0 or a positive number of seconds.
+
         output = abs(self._proportional + self._integral + self._derivative)
         nSecondsOn = int(round(output))
-        # nSecondsOn += self._bias_secs(error, nSecondsOn)
-
         nSecondsOn = _clamp(nSecondsOn, self.output_limits)
         self.logger.debug(f" nSecondsOn is {nSecondsOn}")
 
@@ -154,6 +155,9 @@ class PID(object):
         if not self.proportional_on_measurement:
             # Regular proportional-on-error, simply set the proportional term
             self._proportional = self.Kp * error
+            # Accomodate maintaining steady state...
+            if error == 0:
+                self._proportional = self.Kp * -0.1
         else:
             # Add the proportional error on measurement to error_sum
             self._proportional -= self.Kp * d_input
@@ -162,7 +166,7 @@ class PID(object):
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, I'm clamping the contribution to a maximum of 2 seconds.
-        self._integral = -_clamp(abs(self._integral), [0, 4])  # Avoid integral windup.  Set to max after experiments.
+        self._integral = -_clamp(abs(self._integral), [0, 3])  # Avoid integral windup.  Set to max after experiments.
         self._derivative = -self.Kd * d_input / dt
 
     def __repr__(self):

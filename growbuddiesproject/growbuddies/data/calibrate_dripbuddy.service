@@ -1,0 +1,13 @@
+
+# found in /lib/systemd/system/calibrate_dripbuddy.service
+
+[Unit]
+Description=Takes in incoming tensiometer readings and puts into table with capacitative readings
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/calibrate_dripbuddy.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

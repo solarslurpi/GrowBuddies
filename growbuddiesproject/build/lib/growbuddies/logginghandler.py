@@ -36,8 +36,8 @@ class LoggingHandler:
     .. code-block:: python
          :caption: Initializing `Gus()` with the log level set to INFO.
 
-         snifferBuddyReadingsInstance = Gus(SnifferBuddyReadings_callback=snifferbuddyreadings, status_callback=status_callback,
-                                        SnifferBuddyReadings_table_name="sniff2",log_level=logging.INFO)
+         snifferBuddyReadingsInstance = Gus(readings_callback=snifferbuddyreadings, status_callback=status_callback,
+                                        table_name="sniff2",log_level=logging.INFO)
 
     By default, `Gus()` sets the logging level to logging.DEBUG.  By setting the log level to info, any of the logging calls
     set to logging.DEBUG will not occur.  This is how `Python logging normally works <https://docs.python.org/3/howto/logging.html>`_.

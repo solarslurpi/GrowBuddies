@@ -20,7 +20,7 @@ Tasmota payload:
        "SCD30":{"CarbonDioxide":630,"eCO2":661,"Temperature":73.3,"Humidity":50.0,"DewPoint":53.5},"TempUnit":"F"}
 
 `Gus()` uses the `SnifferBuddyReadings()` class to convert the Tasmota payload into easily accessible variables.  If `Gus()` is
-passed in a `SnifferBuddyReadings_callback` function when initialized, the values will be returned within a `SnifferBuddyReadings` instance.
+passed in a `readings_callback` function when initialized, the values will be returned within a `SnifferBuddyReadings` instance.
 
 .. code-block:: python
    :caption: Accessing SnifferBuddy Readings
@@ -46,7 +46,7 @@ Store SnifferBuddy Readings
    This example assumes you have installed influxdb and created the `gus` database as noted in `Gus()`'s page under :ref:`influxdb_install`.
 
 The table name is set to "sniff2" in `main()`
-(`SnifferBuddyReadings_table_name="sniff2"`).
+(`table_name="sniff2"`).
 
 ==========================
 Get SnifferBuddy's Status
@@ -88,19 +88,19 @@ def main():
     Args:
 
 
-        SnifferBuddyReadings_callback (function, optional): Function called by `Gus()` to return an instance of a SnifferBuddyReadings().
+        readings_callback (function, optional): Function called by `Gus()` to return an instance of a SnifferBuddyReadings().
 
         status_callback (function, optional): Function called by `Gus()` when an LWT message is received. The `status_callback` function receives
             a string containing either `online` or `offline`.
 
-        SnifferBuddyReadings_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.
+        table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.
 
 
     After getting an instance of `Gus()` with these parameters, Call the `start()` method.
 
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    mistBuddyInstance = MistBuddy(snifferbuddy_status_callback=snifferbuddy_status_callback, readings_table_name="gogrow_50_05_01_8")
+    mistBuddyInstance = MistBuddy(snifferbuddy_status_callback=snifferbuddy_status_callback, readings_table_name="gogrow_45_01_01_a")
     mistBuddyInstance.start()
 
 

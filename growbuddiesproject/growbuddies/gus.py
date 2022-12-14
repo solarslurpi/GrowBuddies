@@ -47,12 +47,12 @@ class Gus(Thread):
         topic_key (str, optional): The dictionary key for the full topic in the settings file.  In mqtt, the topic key is given
         to the Publish/Subscribe methods.  Defaults to `snifferbuddy_topic`.
 
-        SnifferBuddyReadings_callback (function, optional): Function called by Gus to return an instance of a SnifferBuddyReadings().
+        readings_callback (function, optional): Function called by Gus to return an instance of a SnifferBuddyReadings().
 
         status_callback (function, optional): Function called by Gus when an LWT message is received. The `status_callback` function receives
         a string containing either `online` or `offline`.
 
-        SnifferBuddyReadings_table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.  Defaults to None.
+        table_name (str, optional): Name of measurement table in influxdb that stores snifferBuddy readings.  Defaults to None.
 
         settings_filename (str, optional): All the settings used by Gus. Defaults to "gus_settings.json".
 
@@ -64,9 +64,9 @@ class Gus(Thread):
         subscribe_to_sensor=True,
         topic_key=snifferbuddy_topic,  # Many times the caller will want to get snifferBuddy readings.
         msg_value=None,  # Used when publishing a message.
-        SnifferBuddyReadings_callback=None,
+        readings_callback=None,
         status_callback=None,
-        SnifferBuddyReadings_table_name=None,  # Provide a table name to use in influxdb to store the readings.
+        table_name=None,  # Provide a table name to use in influxdb to store the readings.
         settings_filename=settings_filename,
         log_level=logging.DEBUG,
     ):
@@ -77,9 +77,9 @@ class Gus(Thread):
             random.choice(string.ascii_lowercase) for i in range(10)
         )
         Thread.__init__(self, name=self.unique_name)
-        self.SnifferBuddyReadings_callback = SnifferBuddyReadings_callback
+        self.readings_callback = readings_callback
         self.status_callback = status_callback
-        self.SnifferBuddyReadings_table_name = SnifferBuddyReadings_table_name
+        self.table_name = table_name
 
         # Remember the key in the settings dictionary for the mqtt topic.
         self.topic_key = topic_key
@@ -128,6 +128,7 @@ class Gus(Thread):
         """
         try:
             self.mqtt_client = mqtt.Client(self.unique_name)
+            # self.mqtt_client = mqtt.Client()
             self.mqtt_client.on_message = self._on_message
             self.mqtt_client.on_connect = self._on_connect
             self.mqtt_client.on_disconnect = self._on_disconnect
@@ -135,6 +136,8 @@ class Gus(Thread):
             self.mqtt_client.connect(self.settings["hostname"])
             # At this point, mqtt drives the code.
             self.logger.debug("Done with initialization. Handing over to mqtt.")
+            # loop_start doesn't block...sadly, running stuff as a systemd service - where it won't work.
+            # self.mqtt_client.loop_start()
             self.mqtt_client.loop_forever()
 
         except Exception as e:
@@ -207,12 +210,15 @@ class Gus(Thread):
         try:
             mqtt_dict = json.loads(message)
             s = SnifferBuddyReadings(mqtt_dict)
-            if self.SnifferBuddyReadings_callback:
-                self.SnifferBuddyReadings_callback(s)
+            if self.readings_callback:
+                if self.topic_key == snifferbuddy_topic:
+                    self.readings_callback(s)
+                else:
+                    self.readings_callback(mqtt_dict)
             # Write reading to database table if desired.
-            if self.SnifferBuddyReadings_table_name:
+            if self.table_name:
                 try:
-                    self.db_write(self.SnifferBuddyReadings_table_name, s.dict)
+                    self.db_write(self.table_name, s.dict)
                 except Exception as e:
                     self.logger.error(f"ERROR! Could not write the snifferBuddy Values.  error: {e}")
         except Exception as e:

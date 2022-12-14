@@ -51,7 +51,7 @@ class MistBuddy(Gus):
         # Set up for a Systemd stop command by setting up a SIGTERM handler
         signal.signal(signal.SIGTERM, self._exit_gracefully)
         # MistBuddy uses Gus to get SnifferBuddy values.s
-        super().__init__(SnifferBuddyReadings_callback=self._values_callback, SnifferBuddyReadings_table_name=readings_table_name,
+        super().__init__(readings_callback=self._values_callback, table_name=readings_table_name,
                          status_callback=snifferbuddy_status_callback, log_level=logging.DEBUG)
         self.vpd_values_callback = vpd_values_callback
         self.manage = manage
