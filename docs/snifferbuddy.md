@@ -47,7 +47,9 @@ Once plugged in and working, you will be able to (compliments of [Gus](gus)):
 - Visualize your readings using grafana.
 ### Gather The Materials
 
-- [SCD30 sensor](https://www.adafruit.com/product/4867) component.
+- [SCD30 sensor or SCD40 sensor](https://www.adafruit.com/product/4867) component.
+```{warning} The SCD40 driver is not included by default in the Tasmota sensor build for the ESP286.  I compiled a Tasmota sensor build that includes the SCD40.  There will also be different Tasmota installation steps.
+```
 - [ESP8286](https://www.aliexpress.us/item/2251832645039000.html) component.
 - Photoresistor and 10K through hole resistor.  I had a lot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
 - 3D printer and PLA filament for printing out [the enclosure](enclosure).

@@ -4,7 +4,14 @@
 
 (before_installation)=
 ## Before You Begin the Installation
-Before you begin the installation, check to see if the sensor you are using is included in the binary.  There is not much space on an ESP286 so it is especially relevant for this chip.  To check, go to [Tasmota's BUILDS documentation](https://tasmota.github.io/docs/BUILDS/).  Here we have a table listing which sensors are included.  The column to look at is labeled t.  The cells in this column let us know if the sensor build contains either, both, or none of the (ESP286/ESP32) drivers for the sensor.  An x means the sensor code is included.   For example, search for SCD40. The t entry has -/x.  This is saying __the SCD40 sensor code is not in the ESP286 build but is in the ESP32 build__.  If you want to add support for a sensor, follow the steps outlined in the [Compiling using GitPod](github_compile).
+```{note} Before starting the installation, verify that the sensor you plan to use is included in the binary. It is especially important to do this on an ESP286, as there is limited storage space on this chip.
+```
+Two ways to check if the sensor is in the Tasmota Build:
+### Check the Documentation
+If you have not installed Tasmota, you can check if a sensor is supported by visiting the [BUILDS documentation](https://tasmota.github.io/docs/BUILDS/) and referring to the table. In the "t" column, you can find information about which sensors are included in the builds for the ESP286 and ESP32 chips. If an "x" is present in the cell, it means that the sensor code is included in the build. For example, if you search for the SCD40 sensor, you will see that the "t" entry has "-/x", indicating that the SCD40 sensor code is not included in the ESP286 build but is included in the ESP32 build. If you want to add support for a sensor that is not currently supported, you can follow the instructions in the [Compiling using GitPod](github_compile).
+
+### Check from the Console
+If you have installed Tasmota, you can verify if you have wired the I2C sensor correctly with the [i2cscan](i2cscan) Tasmota console command.  To check if the driver for the sensor is loaded in the Tasmota build, execute [i2cdriver](i2cdriver) from the Tasmota console.
 
 (tasmota_installation)=
 ## Install Tasmota
@@ -16,7 +23,7 @@ _Note: There is also a config file for a **[Tasmotized Sonoff plug](flash_tasmot
 Install Tasmota using either the Edge or Chrome browser (web install doesn't work using the Brave browser).  Go to [Tasmota Install URL](https://tasmota.github.io/install/).
 _Note:  If the USB/COM port can't be identified, the first thing to do is to check the cable.  The USB cable might not support data i/o.  If that doesn't work, check the USB driver.  The ESP286 or ESP32 may be using a driver that isn't installed on your Windows PC or Mac._
 
-There are many Tasmota binaries that could be installed.  We want to install the Tasmota Sensors binary for the ESP286.
+Install the Tasnmota Sensors binary for the ESP286 if the sensor is included by default in the Sensors build (see [before installation](before_installation)).
 :::{figure} images/install_tasmota.jpg
 :align: center
 :scale: 100
@@ -158,11 +165,12 @@ Weirdly, "ON" means temperature readings will be in Fahrenheit.
 The temperature is set to celsius with the command `so8 0`.  To Fahrenheit with the command `so8 1`.
 
 #### Accomodate SCD30 Slow To Discover
-The first time I used the SCD30 with Tasmota on a Wemos D1, it didn't work.  The reason is [discussed below](wemos_challenges).  `SetOption46` was added in Tasmota 12.1.1.  `SetOption46 0..255` stalls I2C component discovery for 0..255 * 10 milliseconds to let stabilize the local Wemos power. You might want to experiment with values like SO46 10 os SO46 20 for a 100mSec or 200mSec delay.
+The first time I used the SCD30 with Tasmota on a Wemos D1, it didn't work.  The reason is [discussed below](wemos_challenges).  `SetOption46` was added in Tasmota 12.1.1.  `SetOption46 0..255` stalls I2C component discovery for 0..255 * 10 milliseconds to let stabilize the local Wemos power. You might want to experiment with values like SO46 10 or SO46 20 for a 100mSec or 200mSec delay.
 
 ## Commands To Verify the Install
 Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if the software and wiring are correct.
 
+(i2cscan)=
 ### i2cscan
 `i2cscan` is an extremely useful command.  Executing `i2cscan` from the console is useful to **show you if the i2c sensor is wired correctly**.  It is useful right after an installation to see if the wiring to the ESP286 is correct.
 ```
@@ -170,7 +178,7 @@ Two commands, `i2cscan` and `i2cdevice` are extremely helpful in determining if 
 21:41:54.179 MQT: growBuddy/snifferbuddy/RESULT = {"I2CScan":"Device(s) found at 0x62"}
 ```
 The above is a verification that the wiring works for the ESP286/SCD40 I built since 0x62 is the SCD40's I2C address.
-
+(i2cdriver)=
 ### i2cdriver
 `i2cdriver` shows **the list of drivers that were loaded by the Tasmota build**.  For example, by default, the SCD40 is not in the ESP286 Tasmota Sensors build.  This is shown in [Tasmota's build table](https://tasmota.github.io/docs/BUILDS/).
 ```{image} images/scd_in_builds.jpg
@@ -235,6 +243,7 @@ Tasmota Sonoff Configuration
 :::
 Use the Tasmota S31 configuration when you go through the [Tasmota install](tasmota_installation)
 
+## Adding a Sensor Driver
 
 (wemos_challenges)=
 ## ESP286/SCD30 Modifications

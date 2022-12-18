@@ -3,7 +3,8 @@
 ========
 Overview
 ========
-This Python script (maintain_vpd.py) is run as a systemd service (see maintain_vpd.service).  The goal is to maintain the ideal vpd level within the grow tent.
+[maintain_vpd.py](https://github.com/solarslurpi/GrowBuddies/blob/main/growbuddiesproject/growbuddies/maintain_vpd.py) runs
+as a systemd service (see maintain_vpd.service).  The goal is to maintain the ideal vpd level within the grow tent.
 
 The ideal vpd level is determined from this vpd chart:
 

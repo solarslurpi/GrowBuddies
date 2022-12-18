@@ -13,7 +13,7 @@ The systemd services include:
 * [Article on how to autorun service using systemd](https://www.raspberrypi-spy.co.uk/2015/10/how-to-autorun-a-python-script-on-boot-using-systemd/).
 # Make sure to...
 * set permissions so systemd can execute the script: ```sudo chmod +x {python script}```
-* copy service file to where systemd expects it to be.  systemd service files are located at ```/lib/systemd/system```.  Once I created my .service file, I copied it there and tried out some of the commands. e.g.: ```sudo happyday-collect.service /lib/systemd/system/.```
+* copy service file to where systemd expects it to be.  systemd service files are located at ```/lib/systemd/system```.  Once I created my .service file, I copied it there and tried out some of the commands. e.g.: ```sudo cp happyday-collect.service /lib/systemd/system/.```
 * enable the service with ```sudo systemctl enable happyday-collect.service```.
 * check to make sure the service has been enabled with ```systemctl is-enabled happyday-collect.service```
 * start the service with ```sudo systemctl start happyday-collect.service```.

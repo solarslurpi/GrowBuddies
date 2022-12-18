@@ -24,6 +24,7 @@ class SnifferBuddySensors:
     """These are constants containing a string identifying the air quality sensor being used.
     """
     SCD30 = "SCD30"
+    SCD40 = "SCD40"
 
 
 class SnifferBuddyConstants:
@@ -68,18 +69,27 @@ class SnifferBuddyReadings():
         log_level (logging level constant, optional):Logging level either logging.DEBUG, logging.INFO, logging.ERROR. Defaults to logging.DEBUG.
     """
 
-    def __init__(self, mqtt_dict, sensor=SnifferBuddySensors.SCD30, log_level=logging.DEBUG):
+    def __init__(self, mqtt_dict,  log_level=logging.DEBUG):
 
-        self.sensor = sensor
-        self.mqtt_dict = mqtt_dict
-        # The air quality sensor's name in the mqtt message.
-        self.name_dict = {SnifferBuddySensors.SCD30: ["Temperature", "Humidity", "CarbonDioxide"]
-                          }
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler(log_level)
-        self.logger.debug(
-            "-> Initializing SnifferBuddy class."
-        )
+        self.logger.debug("-> Initializing SnifferBuddy class.")
+
+        self.mqtt_dict = mqtt_dict
+        # The air quality sensor's name in the mqtt message.
+        try:
+            self.sensor = self._find_sensor_name(mqtt_dict)
+            self.name_dict = {self.sensor: ["Temperature", "Humidity", "CarbonDioxide"]}
+        except Exception as e:
+            self.logger.error(f"Could not identify the air quality sensor. Error: {e}")
+
+    def _find_sensor_name(self, mqtt_dict):
+        sensor_names = ["SCD30", "SCD40"]
+        for item in sensor_names:
+            for key in mqtt_dict.items():
+                if item in key:
+                    return item
+        raise NameError("Could not find a valid sensor. Current valid sensors include the SCD30 and SCD40")
 
     def _get_item(self, item_number: int):
         try:
@@ -91,7 +101,7 @@ class SnifferBuddyReadings():
             if item_number == SnifferBuddyConstants.TIME:
                 item = self.mqtt_dict["Time"]
                 return item
-            if self.sensor == SnifferBuddySensors.SCD30:
+            if self.sensor == SnifferBuddySensors.SCD30 or self.sensor == SnifferBuddySensors.SCD40:
                 if item_number == SnifferBuddyConstants.LIGHT_LEVEL:
                     # Light level is part of SnifferBuddy, but not the SCD30.
                     item = self.mqtt_dict["ANALOG"]["A0"]
