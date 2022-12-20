@@ -11,13 +11,13 @@
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
-sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30](https://www.adafruit.com/product/4867)[air quality sensor](https://www.adafruit.com/product/4867)] measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brain behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on `Gus()<gus>`.
+sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30](https://www.adafruit.com/product/4867)[air quality sensor](https://www.adafruit.com/product/4867)] measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brain behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus).
 
 :::{figure} images/snifferbuddy_in_growtent.jpg
 :align: center
 :height: 350
 
-A Happy SnifferBuddy hanging about
+A Happy SnifferBuddy with an SCD-30 Sensor hanging about
 :::
 
 The one I made looks like this:
@@ -77,7 +77,10 @@ SnifferBuddy Enclosure Parts
 
 
 ### Wire the Components Together
-The SCD30 and photoresistor are wired to an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1).
+The SCD-40 is connected to an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1), as shown in the image below.
+```{note} An SCD-30 can be used as an alternative to the SCD-40.
+```
+
 :::{figure} images/SnifferBuddy_wiring.jpg
 :align: center
 :scale: 100
@@ -98,12 +101,26 @@ Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amo
 
 :::{figure} images/wemosd1_wiring.jpg
 :align: center
-:scale: 100
+:scale: 80
+
 
 Wemos D1 Wiring
 :::
 
-The Photoresistor is "hard-wired" to the ESP286's analog pin.  The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
+The Photoresistor is "hard-wired" to the ESP286's analog pin.
+
+:::{figure} https://www.cs.unca.edu/~bruce/Fall11/255/Labs/Lab13AnalogInput_files/thereminSch.gif
+:align: center
+:height: 10em
+
+
+Photoresistor
+:::
+
+
+
+
+The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
 
 
 ### Install Tasmota
