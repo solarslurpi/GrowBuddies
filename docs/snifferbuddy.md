@@ -64,30 +64,29 @@ Once plugged in and working, you will be able to (compliments of [Gus](gus)):
 Enclosures are made in Fusion 360 and printed on a Prusa MK3S printer.
 
 #### SCD-30
-To make the enclosure, download and print the ([4 mesh files](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy)).
+```{button-link} https://github.com/solarslurpi/GrowBuddies/tree/main/enclosures/SnifferBuddy
+:outline:
+:color: success
+
+ {octicon}`file-directory;1em;sd-text-success` Directory containing scd-30 enclosure files
+```
+To make the enclosure, download and print the 4 mesh files.
 :::{figure} images/snifferbuddy_parts_on_printer_plate.jpg
 :align: center
 :height: 350
 
 SnifferBuddy Enclosure Parts
 :::
-```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
-:outline:
-:color: success
-
- {octicon}`comment;1em;sd-text-success` Comments & Questions
-```
-
-- [WemosD1_top.stl](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/WemosD1_top.stl)
-- [WemosD1_base.3mf](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/wemosD1_base.3mf)
-- [scd_cap.3mf](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/scd_cap.3mf)
-- [scd30 enclosure.stl](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/scd30%20enclosure.stl)
-
-[The directory](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy) also includes the Fusion 360 files, including [a Fusion 360 file of a Wemos D1](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/_Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d) for modeling.
 
 I use the F360 app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) while modeling to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddies/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
 #### SCD-40
 ```{note} Thank you, [sumpfing](https://www.thingiverse.com/sumpfing/designs), for your [modular Wemos D1 modular design]().
+```
+```{button-link} https://github.com/solarslurpi/GrowBuddies/tree/main/enclosures/SnifferBuddy/scd-40
+:outline:
+:color: success
+
+ {octicon}`file-directory;1em;sd-text-success` Directory containing scd-40 enclosure files
 ```
 The SCD-40 I built is made of two rings as shown in the image:
 
@@ -99,12 +98,7 @@ SCD-40 Ring Design
 ```
 Moving forward, I will use a third ring for the photoresistor and put it between the bottom and scd-40 ring.
 
-```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
-:outline:
-:color: success
 
- {octicon}`comment;1em;sd-text-success` Comments & Questions
-```
 
 ### Wire the Components Together
 Wiring is the hardest part.
