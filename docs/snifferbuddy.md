@@ -12,22 +12,27 @@
 :::
 
 sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30](https://www.adafruit.com/product/4867)[air quality sensor](https://www.adafruit.com/product/4867)] measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brain behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus).
+### Supported Sensors
+SnifferBuddy's sensors were chosen for their accurate CO2 readings. Initially, Buddies use temperature and humidity readings. Eventually, we will also monitor and adjust CO2 levels, but first we need to optimize the grow area for proper water distribution in the air and soil.
 
-:::{figure} images/snifferbuddy_in_growtent.jpg
+The [SCD-30](https://www.adafruit.com/product/4867) and [SCD-40](https://www.adafruit.com/product/5187) sensors are currently supported. I initially used the SCD-30, but later switched to the SCD-40 because it is more affordable and smaller in size, yet still of high quality.
+
+
+```{figure} images/snifferbuddy_in_growtent.jpg
 :align: center
 :height: 350
 
 A Happy SnifferBuddy with an SCD-30 Sensor hanging about
-:::
+```
 
-The one I made looks like this:
-
-:::{figure} images/snifferbuddy_real.jpg
+```{figure} images/snifferbuddy_scd40_inaction.jpg
 :align: center
 :height: 350
 
-SnifferBuddy
-:::
+A Happy SnifferBuddy with an SCD-40 Sensor hanging about
+```
+
+
 (make_snifferbuddy)=
 ## Let's Make One {material-regular}`build;1em;sd-text-success`
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
@@ -38,12 +43,10 @@ SnifferBuddy
 ```
 
 ```{note}
-SnifferBuddy sends out mqtt messages in which the payload includes the sensor readings.  You can use any mqtt environment to interact with a SnifferBuddy.  If you have built [Gus](gus), Gus will know what to do with the SnifferBuddy messages.  This document assumes [Gus](gus) has been built.
+SnifferBuddy sends out MQTT messages containing sensor readings as the payload. It can be used in any MQTT environment. If you have set up Gus, it will be able to handle the messages sent by SnifferBuddy. This document assumes that you have already built Gus.
 ```
-
-
 Once plugged in and working, you will be able to (compliments of [Gus](gus)):
-- Store readings into an influxdb table (referred to as a measurement influxdb terminology) influxdb.
+- Store CO2, humidity, and temperature readings into an influxdb table (referred to as a measurement influxdb terminology) influxdb.
 - Visualize your readings using grafana.
 ### Gather The Materials
 
@@ -54,13 +57,13 @@ Once plugged in and working, you will be able to (compliments of [Gus](gus)):
 - Photoresistor and 10K through hole resistor.  I had a lot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
 - 3D printer and PLA filament for printing out [the enclosure](enclosure).
 - Superglue for gluing the top Wemos part of the enclosure to the cap part of the enclosure.
-- USB chord and plug the ESP8286 to power.
+- USB cord and plug the ESP8286 to power.
 - 4 4mm M2.5 or M3 bolts.
 (enclosure)=
 ### Make the Enclosure
+Enclosures are made in Fusion 360 and printed on a Prusa MK3S printer.
 
-The SnifferBuddy enclosure was designed within Fusion 360 and printed on a Prusa MK3s using PLA filament.  I use the F360  app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddies/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
-
+#### SCD-30
 To make the enclosure, download and print the ([4 mesh files](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy)).
 :::{figure} images/snifferbuddy_parts_on_printer_plate.jpg
 :align: center
@@ -68,6 +71,13 @@ To make the enclosure, download and print the ([4 mesh files](https://github.com
 
 SnifferBuddy Enclosure Parts
 :::
+```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
+:outline:
+:color: success
+
+ {octicon}`comment;1em;sd-text-success` Comments & Questions
+```
+
 - [WemosD1_top.stl](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/WemosD1_top.stl)
 - [WemosD1_base.3mf](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/wemosD1_base.3mf)
 - [scd_cap.3mf](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/scd_cap.3mf)
@@ -75,52 +85,60 @@ SnifferBuddy Enclosure Parts
 
 [The directory](https://github.com/solarslurpi/growBuddy/tree/main/enclosures/SnifferBuddy) also includes the Fusion 360 files, including [a Fusion 360 file of a Wemos D1](https://github.com/solarslurpi/growBuddy/blob/main/enclosures/SnifferBuddy/_Wemos.8a6fa8fd-bdae-4608-9551-e9ac450bc9c8.f3d) for modeling.
 
+I use the F360 app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) while modeling to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddies/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
+#### SCD-40
+```{note} Thank you, [sumpfing](https://www.thingiverse.com/sumpfing/designs), for your [modular Wemos D1 modular design]().
+```
+The SCD-40 I built is made of two rings as shown in the image:
+
+```{figure} images/snifferbuddy_scd40_enclosure.jpg
+:align: center
+:scale: 60
+
+SCD-40 Ring Design
+```
+Moving forward, I will use a third ring for the photoresistor and put it between the bottom and scd-40 ring.
+
+```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
+:outline:
+:color: success
+
+ {octicon}`comment;1em;sd-text-success` Comments & Questions
+```
 
 ### Wire the Components Together
-The SCD-40 is connected to an [ESP826 D1 mini](https://i2.wp.com/randomnerdtutorials.com/wp-content/uploads/2019/05/ESP8266-WeMos-D1-Mini-pinout-gpio-pin.png?quality=100&strip=all&ssl=1), as shown in the image below.
-```{note} An SCD-30 can be used as an alternative to the SCD-40.
+Wiring is the hardest part.
+```{figure} images/snifferbuddy_scd40_wiring.jpg
+:align: center
+:scale: 60
+
+SCD-40 Wired Up
+```
+```{div} sd-text-info
+- Photoresistor
+```
+```{div} sd-text-success
+- Wemos D1 ESP286
+```
+```{div} sd-text-danger
+- SCD-40
+```
+```{note} The images show that the photoresistor was placed in the bottom ring near the USB port opening. However, this causes interference between the wires and the placement of the ESP286 in the bottom ring. In future builds, I will use a ring similar to the one used for the SCD-40 to eliminate this interference.
 ```
 
 :::{figure} images/SnifferBuddy_wiring.jpg
 :align: center
 :scale: 100
 
-SnifferBuddy Wiring
+SnifferBuddy SCD-40 Wiring
 :::
+I chose the ESP826 because I decided to use [Tasmota](https://tasmota.github.io/docs/) to send sensor readings via MQTT. Tasmota's original goal was to provide MQTT and OTA firmware for ESP8266-based ITEAD Sonokff devices, so I figured it made sense to use the same chip. I did encounter an issue with the Wemos D1 ESP286 when I made the first SnifferBuddy, but the ESP826 is generally very inexpensive and reliable. I ordered some from [Aliexpress](https://www.aliexpress.us/item/2251832645039000.html) and added a photoresistor to the top to determine if the grow lights were on or off. This helps me to know when to provide daytime or nighttime care for my plants.
 
-I settled on the ESP826 because I settled on [Tasmota](https://tasmota.github.io/docs/) as the way to send sensor readings over mqtt.
-I figured if [Tasmota's goal](https://tasmota.github.io/docs/About/) was to *"provide ESP8266 based ITEAD Sonokff devices with MQTT and 'Over the Air' or OTA firmware"...*
-Then why not use the same chip?   I {ref}`ran into an issue with the Wemos D1 ESP286<wemos_challenges>` when I made the first SnifferBuddy.  But for the most part, ESP826's are very
-inexpensive and work.  I ordered some from [Aliexpress](https://www.aliexpress.us/item/2251832645039000.html).  I put a Photoresistor on the top as a way to determine
-if the grow lights were on or off.  I use this for knowing when to go into daytime or nighttime care.
+I used a wired 4-pin JST SH connector to connect the Wemos D1 to the SCD sensor. Wiring can be challenging, so I summarized my thoughts on it [in a separate document](wiring_doc). By soldering the SDA, SCL, 5V+, and GND lines to the Wemos D1 pins, I was able to establish connectivity for the I2C lines of the SCD-40. In addition, I wired up the photoresistor. However, as noted, I should have used another ring for this.
 
-(scd30_wiring)=
-#### WemosD1 to SCD30 Wiring
+A photoresistor circuit uses a voltage divider to measure the voltage.  This gives us the info we need to determine whether the LED lights are on.  Activities going on during the day - like adding humidity - is not something needed at night.
 
-Thanks to vendors like [Adafruit](https://www.adafruit.com/), we have a vast amount of sensors and microcontrollers that we can connect.  However, only a few companies (like Adafruit) include connectors on their Breakout Boards.  I like the idea of standardizing on a couple of JST connectors and discussing that more in [the wiring section](wiring_doc)
-
-:::{figure} images/wemosd1_wiring.jpg
-:align: center
-:scale: 80
-
-
-Wemos D1 Wiring
-:::
-
-The Photoresistor is "hard-wired" to the ESP286's analog pin.
-
-:::{figure} https://www.cs.unca.edu/~bruce/Fall11/255/Labs/Lab13AnalogInput_files/thereminSch.gif
-:align: center
-:height: 10em
-
-
-Photoresistor
-:::
-
-
-
-
-The SCD30 is an I2C device.  Since I may want to reuse the SCD30, and I want to make the connection cleaner, I will use a JST SH connector.
+A pull-up or pull-down 10K (probably up to 100K) can be used.   I prefer using a pull-up resistor because I found that the wiring was easier to manage this way.
 
 
 ### Install Tasmota
