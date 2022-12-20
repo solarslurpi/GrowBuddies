@@ -80,7 +80,7 @@ SnifferBuddy Enclosure Parts
 
 I use the F360 app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) while modeling to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddies/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
 #### SCD-40
-```{note} Thank you, [sumpfing](https://www.thingiverse.com/sumpfing/designs), for your [modular Wemos D1 modular design]().
+```{note} Thank you, [sumpfing](https://www.thingiverse.com/sumpfing/designs), for your [modular Wemos D1 modular design](https://www.thingiverse.com/thing:4084654).
 ```
 ```{button-link} https://github.com/solarslurpi/GrowBuddies/tree/main/enclosures/SnifferBuddy/scd-40
 :outline:
