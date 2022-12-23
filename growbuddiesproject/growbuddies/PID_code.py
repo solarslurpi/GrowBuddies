@@ -21,7 +21,7 @@ try:
 except AttributeError:
     # time.monotonic() not available (using python < 3.3), fallback to time.time()
     _current_time = time.time
-    warnings.warn('time.monotonic() not available in python < 3.3, using time.time() as fallback')
+    warnings.warn("time.monotonic() not available in python < 3.3, using time.time() as fallback")
 
 
 class PID(object):
@@ -35,34 +35,30 @@ class PID(object):
         setpoint=0,
         sample_time=0.01,
         output_limits=(None, None),
+        integral_limits=(None, None),
         auto_mode=True,
         proportional_on_measurement=False,
         error_map=None,
         mqqt_time=True,
-        log_level=logging.DEBUG
+        log_level=logging.DEBUG,
     ):
         """
         Initialize a new PID controller.
 
-        :param Kp: The value for the proportional gain Kp
-        :param Ki: The value for the integral gain Ki
-        :param Kd: The value for the derivative gain Kd
-        :param setpoint: The initial setpoint that the PID will try to achieve
-        :param sample_time: The time in seconds which the controller should wait before generating
-            a new output value. The PID works best when it is constantly called (eg. during a
-            loop), but with a sample time set so that the time difference between each update is
-            (close to) constant. If set to None, the PID will compute a new output value every time
-            it is called.
-        :param output_limits: The initial output limits to use, given as an iterable with 2
-            elements, for example: (lower, upper). The output will never go below the lower limit
-            or above the upper limit. Either of the limits can also be set to None to have no limit
-            in that direction. Setting output limits also avoids integral windup, since the
-            integral term will never be allowed to grow outside of the limits.
-        :param auto_mode: Whether the controller should be enabled (auto mode) or not (manual mode)
-        :param proportional_on_measurement: Whether the proportional term should be calculated on
+        :param Kp: The value for the proportional gain Kp.
+        :param Ki: The value for the integral gain Ki.
+        :param Kd: The value for the derivative gain Kd.
+        :param setpoint: The setpoint is the target value that the PID controller will attempt to achieve.
+        :param sample_time: **MistBuddy does not use the sample time.** The sampling time for the PID controller
+            is determined by the frequency of SnifferBuddy MQTT messages.
+        :param output_limits: Output limits can be specified as an iterable with two elements, such as (lower, upper).
+            These limits ensure that the output will never exceed the upper limit or fall below the lower limit. Either
+            limit can be set to None if there is no limit in that direction.
+        :param auto_mode: **not used by MistBuddy** Whether the controller should be enabled (auto mode) or not (manual mode)
+        :param proportional_on_measurement: **not used by MistBuddy** Whether the proportional term should be calculated on
             the input directly rather than on the error (which is the traditional way). Using
             proportional-on-measurement avoids overshoot for some types of systems.
-        :param error_map: Function to transform the error value in another constrained value.
+        :param error_map: **not used by MistBuddy** Function to transform the error value in another constrained value.
         """
         self.mqtt_time = mqqt_time
         self.logger = LoggingHandler(log_level)
@@ -109,7 +105,7 @@ class PID(object):
         if dt is None:
             dt = now - self._last_time if (now - self._last_time) else 1e-16
         elif dt <= 0:
-            raise ValueError('dt has negative value {}, must be positive'.format(dt))
+            raise ValueError("dt has negative value {}, must be positive".format(dt))
         self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
         self._last_time = now
         if not self.mqtt_time:
@@ -122,7 +118,9 @@ class PID(object):
         error = self.setpoint - input_
         d_input = input_ - (self._last_input if (self._last_input is not None) else input_)
         self._compute_terms(d_input, error, dt)
-        self.logger.debug(f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}")
+        self.logger.debug(
+            f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
+        )
 
         if error > 0.02:
             return 0, 0
@@ -166,19 +164,19 @@ class PID(object):
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, I'm clamping the contribution to a maximum of 2 seconds.
-        self._integral = -_clamp(abs(self._integral), [0, 4.5])  # Avoid integral windup.  Set to max after experiments.
+        self._integral = -_clamp(abs(self._integral), [0, 4.5])  # Avoid integral windup.
         self._derivative = -self.Kd * d_input / dt
 
     def __repr__(self):
         return (
-            '{self.__class__.__name__}('
-            'Kp={self.Kp!r}, Ki={self.Ki!r}, Kd={self.Kd!r}, '
-            'setpoint={self.setpoint!r}, sample_time={self.sample_time!r}, '
-            'output_limits={self.output_limits!r}, auto_mode={self.auto_mode!r}, '
-            'proportional_on_measurement={self.proportional_on_measurement!r}, '
-            'error_map={self.error_map!r}, '
-            'mqtt_time={self.mqtt_time!r}'
-            ')'
+            "{self.__class__.__name__}("
+            "Kp={self.Kp!r}, Ki={self.Ki!r}, Kd={self.Kd!r}, "
+            "setpoint={self.setpoint!r}, sample_time={self.sample_time!r}, "
+            "output_limits={self.output_limits!r}, auto_mode={self.auto_mode!r}, "
+            "proportional_on_measurement={self.proportional_on_measurement!r}, "
+            "error_map={self.error_map!r}, "
+            "mqtt_time={self.mqtt_time!r}"
+            ")"
         ).format(self=self)
 
     @property
@@ -251,7 +249,7 @@ class PID(object):
         min_output, max_output = limits
 
         if (None not in limits) and (max_output < min_output):
-            raise ValueError('lower limit must be less than upper limit')
+            raise ValueError("lower limit must be less than upper limit")
 
         self._min_output = min_output
         self._max_output = max_output

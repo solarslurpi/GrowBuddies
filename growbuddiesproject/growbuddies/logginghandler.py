@@ -23,26 +23,26 @@ import growbuddies.colors as colors
 class LoggingHandler:
     """Sprinkling code liberally with logging lines helps debugging and also helps to figure out what is going wrong.
 
-    .. note::
+     .. note::
 
-        The parameter to LoggingHandler looks to be 10.  This is because the parser resolved logging.DEBUG.
+         The parameter to LoggingHandler looks to be 10.  This is because the parser resolved logging.DEBUG.
 
-    .. tip::
-        If you are new to Python logging, it helps to get an overview - particularly about log levels from
-        `The Python logging documentation <https://docs.python.org/3/howto/logging.html>`_.
+     .. tip::
+         If you are new to Python logging, it helps to get an overview - particularly about log levels from
+         `The Python logging documentation <https://docs.python.org/3/howto/logging.html>`_.
 
-    For example, let's make an instance of a `SnifferBuddyReadings()` with logging sent to informational:
+     For example, let's make an instance of a `SnifferBuddyReadings()` with logging sent to informational:
 
-    .. code-block:: python
-         :caption: Initializing `Gus()` with the log level set to INFO.
+     .. code-block:: python
+          :caption: Initializing `Gus()` with the log level set to INFO.
 
-         snifferBuddyReadingsInstance = Gus(readings_callback=snifferbuddyreadings, status_callback=status_callback,
-                                        table_name="sniff2",log_level=logging.INFO)
+          snifferBuddyReadingsInstance = Gus(readings_callback=snifferbuddyreadings, status_callback=status_callback,
+                                         table_name="sniff2",log_level=logging.INFO)
 
-    By default, `Gus()` sets the logging level to logging.DEBUG.  By setting the log level to info, any of the logging calls
-    set to logging.DEBUG will not occur.  This is how `Python logging normally works <https://docs.python.org/3/howto/logging.html>`_.
+     By default, `Gus()` sets the logging level to logging.DEBUG.  By setting the log level to info, any of the logging calls
+     set to logging.DEBUG will not occur.  This is how `Python logging normally works <https://docs.python.org/3/howto/logging.html>`_.
 
-   Different colored text will be displayed depending on the logging level.
+    Different colored text will be displayed depending on the logging level.
 
     """
 
@@ -60,30 +60,22 @@ class LoggingHandler:
     def debug(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.debug(
-            f"{colors.Green}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
-        )
+        self.logger.debug(f"{colors.Green}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
 
     def info(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.info(
-            f"{colors.Yellow}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
-        )
+        self.logger.info(f"{colors.Yellow}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
 
     def warning(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.error(
-            f"{colors.Red}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
-        )
+        self.logger.error(f"{colors.Red}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
 
     def error(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.error(
-            f"{colors.BIRed}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
-        )
+        self.logger.error(f"{colors.BIRed}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
 
     # def _get_Error_Bad_Soil_Moisture_Reading(self):
     #     return 2000

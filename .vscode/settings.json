@@ -7,7 +7,7 @@
     },
     "python.linting.flake8Args": [
         "--max-line-length=150",
-        "--ignore=W605,E402",
+        "--ignore=W605,E402,E731",
     ],
     "editor.defaultFormatter": "ms-python.black-formatter",
     "python.formatting.provider": "none",

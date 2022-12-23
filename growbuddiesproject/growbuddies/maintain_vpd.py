@@ -1,4 +1,3 @@
-
 """
 ========
 Overview
@@ -85,7 +84,7 @@ def snifferbuddy_status_callback(status):
     Args:
         status (str): `Gus()` sends either the string "Online" or "Offline".
     """
-    logger.debug(f'-> SnifferBuddy is: {status}')
+    logger.debug(f"-> SnifferBuddy is: {status}")
 
 
 def main():
@@ -107,7 +106,9 @@ def main():
 
     """
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    mistBuddyInstance = MistBuddy(snifferbuddy_status_callback=snifferbuddy_status_callback, readings_table_name="gogrow_45_05_01_a4_5")
+    mistBuddyInstance = MistBuddy(
+        snifferbuddy_status_callback=snifferbuddy_status_callback, readings_table_name="gogrow_45_05_01_a4_5"
+    )
     mistBuddyInstance.start()
 
 

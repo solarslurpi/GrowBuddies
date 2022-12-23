@@ -1,4 +1,3 @@
-
 """
 ========
 Overview
@@ -66,35 +65,38 @@ If the `status_callback` parameter is set to a function, `Gus()` will call the f
 Functions
 ~~~~~~~~~
 """
+from mqtt_code import MQTTService
+from settings_code import Settings
 import logging
+import sys
 
-from growbuddies.logginghandler import LoggingHandler
-from growbuddies.gus import Gus
+from logginghandler import LoggingHandler
+
 
 # # Most likely you'll use DEBUG, INFO, or ERROR.
 logger = LoggingHandler(logging.DEBUG)
 
 
-def snifferbuddyreadings(snifferBuddyReadings):
-    """This is the `readings_callback` function that was set when an instance of `Gus()`
-    was initialized in `main()`.
-    The air quality values will find their way to this callback function when an instance of `Gus()` is initialized with:
+class Callbacks:
+    def on_snifferbuddy_readings(self, snifferBuddyReadings):
+        """This is the `readings_callback` function that was set when an instance of `Gus()`
+        was initialized in `main()`.
+        The air quality values will find their way to this callback function when an instance of `Gus()` is initialized with:
 
-    Args:
-        snifferBuddyReadings (SnifferBuddyReadings): An instance of SnifferBuddyReadings.
+        Args:
+            snifferBuddyReadings (SnifferBuddyReadings): An instance of SnifferBuddyReadings.
 
-    """
-    logger.debug(f"{snifferBuddyReadings.dict}")
+        """
+        logger.debug(f"{snifferBuddyReadings}")
 
+    def on_snifferbuddy_status(self, status):
+        """`Gus()` will call this function when an `LWT` packet comes in.  `Gus()` returns a string with either
+        `online` or `offline`.
 
-def status_callback(status):
-    """`Gus()` will call this function when an `LWT` packet comes in.  `Gus()` returns a string with either
-    `online` or `offline`.
-
-    Args:
-        status (str): `Gus()` sends either the string "Online" or "Offline".
-    """
-    logger.debug(f'-> SnifferBuddy is: {status}')
+        Args:
+            status (str): `Gus()` sends either the string "Online" or "Offline".
+        """
+        logger.debug(f"-> SnifferBuddy is: {status}")
 
 
 def main():
@@ -115,13 +117,26 @@ def main():
     After getting an instance of `Gus()` with these parameters, Call the `start()` method.
 
     """
-    table_name = input("Enter the table name where SnifferBuddyReadings will be Stored (Default is SnifferBuddyReadings): ")
-    if not table_name or table_name == "":
-        table_name = "SnifferBuddyReadings"
+    # table_name = input("Enter the table name where SnifferBuddyReadings will be Stored (Default is SnifferBuddyReadings): ")
+    # if not table_name or table_name == "":
+    #     table_name = "SnifferBuddyReadings"
     # Leaving the logging level at DEBUG and the settings file to the default name.
-    snifferBuddyReadingsInstance = Gus(readings_callback=snifferbuddyreadings, status_callback=status_callback,
-                                       table_name=table_name)
-    snifferBuddyReadingsInstance.start()
+
+    settings = Settings()
+    settings.load()
+    # Create an MQTTService instance
+    obj = Callbacks()
+    methods = settings.get_callbacks("snifferbuddy_mqtt_dict", obj)
+    broker_name = settings.get("hostname")
+    mqtt_service = MQTTService(client_id="SnifferBuddy", host=broker_name, callbacks_dict=methods)
+    mqtt_service.start()
+    while True:
+        try:
+            pass
+        except KeyboardInterrupt:
+            # Stop the MQTT service
+            mqtt_service.stop()
+            sys.exit()
 
 
 if __name__ == "__main__":

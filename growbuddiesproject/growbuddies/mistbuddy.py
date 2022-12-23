@@ -1,3 +1,20 @@
+#
+# MistBuddy utilizes the readings from SnifferBuddy to calculate the appropriate length of time to activate the humidifier using a PID controller.
+#
+# Copyright 2022 Happy Day
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
+
 from growbuddies.PID_code import PID
 import logging
 from enum import Enum
@@ -10,9 +27,7 @@ import signal
 class growthStage(Enum):
     """An enumeration to let growBuddy know if the plants it is caring for are in the vegetative or flower growth stage.
 
-       Args:
-
-            Enum (int): Either VEG for Vegetative of FLOWER for when the plant is in flowering.
+    :param Enum: This setting can be either 'VEG' for the vegetative stage or 'FLOWER' for the flowering stage of the plant.
 
     """
 
@@ -22,44 +37,48 @@ class growthStage(Enum):
 
 class MistBuddy(Gus):
 
-    """Keeps the humidity at the ideal VPD level.  If we get this right, it should run just by initiating an instance
-    of this class.  We set a values_callback if we want to get to the data. For example, if we wish to store the
-    data into influxdb.
+    """MistBuddy uses the readings from SnifferBuddy and a PID controller to calculate the ideal duration to turn on the humidifier in order to provide the plants with the optimal vapor pressure deficit (VPD) value. In addition to this, MistBuddy inherits various capabilities from Gus, such as the ability to log data and manage mqtt traffic.
+
+    The ideal vpd level is determined from this vpd chart:
+
+       .. image:: ../docs/images/vpd_chart.jpg
+            :scale: 50
+            :alt: Flu's vpd chart
+            :align: center
 
     Args:
-        vpd_values_callback (function, optional): Callback to get all the readings. Defaults to None.
+        :param snifferbuddy_status_callback: This callback function is activated when Gus (our mqtt broker) sends out a Last Will and Testament (LWT) mqtt message. The function is called with a string that indicates either "online" or "offline" status. If the returned string is "offline," it indicates that SnifferBuddy has not been sending mqtt messages. This callback function is optional and is set to "None" by default.
 
-        growth_stage (growthStage Enum, optional): Whether the plant is in vegetative or is flowering. Defaults to growthStage.VEG.
+        :param growth_stage: This parameter specifies the growth stage of the plant, either vegetative or flowering. The default value is "growthStage.VEG."
 
-        manage (bool, optional): Whether the caller wishes to just observe values or wants vpdBuddy to start turning mistBuddy ON
-            and OFF. Defaults to True.
+        :param readings_table_name: A string that will be the name of the table (or a Measurement using influxdb terminology)  in InfluxDB containing SnifferBuddy readings, including vpd, while MistBuddy is running. By default, SnifferBuddy readings will not be stored.
+
+        :param manage: A False setting for this parameter causes MistBuddy to refrain from turning the humidifier on and off. This can be helpful for initial debugging, but it has little effect on the PID controller's output. The default setting is True.
 
     Raises:
-        Exception: Code checks if the vpd setpoint it reads from the settings file is within expected values.  If it isn't, an exception
-            is raised.
+            The code checks if the vpd setpoint, which is read from the settings file, is within the expected range. If it is not, an exception is raised.
 
     """
 
     def __init__(
         self,
-        vpd_values_callback=None,
         snifferbuddy_status_callback=None,
         growth_stage=growthStage.VEG,
         readings_table_name=None,
         manage=True,
     ):
         # Set up for a Systemd stop command by setting up a SIGTERM handler
+        # TODO: Not sure the SIGTERM is working.  Need to look more closely at shutdown.
         signal.signal(signal.SIGTERM, self._exit_gracefully)
-        # MistBuddy uses Gus to get SnifferBuddy values.s
-        super().__init__(readings_callback=self._values_callback, table_name=readings_table_name,
-                         status_callback=snifferbuddy_status_callback, log_level=logging.DEBUG)
-        self.vpd_values_callback = vpd_values_callback
-        self.manage = manage
-        msg = (
-            "Managing vpd."
-            if self.manage
-            else "Observing vpd."
+        # MistBuddy uses Gus to get SnifferBuddy values.
+        super().__init__(
+            readings_callback=self._values_callback,
+            table_name=readings_table_name,
+            status_callback=snifferbuddy_status_callback,
+            log_level=logging.DEBUG,
         )
+        self.manage = manage
+        msg = "Managing vpd." if self.manage else "Observing vpd."
         self.logger.debug(msg)
         # Checking if the light changed from off to on.  If it did, the PID controller should know this so it can reset the error part
         # that accumulates.
@@ -72,9 +91,7 @@ class MistBuddy(Gus):
             self.setpoint = self.settings["vpd_setpoints"]["flower"]
         # The setpoint should be around .6 to 1.6...
         if not isinstance(self.setpoint, float) or self.setpoint * 10 not in range(20):
-            raise Exception(
-                "The vpd setpoint should be a floating point number between 0.0 and less than 2.0"
-            )
+            raise Exception("The vpd setpoint should be a floating point number between 0.0 and less than 2.0")
         # These are used in the _pid() routine.
         self.pid_cum_error = 0.0
         self.pid_last_error = 0.0
@@ -97,7 +114,9 @@ class MistBuddy(Gus):
         Args:
             s (SnifferBuddyReadings): A reading from SnifferBuddy within an instance of SnifferBuddyReadings.
         """
-        if s.light_level > 700:  # A light strong enough to start transpiration is assumed if the photoresister is between 700 and 1024.
+        if (
+            s.light_level > 700
+        ):  # A light strong enough to start transpiration is assumed if the photoresister is between 700 and 1024.
             nSecondsON, error = self._pid(s.vpd)
             self.logger.debug(f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. ")
             if self.manage and nSecondsON > 0:
@@ -162,9 +181,7 @@ class MistBuddy(Gus):
         # Send the command to power ON.
         self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_fan_topic"], "ON")
         self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_mister_topic"], "ON")
-        self.logger.debug(
-            f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds."
-        )
+        self.logger.debug(f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds.")
         timer.start()
 
     def _turn_off_mistBuddy(self):
@@ -173,9 +190,7 @@ class MistBuddy(Gus):
 
         self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_fan_topic"], "OFF")
         self.mqtt_client.publish(self.settings["mqtt"]["mistBuddy_mister_topic"], "OFF")
-        self.logger.debug(
-            "...Sent mqtt messages to the two mistBuddy plugs to turn OFF."
-        )
+        self.logger.debug("...Sent mqtt messages to the two mistBuddy plugs to turn OFF.")
 
     def _exit_gracefully(self):
         self._turn_off_mistBuddy(self)

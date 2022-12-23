@@ -59,6 +59,7 @@ class Gus(Thread):
         log_level (constant, optional): Defined by Python's logging library. Defaults to logging.DEBUG.
 
     """
+
     def __init__(
         self,
         subscribe_to_sensor=True,
@@ -73,9 +74,7 @@ class Gus(Thread):
 
         # Initialize a Thread so that each instance has it's own mqtt session on loop_start().
         # Use a unique name made of 10 lowercase ascii characters.
-        self.unique_name = "".join(
-            random.choice(string.ascii_lowercase) for i in range(10)
-        )
+        self.unique_name = "".join(random.choice(string.ascii_lowercase) for i in range(10))
         Thread.__init__(self, name=self.unique_name)
         self.readings_callback = readings_callback
         self.status_callback = status_callback
@@ -89,13 +88,9 @@ class Gus(Thread):
 
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler(log_level)
-        self.logger.debug(
-            f"-> Initializing Gus class for task {self.unique_name}"
-        )
+        self.logger.debug(f"-> Initializing Gus class for task {self.unique_name}")
         # Set the working directory to where the Python files are located.
-        self.logger.debug(
-            f"--> Current Directory prior to setting to the file location is {os.getcwd()}"
-        )
+        self.logger.debug(f"--> Current Directory prior to setting to the file location is {os.getcwd()}")
         cfd = os.path.dirname(os.path.realpath(__file__))
         os.chdir(cfd)
         self.logger.debug(f"--> Current Directory is {os.getcwd()}")
@@ -123,9 +118,7 @@ class Gus(Thread):
             self.logger.error(f"ERROR! Was not able to connect to Influxdb.  Error: {e}")
 
     def start(self):
-        """Starts up an mqtt client on a unique thread.
-
-        """
+        """Starts up an mqtt client on a unique thread."""
         try:
             self.mqtt_client = mqtt.Client(self.unique_name)
             # self.mqtt_client = mqtt.Client()
@@ -137,12 +130,11 @@ class Gus(Thread):
             # At this point, mqtt drives the code.
             self.logger.debug("Done with initialization. Handing over to mqtt.")
             # loop_start doesn't block...sadly, running stuff as a systemd service - where it won't work.
-            # self.mqtt_client.loop_start()
-            self.mqtt_client.loop_forever()
+            self.mqtt_client.loop_start()
+            # self.mqtt_client.loop_forever()
 
         except Exception as e:
-            self.logger.error(
-                f"...In the midst of mqtt traffic.  Exiting due to Error: {e}")
+            self.logger.error(f"...In the midst of mqtt traffic.  Exiting due to Error: {e}")
             os._exit(1)
 
     @property
@@ -189,7 +181,7 @@ class Gus(Thread):
         if self.subscribe_to_sensor:
             client.subscribe(mqtt_topic)
             self.logger.info(f"-> Subscribed to -->{self.topic_key}<--")
-        LWT_topic = mqtt_topic.rsplit('/', 1)[0] + "/LWT"
+        LWT_topic = mqtt_topic.rsplit("/", 1)[0] + "/LWT"
         client.subscribe(LWT_topic)
         # Set a callback to handle LWT
         client.message_callback_add(LWT_topic, self._LWT_callback)
@@ -206,12 +198,14 @@ class Gus(Thread):
         """
         message = msg.payload.decode(encoding="UTF-8")
         self.logger.info(f"mqtt received message...{message}")
+
         # Send the message contents as a dictionary back to the values_callback.
         try:
             mqtt_dict = json.loads(message)
-            s = SnifferBuddyReadings(mqtt_dict)
+
             if self.readings_callback:
                 if self.topic_key == snifferbuddy_topic:
+                    s = SnifferBuddyReadings(mqtt_dict)
                     self.readings_callback(s)
                 else:
                     self.readings_callback(mqtt_dict)
@@ -252,9 +246,7 @@ class Gus(Thread):
             with open(self.settings_filename) as json_file:
                 dict_of_settings = json.load(json_file)
         except Exception as e:
-            raise Exception(
-                f"Could not open the settings file named {self.settings_filename}.  Error: {e}"
-            )
+            raise Exception(f"Could not open the settings file named {self.settings_filename}.  Error: {e}")
         return dict_of_settings
 
     def db_write(self, table_name, dict) -> None:
@@ -269,13 +261,8 @@ class Gus(Thread):
         """
         # TODO: Other context specific writes to tables...
         try:
-            influxdb_data = [{"measurement": table_name,
-                              "fields": dict
-                              }
-                             ]
+            influxdb_data = [{"measurement": table_name, "fields": dict}]
             self.influx_client.write_points(influxdb_data)
             self.logger.debug(f"Successfully added the reading to Influxdb table {table_name}.")
         except Exception as e:
-            self.logger.error(
-                f"ERROR! Was not able to add the data to Influxdb. ERROR: {e}"
-            )
+            self.logger.error(f"ERROR! Was not able to add the data to Influxdb. ERROR: {e}")

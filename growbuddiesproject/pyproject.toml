@@ -18,3 +18,6 @@ dependencies = [
 [project.scripts]
 store-readings = "growbuddies.__main__:main"
 
+[tool.black]
+line-length = 119
+
