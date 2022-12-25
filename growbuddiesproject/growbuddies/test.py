@@ -1,37 +1,44 @@
-from settings_code import Settings
+def tune_pid(pid_controller, target, actual, dt, tolerance):
+    """Tunes the coefficients of a PID controller to minimize the error between the target and actual values.
 
+    Parameters:
+        pid_controller (PIDController): The PID controller object to be tuned.
+        target (float): The target value for the control system.
+        actual (float): The current actual value of the control system.
+        dt (float): The time step for the control system.
+        tolerance (float): The error tolerance for the control system.
 
-# Define a callback function
+    Returns:
+        tuple: A tuple containing the optimized values for the PID controller's kp, ki, and kd coefficients.
+    """
+    # Set initial values for the coefficients
+    kp = 1
+    ki = 0
+    kd = 0
 
+    # Set initial values for the error terms
+    prev_error = target - actual
+    integral = 0
 
+    # Iterate until the error is within a certain tolerance
+    while abs(prev_error) > tolerance:
+        # Update the coefficients and error terms
+        kp += 0.1
+        ki += 0.1
+        kd += 0.1
+        integral += prev_error * dt
+        derivative = (prev_error - prev_error) / dt
 
-def main():
-    obj = None
-    settings = Settings()
-    settings.load()
-    callbacks_dict = settings.get_callbacks("mistbuddy_mqtt_dict", obj)
-    print(f'{callbacks_dict}')
-    pass
+        # Update the PID controller with the new coefficients
+        pid_controller.kp = kp
+        pid_controller.ki = ki
+        pid_controller.kd = kd
 
+        # Calculate the control output using the PID equation
+        output = kp * prev_error + ki * integral + kd * derivative
 
+        # Update the error for the next iteration
+        prev_error = target - actual
 
-
-
-
-
-
-
-    # func = globals().get("on_snifferbuddy_readings")
-    # func("hello")
-    # settings = Settings()
-    # settings.load()
-    # t_f = settings.get("snifferbuddy_mqtt_dict")
-    # for k in t_f.keys():
-    #     func = globals().get(t_f[k])
-    #     func(f"{k}")
-
-    # pass
-
-
-if __name__ == "__main__":
-    main()
+    # Return the optimized coefficients
+    return kp, ki, kd

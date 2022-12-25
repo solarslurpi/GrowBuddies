@@ -2,6 +2,13 @@ import paho.mqtt.client as mqtt
 import threading
 import random
 import string
+from settings_code import Settings
+
+
+def get_hostname():
+    settings = Settings()
+    settings.load()
+    return settings.get("hostname")
 
 
 class MQTTClient:
@@ -30,13 +37,13 @@ class MQTTClient:
         stop(): Stops the client's message loop and disconnects from the MQTT broker.
     """
 
-    def __init__(self, client_id=None, host="gus", callbacks_dict=None):
+    def __init__(self, client_id=None, callbacks_dict=None):
         # The client ID is a unique identifier that is used by the broker to identify this
         # client. If a client ID is not provided, a unique ID is generated and used instead.
         if not client_id:
             client_id = "".join(random.choice(string.ascii_lowercase) for i in range(10))
         self.client_id = client_id
-        self.host = host
+        self.host = get_hostname()
         self.callbacks_dict = callbacks_dict or {}
         try:
             self.client = mqtt.Client(client_id=self.client_id, clean_session=False)
@@ -68,6 +75,12 @@ class MQTTClient:
         except KeyError as e:
             print(f"{e}")
 
+    def publish(self, topic, message):
+        self.client.publish(topic, message)
+
+    def disconnect(self):
+        self.client.disconnect()
+
     def start(self):
         self.client.connect(self.host)
         self.client.loop_start()
@@ -97,10 +110,10 @@ class MQTTService:
 
     """
 
-    def __init__(self, client_id="mqttservice_clientid", host="gus", callbacks_dict=None):
+    def __init__(self, client_id="mqttservice_clientid", callbacks_dict=None):
         # topics_and_callback_json has the callback functions as strings.  These need to be converted.
 
-        self.client = MQTTClient(client_id, host, callbacks_dict)
+        self.client = MQTTClient(client_id, callbacks_dict)
         self.thread = None
 
     def start(self):

@@ -17,7 +17,8 @@
 import inspect
 import logging
 import sys
-import growbuddies.colors as colors
+import colors as colors
+from settings_code import Settings
 
 
 class LoggingHandler:
@@ -46,7 +47,15 @@ class LoggingHandler:
 
     """
 
-    def __init__(self, log_level=logging.DEBUG):
+    def __init__(self):
+        settings = Settings()
+        settings.load()
+        # Extract the logging level
+        log_level_str = settings.get("log_level")
+        try:
+            log_level = logging.getLevelName(log_level_str)
+        except Exception as e:
+            raise Exception(f"Could not set up the logging level with {log_level} as the level name.  Error: {e}")
 
         # Multiple calls to getLogger() with the same name will always return a reference to the same Logger object.
         self.logger = logging.getLogger(__name__)

@@ -1,7 +1,16 @@
 import time
 import warnings
-import logging
-from growbuddies.logginghandler import LoggingHandler
+from settings_code import Settings
+from enum import Enum
+from logginghandler import LoggingHandler
+
+try:
+    # Get monotonic time to ensure that time deltas are always positive
+    _current_time = time.monotonic
+except AttributeError:
+    # time.monotonic() not available (using python < 3.3), fallback to time.time()
+    _current_time = time.time
+    warnings.warn("time.monotonic() not available in python < 3.3, using time.time() as fallback")
 
 
 def _clamp(value, limits):
@@ -15,33 +24,21 @@ def _clamp(value, limits):
     return value
 
 
-try:
-    # Get monotonic time to ensure that time deltas are always positive
-    _current_time = time.monotonic
-except AttributeError:
-    # time.monotonic() not available (using python < 3.3), fallback to time.time()
-    _current_time = time.time
-    warnings.warn("time.monotonic() not available in python < 3.3, using time.time() as fallback")
+class growthStage(Enum):
+    """An enumeration to let growBuddy know if the plants it is caring for are in the vegetative or flower growth stage.
+
+    :param Enum: This setting can be either 'VEG' for the vegetative stage or 'FLOWER' for the flowering stage of the plant.
+
+    """
+
+    VEG = 2
+    FLOWER = 3
 
 
 class PID(object):
     """A simple PID controller."""
 
-    def __init__(
-        self,
-        Kp=1.0,
-        Ki=0.0,
-        Kd=0.0,
-        setpoint=0,
-        sample_time=0.01,
-        output_limits=(None, None),
-        integral_limits=(None, None),
-        auto_mode=True,
-        proportional_on_measurement=False,
-        error_map=None,
-        mqqt_time=True,
-        log_level=logging.DEBUG,
-    ):
+    def __init__(self):
         """
         Initialize a new PID controller.
 
@@ -60,16 +57,34 @@ class PID(object):
             proportional-on-measurement avoids overshoot for some types of systems.
         :param error_map: **not used by MistBuddy** Function to transform the error value in another constrained value.
         """
-        self.mqtt_time = mqqt_time
-        self.logger = LoggingHandler(log_level)
-        self.Kp, self.Ki, self.Kd = Kp, Ki, Kd
-        self.setpoint = setpoint
-        self.sample_time = sample_time
+        self.logger = LoggingHandler()
+        settings = Settings()
+        settings.load()
+        # Extract the logging level
+        pid_settings = settings.get("PID_settings")
+        # Start out with these as the base values.  They will be increased if the error tolerance is too much.
+        self.Kp = pid_settings["Kp"]
+        self.Ki = pid_settings["Ki"]
+        self.Kd = pid_settings["Kd"]
+        self.tolerance = pid_settings["tolerance"]
+        # Set up the setpoint to the ideal vpd value.
+        self.setpoint = 0.0
+        vpd_setpoint_settings = settings.get("vpd_setpoints")
+        vpd_growth_stage = settings.get("vpd_growth_stage")
+        # String to enum - match on the name attribute.
+        if vpd_growth_stage.upper() == growthStage.VEG.name:
+            self.setpoint = vpd_setpoint_settings["veg"]
+        else:
+            self.setpoint = vpd_setpoint_settings["flower"]
+        if not isinstance(self.setpoint, float) or self.setpoint * 10 not in range(20):
+            raise Exception("The vpd setpoint should be a floating point number between 0.0 and less than 2.0")
+        self.output_limits_min = pid_settings["output_limits"][0]
+        self.output_limits_max = pid_settings["output_limits"][1]
+        self.integral_limits_min = pid_settings["integral_limits"][0]
+        self.integral_limits_max = pid_settings["integral_limits"][1]
 
         self._min_output, self._max_output = None, None
-        self._auto_mode = auto_mode
-        self.proportional_on_measurement = proportional_on_measurement
-        self.error_map = error_map
+        pid_settings = settings.get("PID_settings")
 
         self._proportional = 0
         self._integral = 0
@@ -80,12 +95,11 @@ class PID(object):
         self._count = 0
         self._sum = 0
 
-        self._last_time = None
+        self._last_time = _current_time()
         self._last_output = None
         self._last_input = None
 
-        self.output_limits = output_limits
-        self.reset()
+        self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
     def __call__(self, input_, dt=None):
         """
@@ -98,8 +112,6 @@ class PID(object):
         :param dt: If set, uses this value for timestep instead of real time. This can be used in
             simulations when simulation time is different from real time.
         """
-        if not self.auto_mode:
-            return self._last_output
 
         now = _current_time()
         if dt is None:
@@ -108,11 +120,6 @@ class PID(object):
             raise ValueError("dt has negative value {}, must be positive".format(dt))
         self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
         self._last_time = now
-        if not self.mqtt_time:
-            if self.sample_time is not None and dt < self.sample_time and self._last_output is not None:
-                # Only update every sample_time seconds
-                self.logger.debug("not calculating - time too soon.")
-                return self._last_output
         # Compute error terms - Note: When the error is positive, the humidity is too low.  There is no dehumidifier.
         # However, we'll keep note of the error in the derivative and integral terms since these accumulate.
         error = self.setpoint - input_
@@ -122,15 +129,16 @@ class PID(object):
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
         )
 
-        if error > 0.02:
+        if error > self.tolerance:
             return 0, 0
-        # if error <= 0.2 and error >= 0.0:
-        #     boost_seconds = 10
-        # else:
-        #     boost_seconds = 0
-        # Check if must map the error
-        if self.error_map is not None:
-            error = self.error_map(error)
+
+        if (
+            self._prev_error and error < self.tolerance
+        ):  # The loop has been run through at least once. The error is < tolerance
+            self.Kp += 0.5
+            self.Ki += 0.05
+            self.Kd += 0.01
+            self.logger.debug(f"updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
 
         # Compute number of seconds to turn on mistBuddy, which is 0 or a positive number of seconds.
 
@@ -142,42 +150,28 @@ class PID(object):
         # Keep track of state
         self._last_output = output
         self._last_input = input_
-
+        self._prev_error = error
         return nSecondsOn, error
 
     def _compute_terms(self, d_input, error, dt):
         # Compute integral and derivative terms
         # Since we are not using PID during the night, we reset the error terms and start over.
-
-        # Compute the proportional term
-        if not self.proportional_on_measurement:
-            # Regular proportional-on-error, simply set the proportional term
-            self._proportional = self.Kp * error
-            # Accomodate maintaining steady state...
-            if error == 0:
-                self._proportional = self.Kp * -0.1
-        else:
-            # Add the proportional error on measurement to error_sum
-            self._proportional -= self.Kp * d_input
+        self._proportional = self.Kp * error
+        # Accomodate maintaining steady state...
+        if error == 0:
+            self._proportional = self.Kp * -0.1
 
         self._integral += self.Ki * error * dt
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, I'm clamping the contribution to a maximum of 2 seconds.
-        self._integral = -_clamp(abs(self._integral), [0, 4.5])  # Avoid integral windup.
+        self._integral = -_clamp(
+            abs(self._integral), [self.integral_limits_min, self.integral_limits_max]
+        )  # Avoid integral windup.
         self._derivative = -self.Kd * d_input / dt
 
     def __repr__(self):
-        return (
-            "{self.__class__.__name__}("
-            "Kp={self.Kp!r}, Ki={self.Ki!r}, Kd={self.Kd!r}, "
-            "setpoint={self.setpoint!r}, sample_time={self.sample_time!r}, "
-            "output_limits={self.output_limits!r}, auto_mode={self.auto_mode!r}, "
-            "proportional_on_measurement={self.proportional_on_measurement!r}, "
-            "error_map={self.error_map!r}, "
-            "mqtt_time={self.mqtt_time!r}"
-            ")"
-        ).format(self=self)
+        return ("{self.__class__.__name__}(" ")").format(self=self)
 
     @property
     def components(self):
@@ -196,39 +190,6 @@ class PID(object):
     def tunings(self, tunings):
         """Set the PID tunings."""
         self.Kp, self.Ki, self.Kd = tunings
-
-    @property
-    def auto_mode(self):
-        """Whether the controller is currently enabled (in auto mode) or not."""
-        return self._auto_mode
-
-    @auto_mode.setter
-    def auto_mode(self, enabled):
-        """Enable or disable the PID controller."""
-        self.set_auto_mode(enabled)
-
-    def set_auto_mode(self, enabled, last_output=None):
-        """
-        Enable or disable the PID controller, optionally setting the last output value.
-
-        This is useful if some system has been manually controlled and if the PID should take over.
-        In that case, disable the PID by setting auto mode to False and later when the PID should
-        be turned back on, pass the last output variable (the control variable) and it will be set
-        as the starting I-term when the PID is set to auto mode.
-
-        :param enabled: Whether auto mode should be enabled, True or False
-        :param last_output: The last output, or the control variable, that the PID should start
-            from when going from manual mode to auto mode. Has no effect if the PID is already in
-            auto mode.
-        """
-        if enabled and not self._auto_mode:
-            # Switching from manual mode to auto, reset
-            self.reset()
-
-            self._integral = last_output if (last_output is not None) else 0
-            self._integral = _clamp(self._integral, self.output_limits)
-
-        self._auto_mode = enabled
 
     @property
     def output_limits(self):
@@ -256,20 +217,3 @@ class PID(object):
 
         self._integral = _clamp(self._integral, self.output_limits)
         self._last_output = _clamp(self._last_output, self.output_limits)
-
-    def reset(self):
-        """
-        Reset the PID controller internals.
-
-        This sets each term to 0 as well as clearing the integral, the last output and the last
-        input (derivative calculation).
-        """
-        self._proportional = 0
-        self._integral = 0
-        self._derivative = 0
-
-        self._integral = _clamp(self._integral, self.output_limits)
-
-        self._last_time = _current_time()
-        self._last_output = None
-        self._last_input = None

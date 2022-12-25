@@ -15,9 +15,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 #
-import logging
-from growbuddies.logginghandler import LoggingHandler
+from logginghandler import LoggingHandler
 import math
+import json
 
 
 class SnifferBuddySensors:
@@ -69,16 +69,16 @@ class SnifferBuddyReadings:
         log_level (logging level constant, optional):Logging level either logging.DEBUG, logging.INFO, logging.ERROR. Defaults to logging.DEBUG.
     """
 
-    def __init__(self, mqtt_dict, log_level=logging.DEBUG):
+    def __init__(self, mqtt_str):
 
         # Set up logging.  LoggingHandler gives stack trace information.
-        self.logger = LoggingHandler(log_level)
+        self.logger = LoggingHandler()
         self.logger.debug("-> Initializing SnifferBuddy class.")
 
-        self.mqtt_dict = mqtt_dict
+        self.mqtt_dict = json.loads(mqtt_str)
         # The air quality sensor's name in the mqtt message.
         try:
-            self.sensor = self._find_sensor_name(mqtt_dict)
+            self.sensor = self._find_sensor_name(self.mqtt_dict)
             self.name_dict = {self.sensor: ["Temperature", "Humidity", "CarbonDioxide"]}
         except Exception as e:
             self.logger.error(f"Could not identify the air quality sensor. Error: {e}")

@@ -1,49 +1,23 @@
-import logging
 from growbuddies.logginghandler import LoggingHandler
 from mqtt_code import MQTTService
 from settings_code import Settings
 import sys
 import json
-from influxdb import InfluxDBClient
+from influxdb_code import ReadingsStore
 
-logger = LoggingHandler(logging.DEBUG)
 
 current_reading = None
 
 
-def store_readings(tensiometer_reading):
-    settings = Settings()
-    settings.load()
-    measurement = settings.get('dripbuddy_table_name')
-
-    db_name = settings.get('db_name')
-    # Create an InfluxDB client
-    client = InfluxDBClient(host=settings.get('hostname'))
-    # Select the database to use
-    client.switch_database(db_name)
-    # Set up the data in the dictionary format influxdb uses.
-    data = [{
-        "measurement": measurement,
-        "fields": {
-            "tensiometer": int(tensiometer_reading),
-            "capacitive ": int(current_reading)
-        }
-    }
-    ]
-    # Write the data to InfluxDB
-    try:
-        client.write_points(data)
-        logger.debug(f'successfully wrote data: **{data}** to influxdb database **{db_name}** table **{measurement}**')
-    except Exception as e:
-        logger.error(f"Could not write to influx db.  Error: {e}")
-
-
 class CallbacksDripBuddy:
+    def __init__(self):
+        self.logger = LoggingHandler()
+
     def on_dripbuddy_readings(self, msg):
         global current_reading
         readings_dict = json.loads(msg)
         current_reading = readings_dict["ANALOG"]["A0"]
-        logger.debug(f"the current reading is {current_reading}")
+        self.logger.debug(f"the current reading is {current_reading}")
 
     def on_dripbuddy_status(self, status):
         """`Gus()` will call this function when an `LWT` packet comes in.  `Gus()` returns a string with either
@@ -52,14 +26,20 @@ class CallbacksDripBuddy:
         Args:
             status (str): `Gus()` sends either the string "Online" or "Offline".
         """
-        logger.debug(f"-> dripBuddy is: {status}")
+        self.logger.debug(f"-> dripBuddy is: {status}")
 
 
 class CallbacksTensiometer:
+    def __init__(self):
+        self.logger = LoggingHandler()
+        self.readings_store = ReadingsStore()
+
     def on_calibrate_readings(self, tensiometer_reading):
-        logger.debug(f"in on_calibrate_readings.  Tensiometer reading: {tensiometer_reading} capacitive reading {current_reading}")
+        self.logger.debug(
+            f"in on_calibrate_readings.  Tensiometer reading: {tensiometer_reading} capacitive reading {current_reading}"
+        )
         # Store reading into influxdb table.
-        store_readings(tensiometer_reading)
+        self.readings_store.store_readings(tensiometer_reading, current_reading)
 
 
 def main():
@@ -81,7 +61,7 @@ def main():
         except KeyboardInterrupt:
             # Stop the MQTT service
             mqtt_service.stop()
-            mqtt_service.stop()
+            mqtt_service_1.stop()
             sys.exit()
 
 
