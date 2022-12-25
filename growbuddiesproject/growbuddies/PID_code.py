@@ -99,6 +99,8 @@ class PID(object):
         self._last_output = None
         self._last_input = None
 
+        self.ideal_setting = False
+
         self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
     def __call__(self, input_, dt=None):
@@ -128,17 +130,18 @@ class PID(object):
         self.logger.debug(
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
         )
-
+        # It is getting too humid.  Since we only have a humidifier to adjust, we return.
         if error > self.tolerance:
+            self.ideal_setting = True
             return 0, 0
-
-        if (
-            self._prev_error and error < self.tolerance
-        ):  # The loop has been run through at least once. The error is < tolerance
-            self.Kp += 0.5
-            self.Ki += 0.05
-            self.Kd += 0.01
-            self.logger.debug(f"updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
+        # Do a bit of autotuning until it grows to big.  Cap it when the air gets too moist.
+        if error < self.tolerance and not self.ideal_setting:
+            self.Kp += 1
+            # self.Ki += 0.05
+            # self.Kd += 0.01
+            self.logger.debug(f"***>updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
+        else:
+            self.logger.debug(f"***>NOT updating coefficients ")
 
         # Compute number of seconds to turn on mistBuddy, which is 0 or a positive number of seconds.
 

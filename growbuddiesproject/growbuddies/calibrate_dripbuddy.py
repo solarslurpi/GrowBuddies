@@ -1,4 +1,4 @@
-from growbuddies.logginghandler import LoggingHandler
+from logginghandler import LoggingHandler
 from mqtt_code import MQTTService
 from settings_code import Settings
 import sys
@@ -15,8 +15,8 @@ class CallbacksDripBuddy:
 
     def on_dripbuddy_readings(self, msg):
         global current_reading
-        readings_dict = json.loads(msg)
-        current_reading = readings_dict["ANALOG"]["A0"]
+        mqtt_readings_dict = json.loads(msg)
+        current_reading = mqtt_readings_dict["ANALOG"]["A0"]
         self.logger.debug(f"the current reading is {current_reading}")
 
     def on_dripbuddy_status(self, status):
@@ -31,15 +31,22 @@ class CallbacksDripBuddy:
 
 class CallbacksTensiometer:
     def __init__(self):
+        settings = Settings()
+        settings.load()
+        self.table_name = settings.get("dripbuddy_table_name")
+        if not self.table_name:
+            raise Exception("A table name was not specified for storing the readings.")
+
         self.logger = LoggingHandler()
+
         self.readings_store = ReadingsStore()
 
     def on_calibrate_readings(self, tensiometer_reading):
-        self.logger.debug(
-            f"in on_calibrate_readings.  Tensiometer reading: {tensiometer_reading} capacitive reading {current_reading}"
-        )
+        # Put the readings into a dictionary
+        readings_dict = {"tensiometer": int(tensiometer_reading), "capacitive ": int(current_reading)}
+        self.logger.debug(f"in on_calibrate_readings.  Tensiometer reading: {readings_dict} capacitive readings")
         # Store reading into influxdb table.
-        self.readings_store.store_readings(tensiometer_reading, current_reading)
+        self.readings_store.store_readings(self.table_name, readings_dict)
 
 
 def main():
@@ -48,12 +55,11 @@ def main():
     settings.load()
     obj = CallbacksDripBuddy()
     methods = settings.get_callbacks("dripbuddy_mqtt_dict", obj)
-    broker_name = settings.get("hostname")
-    mqtt_service = MQTTService(client_id="DripBuddy", host=broker_name, callbacks_dict=methods)
+    mqtt_service = MQTTService(client_id="DripBuddy", callbacks_dict=methods)
     mqtt_service.start()
     obj = CallbacksTensiometer()
     methods = settings.get_callbacks("calibrate_mqtt_dict", obj)
-    mqtt_service_1 = MQTTService(client_id="Tensiometer", host=broker_name, callbacks_dict=methods)
+    mqtt_service_1 = MQTTService(client_id="Tensiometer", callbacks_dict=methods)
     mqtt_service_1.start()
     while True:
         try:

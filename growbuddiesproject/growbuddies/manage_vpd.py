@@ -3,6 +3,7 @@ from settings_code import Settings
 from mqtt_code import MQTTService
 from snifferbuddyreadings_code import SnifferBuddyReadings
 from mistbuddy_code import MistBuddy
+from influxdb_code import ReadingsStore
 import sys
 
 
@@ -10,16 +11,24 @@ class CallbacksSnifferBuddy:
     def __init__(self):
         self.logger = LoggingHandler()
         self.mistbuddy = MistBuddy()
+        settings = Settings()
+        settings.load()
+        self.table_name = settings.get("snifferbuddy_table_name")
+        self.readings_store = ReadingsStore()
 
     def on_snifferbuddy_readings(self, msg):
         s = SnifferBuddyReadings(msg)
         self.logger.debug(f"the snifferbuddy values: {s.dict}")
-        self.logger.debug(f"light level is {self.mistbuddy.isLightOn(s.light_level)}")
-        # vpd is most relevant when the plants are transpiring when the lights are on.
+        on_or_off_str = "ON" if self.mistbuddy.isLightOn(s.light_level) else "OFF"
+        self.logger.debug(f"The light is {on_or_off_str}")
+        # Adjust vpd. vpd is most relevant when the plants are transpiring when the lights are on.
         if self.mistbuddy.isLightOn(s.light_level):
             self.mistbuddy.adjust_humidity(s)
+        # Store readings
+        if self.table_name:
+            self.readings_store.store_readings(self.table_name, s.dict)
 
-        # The vpd value is returned. Turn on and off the humidifier based on it's value.
+    # The vpd value is returned. Turn on and off the humidifier based on it's value.
 
     def on_snifferbuddy_status(self, status):
         """`Gus()` will call this function when an `LWT` packet comes in.  `Gus()` returns a string with either
@@ -29,6 +38,7 @@ class CallbacksSnifferBuddy:
             status (str): `Gus()` sends either the string "Online" or "Offline".
         """
         self.logger.debug(f"-> snifferbuddy is: {status}")
+        # TODO: send alert if offline since snifferbuddy readings are the heartbeat.
 
 
 def main():

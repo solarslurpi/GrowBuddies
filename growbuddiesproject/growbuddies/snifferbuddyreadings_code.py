@@ -153,9 +153,10 @@ class SnifferBuddyReadings:
 
         Returns:
             dict: Contains values for temperature, humidity, co2, vpd, and light level.
+
+        We're not returning the time.  When we store the variables, influxdb adds a timestamp.
         """
         return {
-            "time": self.time,
             "temperature": self.temperature,
             "humidity": self.humidity,
             "co2": self.co2,

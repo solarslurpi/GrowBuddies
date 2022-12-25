@@ -36,5 +36,4 @@ class Settings:
                 methods[k] = getattr(obj, t_f[k])
             else:
                 methods[k] = None
-        print(f"number of topics.  {len(methods)}")
         return methods

@@ -8,28 +8,24 @@ class ReadingsStore:
         self.settings = Settings()
         self.settings.load()
         self.logger = LoggingHandler()
-        self.measurement = self.settings.get("dripbuddy_table_name")
         self.hostname = self.settings.get("hostname")
         self.db_name = self.settings.get("db_name")
 
-    def store_readings(self, tensiometer_reading, current_reading):
+    def store_readings(self, table_name, dict_of_readings):
 
         # Create an InfluxDB client
         client = InfluxDBClient(host=self.hostname)
         # Select the database to use
         client.switch_database(self.db_name)
         # Set up the data in the dictionary format influxdb uses.
-        data = [
-            {
-                "measurement": self.measurement,
-                "fields": {"tensiometer": int(tensiometer_reading), "capacitive ": int(current_reading)},
-            }
-        ]
+        data = [{"measurement": table_name, "fields": dict_of_readings}]
         # Write the data to InfluxDB
         try:
             client.write_points(data)
             self.logger.debug(
-                f"successfully wrote data: **{data}** to influxdb database **{self.db_name}** table **{self.measurement}**"
+                f"successfully wrote data: **{data}** to influxdb database **{self.db_name}** table **{table_name}**"
             )
         except Exception as e:
-            self.logger.error(f"Could not write to influx db.  Error: {e}")
+            self.logger.error(
+                f"Could not write to influx db.  **{data}** to influxdb database **{self.db_name}** table **{table_name}** Error: {e}"
+            )

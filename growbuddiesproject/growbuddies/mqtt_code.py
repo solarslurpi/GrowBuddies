@@ -3,6 +3,7 @@ import threading
 import random
 import string
 from settings_code import Settings
+from logginghandler import LoggingHandler
 
 
 def get_hostname():
@@ -40,6 +41,7 @@ class MQTTClient:
     def __init__(self, client_id=None, callbacks_dict=None):
         # The client ID is a unique identifier that is used by the broker to identify this
         # client. If a client ID is not provided, a unique ID is generated and used instead.
+        self.logger = LoggingHandler()
         if not client_id:
             client_id = "".join(random.choice(string.ascii_lowercase) for i in range(10))
         self.client_id = client_id
@@ -56,7 +58,7 @@ class MQTTClient:
         self.client.on_message = self.on_message
 
     def on_connect(self, client, userdata, flags, rc):
-        print("Connected with result code " + str(rc))
+        self.logger.debug(f"Connected to broker **{self.host}** with result code {str(rc)}")
         # Subscribe to the topics passed in the topics_and_callbacks_dict.
         for k in self.callbacks_dict:
             self.client.subscribe(k)

@@ -3,6 +3,7 @@
     "log_level": "DEBUG",
     "db_name": "gus",
     "dripbuddy_table_name": "dripbuddy_calibration",
+    "snifferbuddy_table_name": "snifferbuddy_table_name",
     "snifferbuddy_mqtt_dict": {"tele/snifferbuddy/SENSOR": "on_snifferbuddy_readings",
                           "tele/snifferbuddy/LWT": "on_snifferbuddy_status"},
     "dripbuddy_mqtt_dict": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",
@@ -17,11 +18,11 @@
     },
 
     "PID_settings": {
-        "Kp": 102,
+        "Kp": 100,
         "Ki": 1.5,
         "Kd": 0.4,
         "output_limits": [0, 20],
-        "integral_limits":[0, 5],
+        "integral_limits":[0, 7],
         "tolerance": 0.01
     }
 }
