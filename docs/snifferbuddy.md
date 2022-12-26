@@ -11,9 +11,12 @@
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
 
-sniff...sniff...sniff...Inside SnifferBuddy is a [SCD30](https://www.adafruit.com/product/4867)[air quality sensor](https://www.adafruit.com/product/4867)] measuring the air's temperature, humidity, and CO2 level.   There is a photoresistor at the top of SnifferBuddy to indicate whether the grow lights are on or off. The brain behind SnifferBuddy is an ESP286 running [Tasmota firmware](https://tasmota.github.io/docs/About/). The Tasmota software publishes the readings over mqtt to an mqtt broker running on [Gus()](gus).
+SnifferBuddy is a device that measures the temperature, humidity, and CO2 level of the air using an [SCD30](https://www.adafruit.com/product/4867) or [SCD40](https://www.adafruit.com/product/5187) sensor. It is controlled by an ESP286 microcontroller running [Tasmota firmware](https://tasmota.github.io/docs/About/), which publishes the readings to an MQTT broker on a Raspberry Pi server that needs to be built.
+
+
+
 ### Supported Sensors
-SnifferBuddy's sensors were chosen for their accurate CO2 readings. Initially, Buddies use temperature and humidity readings. Eventually, we will also monitor and adjust CO2 levels, but first we need to optimize the grow area for proper water distribution in the air and soil.
+SnifferBuddy's sensors were chosen for their accurate CO2 readings, price, and ease of use (thanks to Adafruit's Breakout Board). Initially, Buddies use temperature and humidity readings. Eventually, we will also monitor and adjust CO2 levels, but first we need to optimize the grow area for proper water distribution in the air and soil.
 
 The [SCD-30](https://www.adafruit.com/product/4867) and [SCD-40](https://www.adafruit.com/product/5187) sensors are currently supported. I initially used the SCD-30, but later switched to the SCD-40 because it is more affordable and smaller in size, yet still of high quality.
 
