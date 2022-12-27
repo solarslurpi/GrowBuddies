@@ -109,7 +109,7 @@ MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmot
 ```
 
 ```{eval-rst}
-.. automodule:: growbuddies.mistbuddy
+.. automodule:: growbuddies.mistbuddy_code
    :members:
 ```
 

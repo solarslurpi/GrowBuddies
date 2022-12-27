@@ -2,8 +2,9 @@ import paho.mqtt.client as mqtt
 import threading
 import random
 import string
-from settings_code import Settings
-from logginghandler import LoggingHandler
+from growbuddies.settings_code import Settings
+from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
+from growbuddies.logginghandler import LoggingHandler
 
 
 def get_hostname():
@@ -72,10 +73,15 @@ class MQTTClient:
         try:
             for k in self.callbacks_dict:
                 if k == msg.topic:
-                    self.callbacks_dict[k](msg.payload.decode("utf-8"))
+                    try:
+                        s = SnifferBuddyReadings(msg.payload.decode("utf-8"))
+                        self.callbacks_dict[k](s)
+                    except Exception as e:
+                        self.logger.error(f"Could not translate the mqtt SnifferBuddy payload into a SnifferBuddyReadings() class.  Error: {e}")
+
 
         except KeyError as e:
-            print(f"{e}")
+            self.logger.error(f"KEY ERROR: {e}")
 
     def publish(self, topic, message):
         self.client.publish(topic, message)

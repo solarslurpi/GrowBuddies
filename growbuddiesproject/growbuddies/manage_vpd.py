@@ -1,9 +1,9 @@
-from logginghandler import LoggingHandler
-from settings_code import Settings
-from mqtt_code import MQTTService
-from snifferbuddyreadings_code import SnifferBuddyReadings
-from mistbuddy_code import MistBuddy
-from influxdb_code import ReadingsStore
+from growbuddies.logginghandler import LoggingHandler
+from growbuddies.settings_code import Settings
+from growbuddies.mqtt_code import MQTTService
+from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
+from growbuddies.mistbuddy_code import MistBuddy
+from growbuddies.influxdb_code import ReadingsStore
 import sys
 
 

@@ -15,12 +15,11 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-from PID_code import PID
-from logginghandler import LoggingHandler
-from snifferbuddyreadings_code import SnifferBuddyReadings
-
-from settings_code import Settings
-from mqtt_code import MQTTClient
+from growbuddies.PID_code import PID
+from growbuddies.logginghandler import LoggingHandler
+from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
+from growbuddies.settings_code import Settings
+from growbuddies.mqtt_code import MQTTClient
 import threading
 
 

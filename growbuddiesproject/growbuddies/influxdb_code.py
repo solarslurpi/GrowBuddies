@@ -1,6 +1,6 @@
 from influxdb import InfluxDBClient
-from settings_code import Settings
-from logginghandler import LoggingHandler
+from growbuddies.settings_code import Settings
+from growbuddies.logginghandler import LoggingHandler
 
 
 class ReadingsStore:

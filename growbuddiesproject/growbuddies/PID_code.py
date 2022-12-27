@@ -1,8 +1,8 @@
 import time
 import warnings
-from settings_code import Settings
 from enum import Enum
-from logginghandler import LoggingHandler
+from growbuddies.settings_code import Settings
+from growbuddies.logginghandler import LoggingHandler
 
 try:
     # Get monotonic time to ensure that time deltas are always positive

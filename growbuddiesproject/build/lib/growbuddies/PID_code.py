@@ -1,7 +1,7 @@
 import time
 import warnings
 import logging
-from logginghandler import LoggingHandler
+from growbuddies.logginghandler import LoggingHandler
 
 
 def _clamp(value, limits):

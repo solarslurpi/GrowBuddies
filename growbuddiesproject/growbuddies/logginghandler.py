@@ -17,8 +17,8 @@
 import inspect
 import logging
 import sys
-import colors as colors
-from settings_code import Settings
+import growbuddies.colors as colors
+from growbuddies.settings_code import Settings
 
 
 class LoggingHandler:

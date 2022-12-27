@@ -1,9 +1,9 @@
-from logginghandler import LoggingHandler
-from mqtt_code import MQTTService
-from settings_code import Settings
+from growbuddies.logginghandler import LoggingHandler
+from growbuddies.mqtt_code import MQTTService
+from growbuddies.settings_code import Settings
+from growbuddies.influxdb_code import ReadingsStore
 import sys
 import json
-from influxdb_code import ReadingsStore
 
 
 current_reading = None

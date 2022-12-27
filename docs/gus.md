@@ -7,7 +7,7 @@
 
 
 ## About {material-regular}`question_mark;1em;sd-text-success`
-Gus is a Raspberry Pi 3 or 4 running the Bullseye OS and several free software packages for mqtt, storing sensor readings, and graphing sensor readings.
+Gus, a Raspberry Pi 3 or 4 running Bullseye OS, is able to store and visualize not only SnifferBuddy readings, but also vpd values.
 
 :::{div}
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vTjks0iZHIZyD4VEdOo01_se0jn_CgJu9JUCee-rUhXBmFfykmObBkpqSUFBkOvnIdisiIzygPvDeZa/pub?w=984&amp;h=474&amp;align=middle">
@@ -15,6 +15,7 @@ Gus is a Raspberry Pi 3 or 4 running the Bullseye OS and several free software p
 
  As you can see, Gus has a lot of tools to help GrowBuddies.  These include [a mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/) that holds the latest SnifferBuddy mqtt message.  If instructed to do so, Gus can store the SnifferBuddy readings in an influxdb database.  If the readings are stored, you no longer need Gus to access the readings.  For example, you can create simple to sophisticated dashboards using Grafana.  Or look at the data through apps that speak to influxdb's API.
 
+Gus is equipped with a range of tools to assist GrowBuddies, including [a mosquitto mqtt broker](http://www.steves-internet-guide.com/mqtt-works/), which holds the latest SnifferBuddy mqtt message. Additionally, Gus can store SnifferBuddy readings in an influxdb database upon request. This allows for the creation of dashboards using Grafana or access to the data through apps that utilize influxdb's API, eliminating the need for ongoing access to Gus for reading purposes.
 
 (make_gus)=
 ## Let's Make One {material-regular}`build;1em;sd-text-success`
@@ -25,14 +26,14 @@ Gus is a Raspberry Pi 3 or 4 running the Bullseye OS and several free software p
  {octicon}`comment;1em;sd-text-success` Comments & Questions
 ```
 
-Given the heavy lifting Gus does, he has a nice set of tools available.  First, we need to build Gus's body.  Next, we breathe life by installing the OS and tools...
+To ensure that Gus is able to handle the demands of his tasks, he is equipped with a robust set of tools. The process of setting up Gus begins with constructing his hardware, followed by installing the operating system and necessary tools to bring him to life.
 
 Here are two I've made:
 ```{image} images/Gus_2.jpg
 :align: center
 :scale: 40
 ```
-The green one's bones (the one on the left) are made up of Raspberry 4 stuff.  The purple one is made up of Raspberry 3B+ stuff.  I found this chart noting the differences between the Raspberry Pi 3B+ and the Raspberry Pi 4
+The hardware for the green device (on the left) consists of components from the Raspberry Pi 4, while the purple device is built with components from the Raspberry Pi 3B+.
 ### Rasp Pi + Enclosure
 #### Gather The Materials
 First, you'll need to gather the materials.
@@ -74,7 +75,7 @@ Rasp Pi Lite OS
 
 Choose the cog
 :::
-- Enter gus for the hostname and enable SSH with password authentication.
+- Enter `gus` for the hostname and enable SSH with password authentication.
 - Fill in the other options - wifi, username/password, wifi, and local settings.
 
 :::{figure} images/rasppi_lite_install_3.jpg
@@ -191,11 +192,19 @@ after bumbling about on Google/StackOverflow, I ended up:
 $ sudo nano /etc/apt/sources.list.d/grafana.list
 ```
 and deleted the duplicate lines. Then `sudo apt-get update` worked.
-
 ## Playtime {material-regular}`celebration;1em;sd-text-success`
-```{note} You must build [SnifferBuddy](snifferbuddy) before playtime can begin.
+```{note} You must build [SnifferBuddy](snifferbuddy) and [Gus](gus) before playtime can begin.
 ```
-Run the example code {doc} found within the SnifferBuddy documentation.  {ref}`snifferbuddy_storereadings.py <snifferbuddy_storereadings>`
+
+```{eval-rst}
+.. automodule:: growbuddies.__main__
+   :members:
+
+.. autoclass:: Callbacks
+   :members:
+```
+
+
 ## Useful Raspberry Pi Stuff
 
 (raspi-nowifi)=

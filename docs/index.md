@@ -16,6 +16,13 @@ Current activities include:
 
 See SnifferBuddy
 ```
+- Storing and visualizing not only the SnifferBuddy readings but also the vpd value.
+```{button-ref} gus
+:outline:
+:color: success
+
+See Gus
+```
 - Automating humidity control using SnifferBuddy sensor data to calculate vapor pressure deficit (vpd) and activate a humidifier as needed.
 ```{button-ref} mistbuddy
 :outline:
