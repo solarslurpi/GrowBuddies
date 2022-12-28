@@ -195,6 +195,19 @@ and deleted the duplicate lines. Then `sudo apt-get update` worked.
 ## Playtime {material-regular}`celebration;1em;sd-text-success`
 ```{note} You must build [SnifferBuddy](snifferbuddy) and [Gus](gus) before playtime can begin.
 ```
+If you have a SnifferBuddy that is sending out MQTT messages and a Gus device that is running an MQTT broker and InfluxDB database,
+you can access the command line of the Gus device and type the following command:
+```bash
+store-readings
+```
+This will start running the `__main__.py` script.
+```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/main/growbuddiesproject/growbuddies/__main__.py
+:outline:
+:color: success
+
+ {octicon}`file-code;1em;sd-text-success` View Source
+```
+The following text describes the code found in the `__main.py__` file.
 
 ```{eval-rst}
 .. automodule:: growbuddies.__main__

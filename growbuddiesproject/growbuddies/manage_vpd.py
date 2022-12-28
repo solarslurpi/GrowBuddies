@@ -17,6 +17,7 @@ class CallbacksSnifferBuddy:
         self.readings_store = ReadingsStore()
 
     def on_snifferbuddy_readings(self, msg):
+        # Translate the mqtt message into a SnifferBuddy class.
         s = SnifferBuddyReadings(msg)
         self.logger.debug(f"the snifferbuddy values: {s.dict}")
         on_or_off_str = "ON" if self.mistbuddy.isLightOn(s.light_level) else "OFF"
@@ -26,7 +27,7 @@ class CallbacksSnifferBuddy:
             self.mistbuddy.adjust_humidity(s)
         # Store readings
         if self.table_name:
-            self.readings_store.store_readings(self.table_name, s.dict)
+            self.readings_store.store_readings(s.dict)
 
     # The vpd value is returned. Turn on and off the humidifier based on it's value.
 
@@ -47,7 +48,7 @@ def main():
     settings.load()
     obj = CallbacksSnifferBuddy()
     methods = settings.get_callbacks("snifferbuddy_mqtt_dict", obj)
-    mqtt_service = MQTTService(client_id="SnifferBuddy", callbacks_dict=methods)
+    mqtt_service = MQTTService(methods)
     mqtt_service.start()
     while True:
         try:

@@ -1,11 +1,6 @@
 import paho.mqtt.client as mqtt
 import time
 
-# Set the MQTT broker and topic
-broker = "gus"
-fan_topic = "test/topic"
-mist_topic = "...."
-
 
 # Define a function to send the MQTT message
 def send_message(client, topic, message):
@@ -16,7 +11,7 @@ def send_message(client, topic, message):
 client = mqtt.Client()
 while True:
     # Connect to the MQTT broker
-    client.connect(broker)
+    client.connect("gus")
     # Send the first MQTT message
     send_message(client, "cmnd/mistbuddy_fan/POWER", "ON")
     send_message(client, "cmnd/mistbuddy_mister/POWER", "ON")

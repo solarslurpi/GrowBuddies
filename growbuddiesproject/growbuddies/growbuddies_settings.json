@@ -3,7 +3,7 @@
     "log_level": "DEBUG",
     "db_name": "gus",
     "dripbuddy_table_name": "dripbuddy_calibration",
-    "snifferbuddy_table_name": "snifferbuddy_table_name",
+    "snifferbuddy_table_name": "snifferbuddy_readings",
     "snifferbuddy_mqtt_dict": {"tele/snifferbuddy/SENSOR": "on_snifferbuddy_readings",
                           "tele/snifferbuddy/LWT": "on_snifferbuddy_status"},
     "dripbuddy_mqtt_dict": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",

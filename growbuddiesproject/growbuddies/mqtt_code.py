@@ -3,8 +3,30 @@ import threading
 import random
 import string
 from growbuddies.settings_code import Settings
-from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
 from growbuddies.logginghandler import LoggingHandler
+#
+
+# MQTT Error values from https://github.dev/eclipse/paho.mqtt.python/tree/master/src/paho/mqtt/client.py
+rc_codes = {
+    "MQTT_ERR_AGAIN": -1,
+    "MQTT_ERR_SUCCESS": 0,
+    "MQTT_ERR_NOMEM": 1,
+    "MQTT_ERR_PROTOCOL": 2,
+    "MQTT_ERR_INVAL": 3,
+    "MQTT_ERR_NO_CONN": 4,
+    "MQTT_ERR_CONN_REFUSED": 5,
+    "MQTT_ERR_NOT_FOUND": 6,
+    "MQTT_ERR_CONN_LOST": 7,
+    "MQTT_ERR_TLS": 8,
+    "MQTT_ERR_PAYLOAD_SIZE": 9,
+    "MQTT_ERR_NOT_SUPPORTED": 10,
+    "MQTT_ERR_AUTH": 11,
+    "MQTT_ERR_ACL_DENIED": 12,
+    "MQTT_ERR_UNKNOWN": 13,
+    "MQTT_ERR_ERRNO": 14,
+    "MQTT_ERR_QUEUE_SIZE": 15,
+    "MQTT_ERR_KEEPALIVE": 16
+}
 
 
 def get_hostname():
@@ -21,12 +43,9 @@ class MQTTClient:
     incoming messages and performing cleanup when the client is stopped.
 
     Attributes:
-        client_id (str): The client ID is a string that uniquely identifies the client to the MQTT broker.
-        It is used by the broker to identify the client and manage its connection. If a client ID is not provided,
-        a unique random client ID will be generated to use instead.
+
         host (str): The hostname or IP address of the MQTT broker.
-        topics_and_callbacks (dict): A dictionary mapping MQTT topics to callback functions.
-        client (paho.mqtt.client.Client): The MQTT client object.
+        callbacks_dict (dict): A dictionary mapping MQTT topics to callback functions.
 
     Methods:
         on_connect(client, userdata, flags, rc): A callback function that is called when the client
@@ -39,13 +58,13 @@ class MQTTClient:
         stop(): Stops the client's message loop and disconnects from the MQTT broker.
     """
 
-    def __init__(self, client_id=None, callbacks_dict=None):
+    def __init__(self, callbacks_dict=None):
+
+        self.logger = LoggingHandler()
         # The client ID is a unique identifier that is used by the broker to identify this
         # client. If a client ID is not provided, a unique ID is generated and used instead.
-        self.logger = LoggingHandler()
-        if not client_id:
-            client_id = "".join(random.choice(string.ascii_lowercase) for i in range(10))
-        self.client_id = client_id
+
+        self.client_id = "".join(random.choice(string.ascii_lowercase) for i in range(10))
         self.host = get_hostname()
         self.callbacks_dict = callbacks_dict or {}
         try:
@@ -59,29 +78,25 @@ class MQTTClient:
         self.client.on_message = self.on_message
 
     def on_connect(self, client, userdata, flags, rc):
-        self.logger.debug(f"Connected to broker **{self.host}** with result code {str(rc)}")
+        self.logger.debug(f"Connected to broker **{self.host}**.  The ClientID is {self.client_id}.  The result code is {str(rc)}")
         # Subscribe to the topics passed in the topics_and_callbacks_dict.
         for k in self.callbacks_dict:
             self.client.subscribe(k)
 
     def on_disconnect(self, client, userdata, rc):
         if rc != 0:
-            print("Unexpected disconnection.")
+            self.logger.error(f"Received an unexpected disconnect.  The error is {rc_codes[rc]}")
 
     def on_message(self, client, userdata, msg):
         # print("Received message '" + str(msg.payload) + "' on topic '" + msg.topic + "' with QoS " + str(msg.qos))
         try:
             for k in self.callbacks_dict:
                 if k == msg.topic:
-                    try:
-                        s = SnifferBuddyReadings(msg.payload.decode("utf-8"))
-                        self.callbacks_dict[k](s)
-                    except Exception as e:
-                        self.logger.error(f"Could not translate the mqtt SnifferBuddy payload into a SnifferBuddyReadings() class.  Error: {e}")
-
-
+                    self.callbacks_dict[k](msg.payload.decode("utf-8"))
         except KeyError as e:
-            self.logger.error(f"KEY ERROR: {e}")
+            self.logger.error(
+                f"There was a KeyError when attempting to call one of the callback functions.  The error is {e}"
+            )
 
     def publish(self, topic, message):
         self.client.publish(topic, message)
@@ -118,10 +133,10 @@ class MQTTService:
 
     """
 
-    def __init__(self, client_id="mqttservice_clientid", callbacks_dict=None):
+    def __init__(self, callbacks_dict=None):
         # topics_and_callback_json has the callback functions as strings.  These need to be converted.
 
-        self.client = MQTTClient(client_id, callbacks_dict)
+        self.client = MQTTClient(callbacks_dict)
         self.thread = None
 
     def start(self):
