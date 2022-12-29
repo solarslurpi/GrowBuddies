@@ -103,11 +103,11 @@ class Callbacks:
            How SnifferBuddy's status is determined is discussed in :ref:`mqtt_LWT`.
 
 
-        If the `status_callback` parameter is set to a function, `Gus()` will call the function when an `LWT` packet comes in.
-        `Gus()` returns a string with either `online` or `offline`.
+        "This callback function handles MQTT Last Will and Testament (LWT) messages regarding the online status of SnifferBuddy,
+        which can be either "online" or "offline."
 
         Args:
-            status (str): `Gus()` sends either the string "Online" or "Offline".
+            status (str): Either the string "Online" or "Offline".
         """
         self.logger.debug(f"-> SnifferBuddy is: {status}")
 

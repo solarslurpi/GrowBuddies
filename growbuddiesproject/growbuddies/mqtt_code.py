@@ -4,6 +4,7 @@ import random
 import string
 from growbuddies.settings_code import Settings
 from growbuddies.logginghandler import LoggingHandler
+
 #
 
 # MQTT Error values from https://github.dev/eclipse/paho.mqtt.python/tree/master/src/paho/mqtt/client.py
@@ -25,7 +26,7 @@ rc_codes = {
     "MQTT_ERR_UNKNOWN": 13,
     "MQTT_ERR_ERRNO": 14,
     "MQTT_ERR_QUEUE_SIZE": 15,
-    "MQTT_ERR_KEEPALIVE": 16
+    "MQTT_ERR_KEEPALIVE": 16,
 }
 
 
@@ -78,7 +79,9 @@ class MQTTClient:
         self.client.on_message = self.on_message
 
     def on_connect(self, client, userdata, flags, rc):
-        self.logger.debug(f"Connected to broker **{self.host}**.  The ClientID is {self.client_id}.  The result code is {str(rc)}")
+        self.logger.debug(
+            f"Connected to broker **{self.host}**.  The ClientID is {self.client_id}.  The result code is {str(rc)}"
+        )
         # Subscribe to the topics passed in the topics_and_callbacks_dict.
         for k in self.callbacks_dict:
             self.client.subscribe(k)

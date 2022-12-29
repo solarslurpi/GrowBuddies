@@ -1,4 +1,4 @@
-# Welcome to the GrowBuddies Library!
+# Welcome to the GrowBuddies Library
 
 Hello, fellow indoor gardeners!
 

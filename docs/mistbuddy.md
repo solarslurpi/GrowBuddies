@@ -101,17 +101,27 @@ MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmot
 
 ## Software {material-regular}`terminal;1em;sd-text-success`
 
-```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/main/growbuddiesproject/growbuddies/mistbuddy.py
+```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/89b90ac35a9ccd8ba05135ceacd61f192cff04f2/growbuddiesproject/growbuddies/manage_vpd.py
 :outline:
 :color: success
 
- {octicon}`mark-github;1em;sd-text-success` View Code
+ {octicon}`mark-github;1em;sd-text-success` View manage_vpd.py source
 ```
 
 ```{eval-rst}
-.. automodule:: growbuddies.mistbuddy_code
+.. automodule:: growbuddies.manage_vpd
+   :members: main
+   :noindex:
+```
+
+```{eval-rst}
+.. autoclass:: Callbacks
    :members:
 ```
+
+==========================
+
+
 
 Keep doing these steps until told to stop:
 
