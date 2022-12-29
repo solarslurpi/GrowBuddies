@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.abspath('../growbuddiesproject'))
 project = 'GrowBuddies'
 copyright = '2022, HappyDay'
 author = 'HappyDay'
-release = '2022.12.0'
+release = '2022.12.1'
 
 # ignore files
 exclude_patterns = ["py_env/*", '**/_*']
