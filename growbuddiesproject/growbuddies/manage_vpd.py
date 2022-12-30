@@ -1,5 +1,41 @@
 """"The `manage_vpd.py` Python script utilizes MistBuddy to regulate the operation of the humidifier,
-turning it on and off as necessary to maintain the optimal vapor pressure deficit (VPD) level."""
+turning it on and off as necessary to maintain the optimal vapor pressure deficit (VPD) level.
+The `main()` function initiates the program by establishing callback functions and subscribing to SnifferBuddy
+readings through the MQTTService() class. When a reading is received, the `on_snifferbuddy_readings` callback activates
+the `MistBuddy()` class to turn on the humidifier if the vapor pressure deficit (VPD) value exceeds the ideal range
+determined by the VPD chart.
+
+       .. image:: ../docs/images/vpd_chart.jpg
+            :scale: 50
+            :alt: Flu's vpd chart
+            :align: center
+
+The growbuddy_settings.json file contains several parameters that are used as input for the program.
+
+    .. code-block:: json
+
+        "vpd_growth_stage": "veg",
+        "vpd_setpoints": {
+            "veg": 0.9,
+            "flower": 1.0
+        },
+
+The above settings dictate the behavior of MistBuddy for this specific run. The plants are currently in the vegetative growth stage.
+Based on the VPD chart, the ideal VPD value for this stage is 0.9. Therefore, MistBuddy will use 0.9 as the setpoint value in
+order to maintain optimal conditions for the plants during this stage of growth.
+
+The two SnifferBuddy callbacks are sent to the MQTTService():
+
+    .. code-block:: json
+
+        "snifferbuddy_mqtt_dict": {"tele/snifferbuddy/SENSOR": "on_snifferbuddy_readings",
+                          "tele/snifferbuddy/LWT": "on_snifferbuddy_status"},
+
+by passing in the "snifferbuddy_mqtt_dict" keyword, the MQTTService() knows which callback goes with which MQTT topic, making it easy to
+subscribe to the topic and then callback the callback functions when a message is received.
+
+"""
+
 from growbuddies.logginghandler import LoggingHandler
 from growbuddies.settings_code import Settings
 from growbuddies.mqtt_code import MQTTService
