@@ -1,3 +1,7 @@
+"""Test
+:py:meth:`growbuddies.mqtt_code.MQTTClient.on_connect`
+
+"""
 import paho.mqtt.client as mqtt
 import threading
 import random
@@ -44,8 +48,8 @@ class MQTTClient:
     incoming messages and performing cleanup when the client is stopped.
 
     Attributes:
-
         host (str): The hostname or IP address of the MQTT broker.
+
         callbacks_dict (dict): A dictionary mapping MQTT topics to callback functions.
 
     Methods:

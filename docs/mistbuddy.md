@@ -107,6 +107,10 @@ MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmot
 
  {octicon}`mark-github;1em;sd-text-success` View manage_vpd.py source
 ```
+```{eval-rst}
+.. autoclass:: growbuddies.mqtt_code.MQTTService
+   :members:
+```
 
 ```{eval-rst}
 .. automodule:: growbuddies.manage_vpd
