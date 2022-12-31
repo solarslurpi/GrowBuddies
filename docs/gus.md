@@ -216,6 +216,21 @@ The following text describes the code found in the `__main.py__` file.
 .. autoclass:: Callbacks
    :members:
 ```
+## Additional Python Modules
+
+### mqtt_code
+The MQTT Paho package can be used on its own, but the classes in the mqtt_code.py module provide a more streamlined way to work with GrowBuddies.
+The mqtt_code.py module includes two classes, MQTTService and MQTTClient.
+
+```{eval-rst}
+.. autoclass:: growbuddies.mqtt_code.MQTTService
+   :members:
+
+.. autoclass:: growbuddies.mqtt_code.MQTTClient
+   :members:
+```
+
+
 
 
 ## Useful Raspberry Pi Stuff

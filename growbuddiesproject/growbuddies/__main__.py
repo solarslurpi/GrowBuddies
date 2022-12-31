@@ -7,7 +7,7 @@ route those messages, it is time to store the data for post visualization.
 
 This Python script stores SnifferBuddyReadings - including the vpd value - into an influxdb measurement table.
 
-The script can be run from the command line (within you virtual environment) by typing `store-readings`.
+The script can be run from the command line (within your virtual environment) by typing `store-readings`.
 
 
 This script performs the following tasks:

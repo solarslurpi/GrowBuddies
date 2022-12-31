@@ -41,11 +41,16 @@ def get_hostname():
 
 
 class MQTTClient:
-    """A class that represents an MQTT client.
+    """A more optimized way to publish and subscribe to the Gus MQTT broker.
 
-    This class uses the `paho-mqtt` library to connect to an MQTT broker and
-    subscribe to specified topics. It also provides methods for handling
-    incoming messages and performing cleanup when the client is stopped.
+    If the calling code logic is subscribing to MQTT topics, then access to the
+    MQTTClient() must go through MQTTService().
+
+    If the calling code logic is strictly publishing MQTT messages, then access
+    to publishing mqtt messages can all be done through MQTTClient().
+
+    It also provides methods for handling incoming messages and performing cleanup
+    when the client is stopped.
 
     Attributes:
         host (str): The hostname or IP address of the MQTT broker.
@@ -59,8 +64,10 @@ class MQTTClient:
             disconnects from the MQTT broker.
         on_message(client, userdata, msg): A callback function that is called when the client
             receives a message from the MQTT broker.
-        start(): Connects to the MQTT broker and starts the client's message loop.
-        stop(): Stops the client's message loop and disconnects from the MQTT broker.
+        start(): Connects to the MQTT broker and starts the client's message loop.  Used with
+        MQTTService().
+        stop(): Stops the client's message loop and disconnects from the MQTT broker. Used with
+        MQTTService().
     """
 
     def __init__(self, callbacks_dict=None):
@@ -121,22 +128,25 @@ class MQTTClient:
 
 
 class MQTTService:
-    """This class wraps an `MQTTClient` object and runs it in a separate thread. It provides methods for starting
-    and stopping the service. This wrapper is necessary because a systemd service requires a blocking call, such as
-    loop_forever(), to run indefinitely in the background. Since the loop_forever() method blocks the thread it is
-    called in, running the MQTTClient in a separate thread allows the service to run in the background without blocking
-    the main thread.
+    """When the code logic subscribes to an MQTT topic, it enters a waiting state and continues to run until it receives an on_message
+    for the subscribed topic. GrowBuddies code that runs as a systemd service will need to get to the MQTT client through MQTTService().
+    This is because a systemd service needs a blocking call, such as loop_forever(), to run indefinitely in the background.
+    However, the loop_forever() method blocks the thread it is called in. By running the MQTTClient in a separate thread, the
+    service can run in the background without blocking the main thread.
+
 
     Attributes:
         client (MQTTClient): The MQTT client object.
+
         thread (threading.Thread): The thread that the MQTT client runs in.
 
     Methods:
         start(): Starts the MQTT client in a separate thread.
-        stop(): Stops the MQTT client and waits for the thread to join.
 
-    ```{note} The default mqtt broker is Gus
-    ```
+        stop(): Stops the MQTT client and waits for the thread to terminate.
+
+    .. note::
+       The default mqtt broker is Gus
 
     """
 
