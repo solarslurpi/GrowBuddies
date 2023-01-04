@@ -99,7 +99,7 @@ class PID(object):
         self._last_output = None
         self._last_input = None
 
-        self.ideal_setting = False
+        self.auto_tune = True  # Used in the pid routine to raise up the K values as needed.
 
         self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
@@ -132,16 +132,18 @@ class PID(object):
         )
         # It is getting too humid.  Since we only have a humidifier to adjust, we return.
         if error > self.tolerance:
-            self.ideal_setting = True
             return 0, 0
         # Do a bit of autotuning until it grows to big.  Cap it when the air gets too moist.
-        if error < self.tolerance and not self.ideal_setting:
-            self.Kp += 1
-            # self.Ki += 0.05
-            # self.Kd += 0.01
-            self.logger.debug(f"***>updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
-        else:
-            self.logger.debug(f"***>NOT updating coefficients ")
+        # used for the Ziegler-Nichols method of tuning.
+        # if error < self.tolerance and self.auto_tune:
+        #      self.Kp += 1
+
+        self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
+        #     # self.Ki += 0.05
+        #     # self.Kd += 0.01
+        #     self.logger.debug(f"***>updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
+        # else:
+        #     self.logger.debug(f"***>NOT updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
 
         # Compute number of seconds to turn on mistBuddy, which is 0 or a positive number of seconds.
 
@@ -160,10 +162,6 @@ class PID(object):
         # Compute integral and derivative terms
         # Since we are not using PID during the night, we reset the error terms and start over.
         self._proportional = self.Kp * error
-        # Accomodate maintaining steady state...
-        if error == 0:
-            self._proportional = self.Kp * -0.1
-
         self._integral += self.Ki * error * dt
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
@@ -174,7 +172,15 @@ class PID(object):
         self._derivative = -self.Kd * d_input / dt
 
     def __repr__(self):
-        return ("{self.__class__.__name__}(" ")").format(self=self)
+        return (f"PID settings:\n"
+                f"  Kp = {self.Kp}\n"
+                f"  Ki = {self.Ki}\n"
+                f"  Kd = {self.Kd}\n"
+                f"  setpoint = {self.setpoint}\n"
+                f"  output limits = ({self.output_limits_min}, {self.output_limits_max})\n"
+                f"  integral limits = ({self.integral_limits_min}, {self.integral_limits_max})\n"
+                f"  tolerance = {self.tolerance}")
+
 
     @property
     def components(self):

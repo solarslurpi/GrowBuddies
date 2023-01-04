@@ -2,7 +2,7 @@
 # found in /lib/systemd/system/calibrate_dripbuddy.service
 
 [Unit]
-Description=Takes in incoming tensiometer readings and puts into table with capacitative readings
+Description=Quick and Easy way to add humidity to the grow tent.
 After=mosquitto.service
 
 [Service]

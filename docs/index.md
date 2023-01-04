@@ -43,6 +43,7 @@ Stay tuned for more updates. In the meantime, happy gardening!
    gus
    snifferbuddy
    mistbuddy
+   snapBuddy
    tasmota
    systemd
 ```
