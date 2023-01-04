@@ -1,7 +1,7 @@
 
-# CamBuddy
+# SnapBuddy
 
-CamBuddy takes time-lapse images of your plants.
+SnapBuddy takes time-lapse images of your plants.
 
 - inexpensive, uses ESP32 AI Thinker Cam.
 - lots of coding examples, people using it for this.
