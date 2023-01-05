@@ -9,7 +9,7 @@ Hello, fellow indoor gardeners!
 The GrowBuddies project is designed to help geeky gardeners like us maximize the health and enjoyment of our indoor gardens.
 
 Current activities include:
-- Monitoring and visualizing atmospheric conditions including CO2 concentration, temperature, and humidity.
+- Monitoring atmospheric conditions including CO2 concentration, temperature, and humidity.
 ```{button-ref} snifferbuddy
 :outline:
 :color: success
