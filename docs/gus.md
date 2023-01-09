@@ -168,12 +168,8 @@ The mqtt info lets us know the mqtt keep alive time is 30 seconds.
 [InfluxDB (v1.8)](https://www.influxdata.com/) is a time series-based database that is free to use on the Raspberry Pi.  There can be multiple databases.
 
 ```{admonition} Gus as the database name
-I stick with the database name of Gus.  If you look in growbuddies_settings.json, you will see influxdb setting for the database.
+I stick with the database name of Gus.  If you look in growbuddies_settings.json, you will see influxdb settings for the database.
 ```
-TODO: command line utility
-$influx
-show databases
-
 sudo apt install influxdb-client
 Follow [PiMyLifeUp's directions](https://pimylifeup.com/raspberry-pi-influxdb/) to install.
 
@@ -192,6 +188,12 @@ after bumbling about on Google/StackOverflow, I ended up:
 $ sudo nano /etc/apt/sources.list.d/grafana.list
 ```
 and deleted the duplicate lines. Then `sudo apt-get update` worked.
+#### Install FTP
+If SnapBuddy is invited to playtime, an FTP server must be installed.  The FTP server that is installed on a Rasperry Pi is [the `vsftpd` server](https://security.appspot.com/vsftpd.html#about).
+
+ the SFTP server (enabled by default in Raspbian).
+
+
 ## Playtime {material-regular}`celebration;1em;sd-text-success`
 ```{note} You must build [SnifferBuddy](snifferbuddy) and [Gus](gus) before playtime can begin.
 ```

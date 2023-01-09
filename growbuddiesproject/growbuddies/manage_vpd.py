@@ -55,10 +55,6 @@ from growbuddies.influxdb_code import ReadingsStore
 import sys
 
 
-
-
-
-
 class Callbacks:
     """The Callbacks class contains two callback functions that are passed to `MQTTServer`. These functions are activated when MQTTService receives
     an `on_message` event for the corresponding topics associated with the callbacks.

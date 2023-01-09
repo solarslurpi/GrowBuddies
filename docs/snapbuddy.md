@@ -1,24 +1,46 @@
 
 # SnapBuddy
+SnapBuddy is an affordable way to capture time-lapse images of your plants using the ESP32 AI Thinker Cam.
 
-SnapBuddy takes time-lapse images of your plants.
+By default, the image resolution is 640 x 480.  See [changing the image resolution](changing_resolution)
 
-- inexpensive, uses ESP32 AI Thinker Cam.
-- lots of coding examples, people using it for this.
-- easy.  images are saved and processed on gus into a video stream that can be uploaded to YouTube.
-- images are archived and prepped for preprocessing into a deep learning model.
-- simple.  Does one thing. Timelapse.
-- can set the start time, end time, time between snapshots, filename, where to save the video (default Gus, could be YouTube?)
 
-## Code
-- ESP32 - FTDI to plug into PC?... i have this old one lying around...take pic, put link when get to making materials list.
-- get Arduino code running.
-    - see [random nerd's Installing the ESP32 Board in Arduino IDE tutorial](https://randomnerdtutorials.com/installing-the-esp32-board-in-arduino-ide-windows-instructions/).
-this gets us to the esp32
+```{warning}  Under Construction
+```
+
+## Let's Make One {material-regular}`build;1em;sd-text-success`
+```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
+:outline:
+:color: success
+
+ {octicon}`comment;1em;sd-text-success` Comments & Questions
+```
+### Gather The Materials
+- FTDI/RS232 <-> USB adapter board
+- AI Thinker ESP32-CAM
+- micro USB BoB (TODO: Get more info...)
+### Install Tasmota
+Refer to the installation instructions indicated by both the {octicon}`north-star;1em;sd-text-success` North Star and {octicon}`device-camera;1em;sd-text-success` camera icons in the [Tasmota documentation](tasmota).
+
+
+### Make the Enclosure
+...
+### Put Together
+
+
+
+
+
+
+
+
+
+
+### Software
+The Tasmota ESP32-CAM build is used
 
 ### USB -> FTDI -> ESP32
-Unfortunately, the AI Thinker ESP32 does not have a USB connector.  We need to convert the RS232 Serial speak into the USB speak our computer understand. To do this, we need
-an FTDI USB to Serial adapter board like [this one](https://amzn.to/3CfLb5A).
+The AI Thinker ESP32 does not have native USB support. We need to use an FTDI USB to Serial adapter board like the one linked [here](https://amzn.to/3CfLb5A) to translate the RS232 serial communication into a format that our computer can understand.
 #### Set Up Windows Drivers
  Assuming you are on a Windows 10 PC (I say this because it is what I am running),  follow the steps outlined in
 [Darren Robinson's article, ESP32 Com Port – CP2102 USB to UART Bridge Controller](https://blog.darrenjrobinson.com/esp32-com-port-cp2102-usb-to-uart-bridge-controller/).
@@ -30,14 +52,30 @@ Here's the FTDI adapter board I used.  There are many different boards available
 
 FTDI Adapter Board
 :::
-The Arduino IDE should now be able to recognize a COM port.
-The following wires need to be connected:
-:::{figure} images/esp32camtoftdi.jpg
+and
+:::{figure} images/FTDI_board_pins.jpg
 :align: center
 :scale: 50
 
-From [How to Upload Coad to ESP32-CAM](https://embedgyan.wordpress.com/2020/06/10/how-to-program-upload-code-to-esp32-cam-ai-thinker-arduino-ide/)
+FTDI Adapter Board
 :::
+
+Here's how the wiring looks from the ESP32:
+:::{figure} images/AIThinker-pinout.jpg
+:align: center
+:scale: 100
+
+AI Thinker Cam Pinout
+:::
+##### FTDI Wiring to AI Thinker Wiring
+
+| wire color    | FTDI pin    | ESP32-CAM pin |
+| :--- | ---: | ---: |
+| yellow    | RXD   | U0T |
+| orange or green   | TXD   | U0R |
+| red    | 5V   | 5V |
+| black    | GND   | GND |
+
 To upload the code to the ESP32 Cam, you will need to connect the GPIO0 pin to GND. This will put the device into flashing mode, allowing you to write the code to the ESP32 Cam.
 #### Uploading Code
 Time to upload some `.ino` file.  The thing to keep in mind is getting the ESP32Cam in and out of the ability to upload code versus running code.  To upload code:

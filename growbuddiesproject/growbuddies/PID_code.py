@@ -172,15 +172,16 @@ class PID(object):
         self._derivative = -self.Kd * d_input / dt
 
     def __repr__(self):
-        return (f"PID settings:\n"
-                f"  Kp = {self.Kp}\n"
-                f"  Ki = {self.Ki}\n"
-                f"  Kd = {self.Kd}\n"
-                f"  setpoint = {self.setpoint}\n"
-                f"  output limits = ({self.output_limits_min}, {self.output_limits_max})\n"
-                f"  integral limits = ({self.integral_limits_min}, {self.integral_limits_max})\n"
-                f"  tolerance = {self.tolerance}")
-
+        return (
+            f"PID settings:\n"
+            f"  Kp = {self.Kp}\n"
+            f"  Ki = {self.Ki}\n"
+            f"  Kd = {self.Kd}\n"
+            f"  setpoint = {self.setpoint}\n"
+            f"  output limits = ({self.output_limits_min}, {self.output_limits_max})\n"
+            f"  integral limits = ({self.integral_limits_min}, {self.integral_limits_max})\n"
+            f"  tolerance = {self.tolerance}"
+        )
 
     @property
     def components(self):

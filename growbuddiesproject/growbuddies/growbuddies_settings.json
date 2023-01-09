@@ -11,11 +11,13 @@
     "calibrate_mqtt_dict": {"calibrate": "on_calibrate_readings"},
     "mistbuddy_mqtt_dict": {"cmnd/mistbuddy_fan/POWER": null,
                             "cmnd/mistbuddy_mister/POWER": null},
+    "snapbuddy_mqtt_dict": {"timelapse": "on_timelapse"},
     "vpd_growth_stage": "veg",
     "vpd_setpoints": {
         "veg": 0.9,
         "flower": 1.0
     },
+    "snapbuddy_settings_1": {"hostname": "snapbuddy1", "interval_secs": 3600, "timelapse_dir": "/home/pi/GrowBuddies/growbuddiesproject/growbuddies/timelapse"},
 
     "PID_settings": {
         "Kp": 240,

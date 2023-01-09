@@ -1,28 +1,37 @@
 
 # Tasmota
-
+[Tasmota](https://tasmota.github.io/docs/) has enabled us to build low-cost sensor and camera devices that primarily use MQTT to transmit sensor readings. In the case of SnapBuddy, we have utilized the ESP32Cam build of Tasmota which provides the additional capability of accessing images or streams using HTTP commands.  To date, GrowBuddies have implemented two ESP hardware configurations: the Wemos D1 ESP286 for sensor functionality and the ESP32-AI Thinker Cam for capturing time-lapse and streaming video.
 
 (before_installation)=
-## Before You Begin the Installation
-```{note} Before starting the installation, verify that the sensor you plan to use is included in the binary. It is especially important to do this on an ESP286, as there is limited storage space on this chip.
+## {octicon}`sun;1em;sd-text-success`Before You Begin the Installation of a Sensor
+```{warning} Before installing a sensor, make sure that the sensor you want to use is included in the Tasmota binary. This is especially important for ESP286 devices, as they have limited storage space. Verify that your sensor is included before starting the installation process.
 ```
-Two ways to check if the sensor is in the Tasmota Build:
-### Check the Documentation
-If you have not installed Tasmota, you can check if a sensor is supported by visiting the [BUILDS documentation](https://tasmota.github.io/docs/BUILDS/) and referring to the table. In the "t" column, you can find information about which sensors are included in the builds for the ESP286 and ESP32 chips. If an "x" is present in the cell, it means that the sensor code is included in the build. For example, if you search for the SCD40 sensor, you will see that the "t" entry has "-/x", indicating that the SCD40 sensor code is not included in the ESP286 build but is included in the ESP32 build. If you want to add support for a sensor that is not currently supported, you can follow the instructions in the [Compiling using GitPod](github_compile).
+Two ways to check if the sensor is in the Tasmota Build (I'd check both):
+### {octicon}`sun;1em;sd-text-success`Check the Documentation
+To check if a sensor is supported by Tasmota, visit [the BUILDS documentation](https://tasmota.github.io/docs/BUILDS/) and refer to the table. In the "t" column, you can find information about which sensors are included in the builds for the ESP286 and ESP32 chips. An "x" in the cell indicates that the sensor code is included in the build. For example, searching for the SCD40 sensor will show that the "t" entry has "-/x", meaning that the SCD40 sensor code is not included in the ESP286 build but is included in the ESP32 build. If you want to add support for a sensor that is not currently supported, you can follow the instructions in [the Compiling using GitPod](https://tasmota.github.io/docs/Compiling_using_GitPod/) guide.
 
-### Check from the Console
+### {octicon}`sun;1em;sd-text-success`Check from the Console
 If you have installed Tasmota, you can verify if you have wired the I2C sensor correctly with the [i2cscan](i2cscan) Tasmota console command.  To check if the driver for the sensor is loaded in the Tasmota build, execute [i2cdriver](i2cdriver) from the Tasmota console.
 
 (tasmota_installation)=
-## Install Tasmota
+## {octicon}`north-star;1em;sd-text-success`Web Install Tasmota
+To install Tasmota, use either the Edge or Chrome web browser (the web install method does not work with Brave). Navigate to [the Tasmota Install URL](https://tasmota.github.io/install/). The first thing the Tasmota install will want to do is connect to the ESP.
+### {octicon}`sun;1em;sd-text-success`Wemos D1 USB Connectivity
+If you are having trouble identifying the USB/COM port, try checking the cable first to ensure that it supports data input/output. If that does not resolve the issue, check the USB driver as the ESP286 or ESP32 may be using a driver that is not installed on your computer. Note: This issue is more common on Windows PCs and Macs.
 
-The easiest way requires you have the same ESP286 [the Wemos D1](https://www.aliexpress.us/item/2251832645039000.html) and **if you are building SnifferBuddy**, the [SCD30 sensor from Adafruit](https://www.adafruit.com/product/4867).  I have backed up my configuration which you restore onto your WemosD1 when you are installing Tasmota.
+### {octicon}`device-camera;1em;sd-text-success`SnapBuddy
+AMAZING -> https://cgomesu.com/blog/Esp32cam-tasmota-webcam-server/#installation
+{"NAME":"AITHINKER CAM","GPIO":[4992,1,672,1,416,5088,1,1,1,6720,736,704,1,1,5089,5090,0,5091,5184,5152,0,5120,5024,5056,0,0,0,0,4928,576,5094,5095,5092,0,0,5093],"FLAG":0,"BASE":2}
 
-_Note: There is also a config file for a **[Tasmotized Sonoff plug](flash_tasmota)**_.
-### Web Install
-Install Tasmota using either the Edge or Chrome browser (web install doesn't work using the Brave browser).  Go to [Tasmota Install URL](https://tasmota.github.io/install/).
-_Note:  If the USB/COM port can't be identified, the first thing to do is to check the cable.  The USB cable might not support data i/o.  If that doesn't work, check the USB driver.  The ESP286 or ESP32 may be using a driver that isn't installed on your Windows PC or Mac._
+```
+esptool.py --port COM5 erase_flash
 
+esptool.exe --port COM5 write_flash -fs 1MB -fm dout 0x0 tasmota32-webcam.bin
+
+```
+https://github.com/Jason2866/ESP_Flasher/releases  - ESP Flasher - use this, put in the pics....
+
+### Semsors
 Install the Tasnmota Sensors binary for the ESP286 if the sensor is included by default in the Sensors build (see [before installation](before_installation)).
 :::{figure} images/install_tasmota.jpg
 :align: center
