@@ -17,7 +17,7 @@
         "veg": 0.9,
         "flower": 1.0
     },
-    "snapbuddy_settings_1": {"hostname": "snapbuddy1", "interval_secs": 3600, "timelapse_dir": "/home/pi/GrowBuddies/growbuddiesproject/growbuddies/timelapse"},
+    "snapbuddy_settings_1": {"hostname": "snapbuddy1", "interval_secs": 3600, "timelapse_dir": "/home/pi/GrowBuddies/growbuddiesproject/growbuddies/timelapse/snapbuddy1"},
 
     "PID_settings": {
         "Kp": 240,

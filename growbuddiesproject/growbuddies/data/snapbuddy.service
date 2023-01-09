@@ -1,0 +1,13 @@
+
+
+
+[Unit]
+Description=SnapBuddy takes timelapse photos.
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/snapbuddy_code.py
+Restart=always
+[Install]
+WantedBy=multi-user.target
