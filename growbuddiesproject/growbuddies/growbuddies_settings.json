@@ -12,7 +12,7 @@
     "mistbuddy_mqtt_dict": {"cmnd/mistbuddy_fan/POWER": null,
                             "cmnd/mistbuddy_mister/POWER": null},
     "snapbuddy_mqtt_dict": {"timelapse": "on_timelapse"},
-    "vpd_growth_stage": "veg",
+    "vpd_growth_stage": "flower",
     "vpd_setpoints": {
         "veg": 0.9,
         "flower": 1.0

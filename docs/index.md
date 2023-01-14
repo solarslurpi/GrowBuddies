@@ -8,28 +8,51 @@ Hello, fellow indoor gardeners!
 
 The GrowBuddies project is designed to help geeky gardeners like us maximize the health and enjoyment of our indoor gardens.
 
-Current activities include:
-- Monitoring atmospheric conditions including CO2 concentration, temperature, and humidity.
-```{button-ref} snifferbuddy
-:outline:
-:color: success
+::::{grid} 4
+:gutter: 2
 
-See SnifferBuddy
-```
-- Storing and visualizing not only the SnifferBuddy readings but also the vpd value.
-```{button-ref} gus
-:outline:
-:color: success
+:::{grid-item-card} SnifferBuddy
+:link: snifferbuddy
+:link-type: doc
 
-See Gus
+```{image} images/dog.jpg
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
 ```
-- Automating humidity control using SnifferBuddy sensor data to calculate vapor pressure deficit (vpd) and activate a humidifier as needed.
-```{button-ref} mistbuddy
-:outline:
-:color: success
+Sniffs out temperature, humidity, and CO2.
+:::
 
-See MistBuddy
+:::{grid-item-card} MistBuddy
+:link: mistbuddy
+:link-type: doc
+```{image} images/whale.svg
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
 ```
+Maintains the vpd Level.
+:::
+:::{grid-item-card} SnapBuddy
+:link: snapbuddy
+:link-type: doc
+```{image} images/snapbuddy_og_v.svg
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
+```
+Snaps a Time Lapse Image.
+:::
+
+:::{grid-item-card} Gus
+:link: gus
+:link-type: doc
+```{image} images/hamster.jpg
+:width: 200px
+:class: sd-m-auto sd-animate-grow50-rot20
+```
+Rasp Pi Running Backend Services.
+:::
+::::
+
+
 Not only do GrowBuddies make gardening easier and more fun, but they also help ensure that your plants are healthy and happy.
 
 Stay tuned for more updates. In the meantime, happy gardening!
@@ -46,4 +69,5 @@ Stay tuned for more updates. In the meantime, happy gardening!
    snapbuddy
    tasmota
    systemd
+   drgrowbuddy
 ```

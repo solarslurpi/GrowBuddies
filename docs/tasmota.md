@@ -1,6 +1,17 @@
 
 # Tasmota
-[Tasmota](https://tasmota.github.io/docs/) has enabled us to build low-cost sensor and camera devices that primarily use MQTT to transmit sensor readings. In the case of SnapBuddy, we have utilized the ESP32Cam build of Tasmota which provides the additional capability of accessing images or streams using HTTP commands.  To date, GrowBuddies have implemented two ESP hardware configurations: the Wemos D1 ESP286 for sensor functionality and the ESP32-AI Thinker Cam for capturing time-lapse and streaming video.
+| Installing    | Follow Steps with these icons  |
+| :--- | ---: |
+| SnifferBuddy | {octicon}`sun;1em;sd-text-success`, {octicon}`north-star;1em;sd-text-success`|
+| Smart Plugs for MistBuddy | {octicon}`plug;1em;sd-text-success`, {octicon}`north-star;1em;sd-text-success`|
+| SnapBuddy | {octicon}`device-camera;1em;sd-text-success`, {octicon}`north-star;1em;sd-text-success`|
+
+
+[Tasmota](https://tasmota.github.io/docs/) has enabled us to build low-cost sensor and camera devices that primarily use MQTT to transmit sensor readings.  To date, GrowBuddies have implemented two ESP hardware configurations: the Wemos D1 ESP286 for sensor functionality and the ESP32-AI Thinker Cam for capturing time-lapse and streaming video.
+## Resources
+[Wi-Fi module pinouts](https://tasmota.github.io/docs/Pinouts/#psf-b85psf-b01psf-b04)
+[AI Thinker Tasmota Configuration documentation](https://cgomesu.com/blog/Esp32cam-tasmota-webcam-server/#installation)
+[Tasmota ESP32-CAM Source Code](https://github.com/arendst/Tasmota/blob/development/tasmota/tasmota_xdrv_driver/xdrv_81_esp32_webcam.ino)
 
 (before_installation)=
 ## {octicon}`sun;1em;sd-text-success`Before You Begin the Installation of a Sensor
@@ -14,12 +25,69 @@ To check if a sensor is supported by Tasmota, visit [the BUILDS documentation](h
 If you have installed Tasmota, you can verify if you have wired the I2C sensor correctly with the [i2cscan](i2cscan) Tasmota console command.  To check if the driver for the sensor is loaded in the Tasmota build, execute [i2cdriver](i2cdriver) from the Tasmota console.
 
 (tasmota_installation)=
-## {octicon}`north-star;1em;sd-text-success`Web Install Tasmota
-To install Tasmota, use either the Edge or Chrome web browser (the web install method does not work with Brave). Navigate to [the Tasmota Install URL](https://tasmota.github.io/install/). The first thing the Tasmota install will want to do is connect to the ESP.
+## {octicon}`sun;1em;sd-text-success`Web Install Tasmota
+_Note: Web install does not work with the AI Thinker ESP32-CAM_.  To web install Tasmota, use either the Edge or Chrome web browser (the web install method does not work with Brave). Navigate to [the Tasmota Install URL](https://tasmota.github.io/install/). The first thing the Tasmota install will want to do is connect to the ESP.
 ### {octicon}`sun;1em;sd-text-success`Wemos D1 USB Connectivity
-If you are having trouble identifying the USB/COM port, try checking the cable first to ensure that it supports data input/output. If that does not resolve the issue, check the USB driver as the ESP286 or ESP32 may be using a driver that is not installed on your computer. Note: This issue is more common on Windows PCs and Macs.
+Connecting microcontrollers to PCs is often not as simple as "plug-and-play." If your PC is having trouble identifying the USB/COM port, try the following steps:
+- Verify that the cable supports data input and output. Many USB cables are intended for power delivery only and may not support data transfer.
+- Check if the CH340/CH341 driver is installed and functioning properly. The driver is essential for the PC to communicate with the microcontroller through the USB-to-serial adapter.
 
-### {octicon}`device-camera;1em;sd-text-success`SnapBuddy
+### {octicon}`device-camera;1em;sd-text-success`SnapBuddy USB Connectivy
+The AI Thinker ESP32 does not have native USB support. We need to use an FTDI USB to Serial adapter board like the one linked [here](https://amzn.to/3CfLb5A) to translate the RS232 serial communication into a format that our computer can understand.
+
+#### {octicon}`device-camera;1em;sd-text-success`Set Up Windows Drivers
+ Assuming you are on a Windows 10 PC (I say this because it is what I am running),  follow the steps outlined in
+[Darren Robinson's article, ESP32 Com Port – CP2102 USB to UART Bridge Controller](https://blog.darrenjrobinson.com/esp32-com-port-cp2102-usb-to-uart-bridge-controller/).
+#### {octicon}`device-camera;1em;sd-text-success`Connect the FTDI <-> ESP32-CAM
+Here's the FTDI adapter board I used.  There are many different boards available.  The setup should be the same.
+:::{figure} images/ftdiSerialToUSB.jpeg
+:align: center
+:scale: 50
+
+FTDI Adapter Board
+:::
+and
+:::{figure} images/FTDI_board_pins.jpg
+:align: center
+:scale: 50
+
+FTDI Adapter Board
+:::
+
+Here's how the wiring looks from the ESP32:
+:::{figure} images/AIThinker-pinout.jpg
+:align: center
+:scale: 100
+
+AI Thinker Cam Pinout
+:::
+#### {octicon}`device-camera;1em;sd-text-success`FTDI Wiring to AI Thinker Wiring
+
+| wire color    | FTDI pin    | ESP32-CAM pin |
+| :--- | ---: | ---: |
+| yellow    | RXD   | U0T |
+| orange or green   | TXD   | U0R |
+| red    | 5V   | 5V |
+| black    | GND   | GND |
+
+The ESP32-CAM can be configured in two ways:
+
+- **Flash mode**: To upload code, connect a wire between the GPIO0 and GND pins. The chip must be grounded through the GPIO0 pin to indicate that code is being uploaded.
+- **Execution mode**: In this state, the GPIO0 pin is not connected to GND (i.e.: the wire can be removed).
+
+For the next step, put the ESP32-CAM into **Flash mode**.
+### {octicon}`device-camera;1em;sd-text-success` Flashing Tasmota onto the ESP32-CAM
+A web install of Tasmota onto the AI Thinker ESP32-CAM kept failing.
+
+I was far more successful installing Tasmota on the AI Thinker using [Jason2866's ESP flasher](https://github.com/Jason2866/ESP_Flasher/releases).
+- Download the version for your computer (e.g.: I download ESP-Flasher-x86.exe), install locally.
+- Connect the FTDI cable as well as the wire to put the ESP32 into the bootloader state.
+- Follow the instructions on the UI.
+
+
+
+
+AI Thinker's ESP32-CAM uses an ESP32-S chip.  There is no support for USB.  To connect the ESP32-CAM to a USB Port
 AMAZING -> https://cgomesu.com/blog/Esp32cam-tasmota-webcam-server/#installation
 {"NAME":"AITHINKER CAM","GPIO":[4992,1,672,1,416,5088,1,1,1,6720,736,704,1,1,5089,5090,0,5091,5184,5152,0,5120,5024,5056,0,0,0,0,4928,576,5094,5095,5092,0,0,5093],"FLAG":0,"BASE":2}
 
@@ -30,6 +98,8 @@ esptool.exe --port COM5 write_flash -fs 1MB -fm dout 0x0 tasmota32-webcam.bin
 
 ```
 https://github.com/Jason2866/ESP_Flasher/releases  - ESP Flasher - use this, put in the pics....
+
+commands from https://cgomesu.com/blog/Esp32cam-tasmota-webcam-server/#installation
 
 ### Semsors
 Install the Tasnmota Sensors binary for the ESP286 if the sensor is included by default in the Sensors build (see [before installation](before_installation)).

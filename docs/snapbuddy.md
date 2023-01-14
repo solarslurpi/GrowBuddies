@@ -1,8 +1,13 @@
-
 # SnapBuddy
-SnapBuddy is an affordable way to capture time-lapse images of your plants using the ESP32 AI Thinker Cam.
+:::{div}
+<img src="images/snapbuddy_og_v.svg" class="sd-avatar-md sd-border-3">
+:::
 
-By default, the image resolution is 640 x 480.  See [changing the image resolution](changing_resolution)
+## About {material-regular}`question_mark;1em;sd-text-success`
+
+SnapBuddy is an affordable way to capture time-lapse images of your plants using the popular [ESP32 AI Thinker Cam](https://microcontrollerslab.com/esp32-cam-ai-thinker-pinout-gpio-pins-features-how-to-program/).  The OV2640 camera comes with the AI Thinker Cam.  The OV2640 is a 2-megapixel camera that supports various output formats, including JPEG and YUV. It has low power consumption and supports image sizes from QQVGA to UXGA.
+
+Wonderfully, Tasmota has a build for the ESP32-Cam, which is what SnapBuddy uses.
 
 
 ```{warning}  Under Construction
@@ -20,7 +25,13 @@ By default, the image resolution is 640 x 480.  See [changing the image resoluti
 - AI Thinker ESP32-CAM
 - micro USB BoB (TODO: Get more info...)
 ### Install Tasmota
-Refer to the installation instructions indicated by both the {octicon}`north-star;1em;sd-text-success` North Star and {octicon}`device-camera;1em;sd-text-success` camera icons in the [Tasmota documentation](tasmota).
+SnapBuddy, like SnifferBuddy and MistBuddy's smart plugs, utilizes Tasmota to enable time-lapse functionality. However, instead of attaching a sensor to a Wemos D1 ESP286 and installing a sensor build, SnapBuddy utilizes the ESP32-CAM's built-in Tasmota build. The steps to install Tasmota on the AI Thinker ESP-32 are detailed in the Tasmota section, including instructions for both general installations (indicated by the North Star icon {octicon}`north-star;1em;sd-text-success` ) and those specific to the ESP32-CAM (indicated by the camera icon {octicon}`device-camera;1em;sd-text-success`).
+#### Summary
+- Follow Tasmota Install Steps for both {octicon}`north-star;1em;sd-text-success`.
+- Follow Tasmota Install Steps for ESP32-CAM {octicon}`device-camera;1em;sd-text-success`.
+- Follow Tasmota Install Steps for Sensors {octicon}`sun;1em;sd-text-success`.
+
+[**Go To Tasmota Install Steps**](tasmota).
 
 
 ### Make the Enclosure

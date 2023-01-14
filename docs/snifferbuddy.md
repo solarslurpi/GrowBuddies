@@ -11,7 +11,7 @@
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vRrE_3IbPv7-cLCCn8CVXGG6jkQmeFNBvoSk6niyWYkE4fkSfZJRDWDI0uPFfgMnYsDITjzoF773lOR/pub?w=728&h=465">
 :::
 
-SnifferBuddy is a device that measures the temperature, humidity, and CO2 level of the air using an [SCD30](https://www.adafruit.com/product/4867) or [SCD40](https://www.adafruit.com/product/5187) sensor. It is controlled by an ESP286 microcontroller running [Tasmota firmware](https://tasmota.github.io/docs/About/), which publishes the readings to an MQTT broker.
+SnifferBuddy is a device that measures the temperature, humidity, and CO2 level of the air using an [SCD30](https://www.adafruit.com/product/4867) or [SCD40](https://www.adafruit.com/product/5187) sensor. It is controlled by an ESP286 microcontroller - a Wemos D1 - running [Tasmota firmware](https://tasmota.github.io/docs/About/), which publishes the readings to an MQTT broker.
 
 
 

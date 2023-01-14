@@ -4,10 +4,10 @@ manage_vpd.py
 
 This script utilizes MistBuddy to regulate the operation of the humidifier,
 turning it on and off as necessary to maintain the optimal vapor pressure deficit (VPD) level.
-The `main()` function initiates the program by establishing callback functions and subscribing to SnifferBuddy
-readings through the :py:class:`growbuddies.mqtt_code.MQTTService` class. When a reading is received, the `on_snifferbuddy_readings` callback activates
-the `MistBuddy()` class to turn on the humidifier if the vapor pressure deficit (VPD) value exceeds the ideal range
-determined by the VPD chart.
+The :py:func:`growbuddies.manage_vpd.main` function initiates the program by establishing callback functions and subscribing to SnifferBuddy
+readings through the :py:class:`growbuddies.mqtt_code.MQTTService` class. When a reading is received, the
+:py:meth:`Callbacks.on_snifferbuddy_readings` callback activates the `MistBuddy()` class to turn on the humidifier if the vapor
+pressure deficit (VPD) value exceeds the ideal range determined by the VPD chart.
 
        .. image:: ../docs/images/vpd_chart.jpg
             :scale: 50
@@ -22,17 +22,20 @@ The growbuddy_settings.json file contains several parameters that are used as in
         "vpd_setpoints": {
             "veg": 0.9,
             "flower": 1.0
-        },
+            }
 
 
-vpd_growth_stage : Lets MistBuddy know what growth stage the plants are in.  There are two stages:
-    - "veg" for vegetative.
-    - "flower" For the flowering stage.
+`vpd_growth_stage` lets MistBuddy know what growth stage the plants are in.  There are two stages:
+- "veg" for vegetative.
+- "flower" For the flowering stage.
 
-The above settings are using by the MistBuddy code, see :py:meth:`Callbacks.on_snifferbuddy_readings`  dictate the behavior of MistBuddy for this specific run. The plants are currently in the vegetative growth stage.
-Based on the VPD chart, the ideal VPD value for this stage is 0.9. Therefore, MistBuddy will use 0.9 as the setpoint value in
-order to maintain optimal conditions for the plants during this stage of growth.
+
+The above settings are using by the MistBuddy code, see :py:meth:`Callbacks.on_snifferbuddy_readings`
+dictate the behavior of MistBuddy for this specific run. The plants are currently in the vegetative
+growth stage. Based on the VPD chart, the ideal VPD value for this stage is 0.9. Therefore, MistBuddy
+will use 0.9 as the setpoint value in order to maintain optimal conditions for the plants during this stage of growth.
 growbuddiesproject/growbuddies/PID_code.py
+
 
 
 The two SnifferBuddy callbacks are sent to the MQTTService():
@@ -56,14 +59,9 @@ import sys
 
 
 class Callbacks:
-    """The Callbacks class contains two callback functions that are passed to `MQTTServer`. These functions are activated when MQTTService receives
-    an `on_message` event for the corresponding topics associated with the callbacks.
-
-    hello .. and then :py:class:`growbuddies.mqtt_code.MQTTService.start`
-
-    :py:meth:`growbuddies.Callbacks.on_snifferbuddy_readings`
-
-
+    """The Callbacks class contains two callback functions that are passed to `MQTTServer`. These functions
+    are activated when MQTTService receives an `on_message` event for the corresponding topics associated with
+    the callbacks.
     """
 
     def __init__(self):
@@ -76,7 +74,12 @@ class Callbacks:
         self.readings_store = ReadingsStore()
 
     def on_snifferbuddy_readings(self, msg):
-        """documenting the on_snifferbuddy_readings callback"""
+        """ This callback function handles MQTT messages from SnifferBuddy.  The payload is a JSON string that is converted
+        into a :py:class:`growbuddies.snifferbuddyreadings_code.SnifferBuddyReadings` object.  The dictionary is then passed to the `SnifferBuddyReadings()` class to be converted into a :py:class:`growbuddies.mqtt_code.MQTTService` class.
+        `SnifferBuddyReadings` object.  The `SnifferBuddyReadings` object contains the values that are used to calculate
+        the vapor pressure deficit (VPD) value.  The `MistBuddy` class is then called to adjust the humidity based on the
+        VPD value.
+                """
         # Translate the mqtt message into a SnifferBuddy class.
         s = SnifferBuddyReadings(msg)
         self.logger.debug(f"the snifferbuddy values: {s.dict}")

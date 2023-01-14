@@ -48,7 +48,8 @@ I found it pretty simple to put the pi into the enclosure once it had been print
 ### Install The Software
 #### Resources
 I found the following stuff on the web to be helpful:
-- [How to embed degree symbols (like &#8457;)](https://www.alt-codes.net/degree_sign_alt_code.php).s
+- [How to create a great dev environment with Docker](https://www.youtube.com/watch?v=0H2miBK_gAk)
+- [How to embed degree symbols (like &#8457;)](https://www.alt-codes.net/degree_sign_alt_code.php).
 - [Python Virtual Environments](https://www.youtube.com/watch?v=ApDThpsr2Fw&t=1295s) at this point in the video, the difference between `virtualenv` and `venv` is explained.  More details are given in [Virtualenv RTD](https://virtualenv.pypa.io/en/latest/).
 - [Installing mosquitto on Rasp Pi](https://pimylifeup.com/raspberry-pi-mosquitto-mqtt-server/)
 - [mqtt Explorer](http://mqtt-explorer.com/) - this tool does exactly what the name implies.  It allows you to explore the mqtt traffic as it whizzes by.  You can also publish messages.  Very handy.
@@ -231,7 +232,12 @@ The mqtt_code.py module includes two classes, MQTTService and MQTTClient.
 .. autoclass:: growbuddies.mqtt_code.MQTTClient
    :members:
 ```
-
+### SnifferBuddyReadings
+The snifferbuddy_readings.py module contains the SnifferBuddyReadings class.
+```{eval-rst}
+.. autoclass:: growbuddies.snifferbuddyreadings_code.SnifferBuddyReadings
+   :members:
+```
 
 
 

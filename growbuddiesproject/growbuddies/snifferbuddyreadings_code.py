@@ -39,7 +39,7 @@ class SnifferBuddyConstants:
 
 
 class SnifferBuddyReadings:
-    """Takes in an mqtt air quality message from a SnifferBuddy and translates into an easy to use set of properties.
+    """Takes in an mqtt message from a SnifferBuddy and translates the payload into a set of properties and a dictionary.
 
     The mqtt air quality message is sensor specific different.  Different air quality sensors will have a different message format.
 

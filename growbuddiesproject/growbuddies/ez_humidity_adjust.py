@@ -20,4 +20,4 @@ while True:
     send_message(client, "cmnd/mistbuddy_fan/POWER", "OFF")
     send_message(client, "cmnd/mistbuddy_mister/POWER", "OFF")
     client.disconnect()
-    time.sleep(60 - 13)
+    time.sleep(60 - 10)

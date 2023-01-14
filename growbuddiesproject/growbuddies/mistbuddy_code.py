@@ -79,7 +79,7 @@ class MistBuddy:
         # Reading if the light level represents on depends if the photoresistor circuit
         # was made with a pull up or pull down resistor.  Mine is pullup, so the light is
         # on when the number is low
-        if light_level < 50:  # I noticed a value of 18 when it was on...so adding for ambient light.
+        if light_level < 512:  # Split the difference.
             return True
         else:
             return False
