@@ -2,10 +2,11 @@
 =============================
 Storing SnifferBuddy Readings
 =============================
-Now that you have set up a SnifferBuddy device that is sending readings through MQTT messages, and you have an MQTT broker (Gus) in place to
-route those messages, it is time to store the data for post visualization.
+Now that you have set up a SnifferBuddy device that is sending readings through MQTT messages, and you
+have an MQTT broker (Gus) in place to route those messages, it is time to store the data for post visualization.
 
-This Python script stores SnifferBuddyReadings - including the vpd value - into an influxdb measurement table.
+This Python script utilizes the :py:class:`growbuddies.snifferbuddyreadings_code.SnifferBuddyReadings` class to
+calculate the VPD and store SnifferBuddy readings in an InfluxDB database.
 
 The script can be run from the command line (within your virtual environment) by typing `store-readings`.
 

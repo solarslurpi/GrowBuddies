@@ -11,8 +11,6 @@
 :::{div}
 <img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
 :::
-
-
 MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).   When the vpd level is too high, MistBuddy spouts out mist through her airhole for **just** the right amount of time.  When the vpd is too low or just right, MistBuddy shuts off until the vpd level is higher than the ideal vpd level (also known as the setpoint).
 
 ```{note} Our indoor gardening environment is climate controlled.  The temperature with the LED lights on is around 75&#8457;.  While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd.

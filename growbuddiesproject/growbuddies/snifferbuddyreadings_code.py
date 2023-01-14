@@ -39,9 +39,12 @@ class SnifferBuddyConstants:
 
 
 class SnifferBuddyReadings:
-    """Takes in an mqtt message from a SnifferBuddy and translates the payload into a set of properties and a dictionary.
-
-    The mqtt air quality message is sensor specific different.  Different air quality sensors will have a different message format.
+    """An instance of the "SnifferBuddyReadings" class simplifies access to data by processing the MQTT
+    message payload from a SnifferBuddy device and providing properties such as the vpd, as well as a
+    dictionary containing all properties. Using the raw MQTT payload may not be optimal, as it:
+    - Does not include the vpd calculation.
+    - Is specific to the sensor.
+    - Is not as easily accessible as accessing properties directly.
 
     For example, the mqtt air quality message of the SCD30 is:
 
@@ -51,7 +54,8 @@ class SnifferBuddyReadings:
          "ANALOG":{"A0":542},
          "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
 
-    Another air quality sensor will have a different message that needs to be understood.
+    Another air quality sensor may have a different message format that requires interpretation. However, the process
+    of accessing properties, such as sensor readings, remains consistent and can be done in the same way as demonstrated below.
 
 
     .. code:: python
@@ -63,19 +67,19 @@ class SnifferBuddyReadings:
 
 
     Args:
-        mqtt_dict (dict): Sensor model specific mqtt message from a SnifferBuddy.
+        mqtt_payload (str): Sensor model specific mqtt message from a SnifferBuddy.
         sensor (str, optional):The constant string that identifies the air quality sensor.  The sensor must be listed in
         SnifferBuddySensors(). Defaults to SnifferBuddySensors.SCD30.
         log_level (logging level constant, optional):Logging level either logging.DEBUG, logging.INFO, logging.ERROR. Defaults to logging.DEBUG.
     """
 
-    def __init__(self, mqtt_str):
+    def __init__(self, mqtt_payload):
 
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler()
         self.logger.debug("-> Initializing SnifferBuddy class.")
 
-        self.mqtt_dict = json.loads(mqtt_str)
+        self.mqtt_dict = json.loads(mqtt_payload)
         # The air quality sensor's name in the mqtt message.
         try:
             self.sensor = self._find_sensor_name(self.mqtt_dict)
