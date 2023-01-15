@@ -6,7 +6,7 @@
         "editor.formatOnSave": true
     },
     "python.linting.flake8Args": [
-        "--max-line-length=150",
+        "--max-line-length=500",
         "--ignore=W605,E402,E731",
     ],
     "editor.defaultFormatter": "ms-python.black-formatter",

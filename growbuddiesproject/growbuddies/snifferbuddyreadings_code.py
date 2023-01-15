@@ -1,8 +1,8 @@
 #
-# SnifferBuddyReadings takes in the air quality readings within the mqtt payload from a SnifferBuddy and converts it into a SnifferBuddy instance
-# for easier and sensor agnostic access.  The SCD-30 and SCD-40 are supported sensors.
+# SnifferBuddyReadings takes in the air quality readings within the mqtt payload from a SnifferBuddy and converts it into a
+# SnifferBuddy instance for easier and sensor agnostic access.  The SCD-30 and SCD-40 are supported sensors.
 #
-# Copyright 2022 Happy Day
+# Copyright 2023 Happy Day
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
 # to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
@@ -61,7 +61,7 @@ class SnifferBuddyReadings:
     .. code:: python
 
         from snifferbuddy_code import SnifferBuddyReadings
-        s = SnifferBuddyReadings(mqtt_dict)
+        s = SnifferBuddyReadings(mqtt)
         print({s.dict})
         print({s.vpd})
 
@@ -79,18 +79,18 @@ class SnifferBuddyReadings:
         self.logger = LoggingHandler()
         self.logger.debug("-> Initializing SnifferBuddy class.")
 
-        self.mqtt_dict = json.loads(mqtt_payload)
+        self.mqtt = json.loads(mqtt_payload)
         # The air quality sensor's name in the mqtt message.
         try:
-            self.sensor = self._find_sensor_name(self.mqtt_dict)
+            self.sensor = self._find_sensor_name(self.mqtt)
             self.name_dict = {self.sensor: ["Temperature", "Humidity", "CarbonDioxide"]}
         except Exception as e:
             self.logger.error(f"Could not identify the air quality sensor. Error: {e}")
 
-    def _find_sensor_name(self, mqtt_dict):
+    def _find_sensor_name(self, mqtt):
         sensor_names = ["SCD30", "SCD40"]
         for item in sensor_names:
-            for key in mqtt_dict.items():
+            for key in mqtt.items():
                 if item in key:
                     return item
         raise NameError("Could not find a valid sensor. Current valid sensors include the SCD30 and SCD40")
@@ -100,18 +100,18 @@ class SnifferBuddyReadings:
 
             item = None
             # e.g. for temperature:
-            # temperature = item = mqtt_dict["SCD30"]["Temperature"].  If the item is for
+            # temperature = item = mqtt["SCD30"]["Temperature"].  If the item is for
             # the temperature, the item_number is 0.
             if item_number == SnifferBuddyConstants.TIME:
-                item = self.mqtt_dict["Time"]
+                item = self.mqtt["Time"]
                 return item
             if self.sensor == SnifferBuddySensors.SCD30 or self.sensor == SnifferBuddySensors.SCD40:
                 if item_number == SnifferBuddyConstants.LIGHT_LEVEL:
                     # Light level is part of SnifferBuddy, but not the SCD30.
-                    item = self.mqtt_dict["ANALOG"]["A0"]
+                    item = self.mqtt["ANALOG"]["A0"]
                 else:
                     item_name = self.name_dict[self.sensor][item_number]
-                    item = self.mqtt_dict[self.sensor][item_name]
+                    item = self.mqtt[self.sensor][item_name]
         except Exception as e:
             self.logger.error(
                 f"Could not get item for {self.sensor} item number {item_number}.  Error: {e}. There should be an entry in name_dict."
@@ -155,10 +155,17 @@ class SnifferBuddyReadings:
     def dict(self) -> dict:
         """Returns SnifferBuddy readings as a dictionary.
 
-        Returns:
-            dict: Contains values for temperature, humidity, co2, vpd, and light level.
+        .. code:: python
 
-        We're not returning the time.  When we store the variables, influxdb adds a timestamp.
+            return {
+                "temperature": self.temperature,
+                "humidity": self.humidity,
+                "co2": self.co2,
+                "vpd": self.vpd,
+                "light_level": self.light_level,
+            }
+
+        _Note: The time is not returned.  influxdb adds a timestamp when the data is written to the database._
         """
         return {
             "temperature": self.temperature,
@@ -170,10 +177,11 @@ class SnifferBuddyReadings:
 
     @property
     def temperature(self) -> float:
-        """Return SnifferBuddy's temperature reading
+        """SnifferBuddy's temperature reading. Whether it is in F or C is dependent on how you set up SnifferBuddy.
+        See [GrowBuddy's Tasmota documentation](tasmota_commands) for details.
 
         Returns:
-            float: SnifferBuddy's reading of the air temperature.  Whether it is in F or C is dependent on how you set up SnifferBuddy.
+            float: SnifferBuddy's reading of the air temperature.
         """
         # I set the temperature to F.
         t = self._get_item(SnifferBuddyConstants.TEMPERATURE)
@@ -181,22 +189,28 @@ class SnifferBuddyReadings:
 
     @property
     def time(self) -> str:
-        """Returns a string containing the date and time that can be converted into a datetime."""
-        time = self._get_item(SnifferBuddyConstants.TIME)
-        return time
+        """A string containing the date and time SnifferBuddy sent the MQTT message.
+        _Note: The time is not returned within the dict property, as noted earlier."""
+        t = self._get_item(SnifferBuddyConstants.TIME)
+        return t
 
     @property
     def humidity(self) -> float:
+        """SnifferBuddy's reading for the Relative Humidity"""
         h = self._get_item(SnifferBuddyConstants.HUMIDITY)
         return h
 
     @property
     def co2(self) -> float:
+        """SnifferBuddy's reading for the CO2 concentration."""
         c = self._get_item(SnifferBuddyConstants.CO2)
         return c
 
     @property
     def vpd(self) -> float:
+        """A calculation of the Vapor Pressure Deficit (vpd) based on SnifferBuddy's
+        temperature and humidity readings.  _Note: For now, the leaf temperature is
+        assumed to be 2 degrees F less than the air temperature._"""
         h = self._get_item(SnifferBuddyConstants.HUMIDITY)
         t = self._get_item(SnifferBuddyConstants.TEMPERATURE)
         v = self._calc_vpd(t, h)
@@ -204,5 +218,8 @@ class SnifferBuddyReadings:
 
     @property
     def light_level(self) -> int:
+        """The reading of the photoresistor at the top of SnifferBuddy.  The build directions
+        say to use a Pull Down resistor.  This means the lower the value of the light level, the higher
+        the light level.  The value is a number between 0 and 1023."""
         ll = self._get_item(SnifferBuddyConstants.LIGHT_LEVEL)
         return ll

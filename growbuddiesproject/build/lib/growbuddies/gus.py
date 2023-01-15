@@ -205,8 +205,8 @@ class Gus(Thread):
         self.logger.info(f"mqtt received message...{message}")
         # Send the message contents as a dictionary back to the values_callback.
         try:
-            mqtt_dict = json.loads(message)
-            s = SnifferBuddyReadings(mqtt_dict)
+            mqtt = json.loads(message)
+            s = SnifferBuddyReadings(mqtt)
             if self.readings_callback:
                 self.readings_callback(s)
             # Write reading to database table if desired.

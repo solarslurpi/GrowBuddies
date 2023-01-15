@@ -21,11 +21,30 @@ from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
 from growbuddies.settings_code import Settings
 from growbuddies.mqtt_code import MQTTClient
 import threading
+import time
 
 
 class MistBuddy:
 
-    """MistBuddy uses the readings from SnifferBuddy and a PID controller to calculate the ideal duration to turn on the humidifier in order to provide the plants with the optimal vapor pressure deficit (VPD) value. In addition to this, MistBuddy inherits various capabilities from Gus, such as the ability to log data and manage mqtt traffic.
+    """MistBuddy uses the readings from SnifferBuddy and a PID controller to calculate the
+    ideal duration to turn on the humidifier in order to provide the plants with the optimal vapor
+    pressure deficit (VPD) value. In addition to this, MistBuddy inherits various capabilities from Gus,
+    such as the ability to log data and participate in mqtt traffic.
+
+    The growbuddy_settings.json file contains several parameters that are used as input for the program.
+
+    .. code-block:: json
+
+        "vpd_growth_stage": "veg",
+        "vpd_setpoints": {
+            "veg": 0.9,
+            "flower": 1.0
+            }
+
+
+    `vpd_growth_stage` lets MistBuddy know what growth stage the plants are in.  There are two stages:
+    - "veg" for vegetative.
+    - "flower" For the flowering stage.
 
     The ideal vpd level is determined from this vpd chart:
 
@@ -35,16 +54,17 @@ class MistBuddy:
             :align: center
 
     Args:
-        :param snifferbuddy_status_callback: This callback function is activated when Gus (our mqtt broker) sends out a Last Will and Testament (LWT) mqtt message. The function is called with a string that indicates either "online" or "offline" status. If the returned string is "offline," it indicates that SnifferBuddy has not been sending mqtt messages. This callback function is optional and is set to "None" by default.
+        :snifferbuddy_status_callback: This callback function is activated when Gus (our mqtt broker) sends out a Last Will and Testament (LWT) mqtt message. The function is called with a string that indicates either "online" or "offline" status. If the returned string is "offline," it indicates that SnifferBuddy has not been sending mqtt messages. This callback function is optional and is set to "None" by default.
 
-        :param growth_stage: This parameter specifies the growth stage of the plant, either vegetative or flowering. The default value is "growthStage.VEG."
+        :growth_stage: This parameter specifies the growth stage of the plant, either vegetation or flowering. This is important to set to either the vegetative ("veg") or flowering ("flower") string.
 
-        :param readings_table_name: A string that will be the name of the table (or a Measurement using influxdb terminology)  in InfluxDB containing SnifferBuddy readings, including vpd, while MistBuddy is running. By default, SnifferBuddy readings will not be stored.
+        :readings_table_name: A string that will be the name of the table (or a Measurement using influxdb terminology) in InfluxDB containing SnifferBuddy readings, including vpd, while MistBuddy is running. By default, SnifferBuddy readings
+        will not be stored.
 
-        :param manage: A False setting for this parameter causes MistBuddy to refrain from turning the humidifier on and off. This can be helpful for initial debugging, but it has little effect on the PID controller's output. The default setting is True.
+        :manage: A False setting for this parameter causes MistBuddy to refrain from turning the humidifier on and off. This can be helpful for initial debugging, but it has little effect on the PID controller's output. The default setting is True.
 
     Raises:
-            The code checks if the vpd setpoint, which is read from the settings file, is within the expected range. If it is not, an exception is raised.
+        The code checks if the vpd setpoint is within an expected range. If it is not, an exception is raised.
 
     """
 
@@ -59,14 +79,14 @@ class MistBuddy:
         self.logger.debug(msg)
         settings = Settings()
         settings.load()
-        topics_and_methods = settings.get_callbacks("mistbuddy_mqtt_dict", None)
+        topics_and_methods = settings.get_callbacks("mistbuddy_mqtt", None)
         # We need a power topic for the fan and one for the mister.
         if len(topics_and_methods) != 2:
             raise Exception(
                 f"ERROR - Expecting a topic for the fan power and a topic for the mister power.  Received {len(topics_and_methods)} topics."
             )
-        self.fan_power_topic, value = topics_and_methods.popitem()
-        self.mister_power_topic, value = topics_and_methods.popitem()
+        self.fan_power_topic = topics_and_methods.popitem()
+        self.mister_power_topic = topics_and_methods.popitem()
 
         # These are used in the _pid() routine.
         self.pid_cum_error = 0.0
@@ -79,21 +99,20 @@ class MistBuddy:
         # Reading if the light level represents on depends if the photoresistor circuit
         # was made with a pull up or pull down resistor.  Mine is pullup, so the light is
         # on when the number is low
-        if light_level < 512:  # Split the difference.
-            return True
-        else:
-            return False
+        return light_level < 512
 
     def adjust_humidity(self, s: SnifferBuddyReadings):
-        """This method is called when a SnifferBuddy readings comes in.  Transpiration is occuring when the grow lights are on.  The vpd will not be adjusted when the grow
-        lights are off.
+        """This method is called when a SnifferBuddy readings comes in.
 
         Args:
             s (SnifferBuddyReadings): A reading from SnifferBuddy within an instance of SnifferBuddyReadings.
         """
-
         nSecondsON, error = self._pid(s.vpd)
+
+        # Log the vpd and nSecondsON with error
         self.logger.debug(f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. The error is {error}")
+
+        # Only execute the mistBuddy if manage is true and nSecondsON is greater than 0
         if self.manage and nSecondsON > 0:
             self._turn_on_mistBuddy(nSecondsON)
 
@@ -140,12 +159,15 @@ class MistBuddy:
         nSecondsOn, error = self.pid(reading)
         return nSecondsOn, error
 
-    def _turn_on_mistBuddy(self, nSecondsON: int) -> None:
-        """Send mqtt messages to mistBuddy's plugs to turn ON.
+    def turn_on_mistBuddy(self, nSecondsON: int) -> None:
+        """Sends an mqtt messages to mistBuddy's two power sources plugged into Tasmotized Smart plugs, a fan and a mister.
+        The self.fan_power_topic and self.mister_power_topic are set in the __init__ method.
 
         Args:
             nSecondsON (int): The number of seconds to turn the plugs on.
 
+        A timer is started based on the number of seconds MistBuddy should be on.  When the timer expires, the  _turn_off_mistBuddy
+        method is called. A connection to the mqtt broker is made, and the mqtt message payload "ON" is sent to the two plugs.
         """
         # Set up a timer with the callback on completion.
         timer = threading.Timer(nSecondsON, self._turn_off_mistBuddy)
@@ -153,18 +175,27 @@ class MistBuddy:
         # Send the command to power ON.
         mqtt_client = MQTTClient("MistBuddy")
         mqtt_client.start()
+        # Randomly the fan would not be turned off.  I added a sleep to see if that helps within turning on
+        # as well as turning off.
+        time.sleep(.25)
         mqtt_client.publish(self.fan_power_topic, "ON")
+        time.sleep(.25)
         mqtt_client.publish(self.mister_power_topic, "ON")
+        time.sleep(.25)
         mqtt_client.stop()
         self.logger.debug(f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds.")
         timer.start()
 
-    def _turn_off_mistBuddy(self):
+    def turn_off_mistBuddy(self):
         """The timer set in _turn_on_mistBuddy has expired.  Send messages to the
         mistBuddy plugs to turn OFF."""
         mqtt_client = MQTTClient("MistBuddy")
+        time.sleep(.25)
         mqtt_client.start()
+        time.sleep(.25)
         mqtt_client.publish(self.fan_power_topic, "OFF")
+        time.sleep(.25)
         mqtt_client.publish(self.mister_power_topic, "OFF")
+        time.sleep(.25)
         mqtt_client.stop()
         self.logger.debug("...Sent mqtt messages to the two mistBuddy plugs to turn OFF.")

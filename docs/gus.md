@@ -189,11 +189,6 @@ after bumbling about on Google/StackOverflow, I ended up:
 $ sudo nano /etc/apt/sources.list.d/grafana.list
 ```
 and deleted the duplicate lines. Then `sudo apt-get update` worked.
-#### Install FTP
-If SnapBuddy is invited to playtime, an FTP server must be installed.  The FTP server that is installed on a Rasperry Pi is [the `vsftpd` server](https://security.appspot.com/vsftpd.html#about).
-
- the SFTP server (enabled by default in Raspbian).
-
 
 ## Playtime {material-regular}`celebration;1em;sd-text-success`
 ```{note} You must build [SnifferBuddy](snifferbuddy) and [Gus](gus) before playtime can begin.
@@ -203,14 +198,7 @@ you can access the command line of the Gus device and type the following command
 ```bash
 store-readings
 ```
-This will start running the `__main__.py` script.
-```{button-link} https://github.com/solarslurpi/GrowBuddies/blob/main/growbuddiesproject/growbuddies/__main__.py
-:outline:
-:color: success
-
- {octicon}`file-code;1em;sd-text-success` View Source
-```
-The following text describes the code found in the `__main.py__` file.
+This will start running the [main function](growbuddies.__main__.main) in the `__main__.py` file.
 
 ```{eval-rst}
 .. automodule:: growbuddies.__main__
@@ -222,15 +210,14 @@ The following text describes the code found in the `__main.py__` file.
 ## Additional Python Modules
 
 ### mqtt_code
-The MQTT Paho package can be used on its own, but the classes in the mqtt_code.py module provide a more streamlined way to work with GrowBuddies.
-The mqtt_code.py module includes two classes, MQTTService and MQTTClient.
+
 
 ```{eval-rst}
 .. autoclass:: growbuddies.mqtt_code.MQTTService
    :members:
 
 .. autoclass:: growbuddies.mqtt_code.MQTTClient
-   :members:
+   :members: on_message
 ```
 ### SnifferBuddyReadings
 The snifferbuddy_readings.py module contains the SnifferBuddyReadings class.
@@ -238,8 +225,12 @@ The snifferbuddy_readings.py module contains the SnifferBuddyReadings class.
 .. autoclass:: growbuddies.snifferbuddyreadings_code.SnifferBuddyReadings
    :members:
 ```
-
-
+### Settings
+The settings_code.py module efficiently retrieves and validates parameter input from the growbuddy_settings.json file.
+```{eval-rst}
+.. autoclass:: growbuddies.settings_code.Settings
+   :members:
+```
 
 ## Useful Raspberry Pi Stuff
 

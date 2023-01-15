@@ -194,6 +194,7 @@ Using a tool like [MQTT Explorer](http://mqtt-explorer.com/)
 MQTT Explorer
 :::
 We see in the image that the sensor reading for the photoresistor (A0) is available.  The value is 585.  The SCD40 values are not there.  This is because as noted in the section [Before You Begin Installation](before_installation), the SCD40 is not a part of the ESP286 sensors build.  The driver needs to be added separately as discussed above.
+(tasmota_commands)=
 #### Commands
 Tasmota supports A LOT of [commands](https://tasmota.github.io/docs/Commands/).  The ones listed below were used on Tasmotized Buddies (like snifferBuddy).  Commands are accessed by clicking on the Console button in the main menu.
 :::{figure} images/tasmota_main_screen.jpg

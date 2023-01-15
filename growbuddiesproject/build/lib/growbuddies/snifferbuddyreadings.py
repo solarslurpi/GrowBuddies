@@ -56,22 +56,22 @@ class SnifferBuddyReadings():
     .. code:: python
 
         from snifferbuddy_code import SnifferBuddyReadings
-        s = SnifferBuddyReadings(mqtt_dict)
+        s = SnifferBuddyReadings(mqtt)
         print({s.dict})
         print({s.vpd})
 
 
     Args:
-        mqtt_dict (dict): Sensor model specific mqtt message from a SnifferBuddy.
+        mqtt (dict): Sensor model specific mqtt message from a SnifferBuddy.
         sensor (str, optional):The constant string that identifies the air quality sensor.  The sensor must be listed in
         SnifferBuddySensors(). Defaults to SnifferBuddySensors.SCD30.
         log_level (logging level constant, optional):Logging level either logging.DEBUG, logging.INFO, logging.ERROR. Defaults to logging.DEBUG.
     """
 
-    def __init__(self, mqtt_dict, sensor=SnifferBuddySensors.SCD30, log_level=logging.DEBUG):
+    def __init__(self, mqtt, sensor=SnifferBuddySensors.SCD30, log_level=logging.DEBUG):
 
         self.sensor = sensor
-        self.mqtt_dict = mqtt_dict
+        self.mqtt = mqtt
         # The air quality sensor's name in the mqtt message.
         self.name_dict = {SnifferBuddySensors.SCD30: ["Temperature", "Humidity", "CarbonDioxide"]
                           }
@@ -86,18 +86,18 @@ class SnifferBuddyReadings():
 
             item = None
             # e.g. for temperature:
-            # temperature = item = mqtt_dict["SCD30"]["Temperature"].  If the item is for
+            # temperature = item = mqtt["SCD30"]["Temperature"].  If the item is for
             # the temperature, the item_number is 0.
             if item_number == SnifferBuddyConstants.TIME:
-                item = self.mqtt_dict["Time"]
+                item = self.mqtt["Time"]
                 return item
             if self.sensor == SnifferBuddySensors.SCD30:
                 if item_number == SnifferBuddyConstants.LIGHT_LEVEL:
                     # Light level is part of SnifferBuddy, but not the SCD30.
-                    item = self.mqtt_dict["ANALOG"]["A0"]
+                    item = self.mqtt["ANALOG"]["A0"]
                 else:
                     item_name = self.name_dict[self.sensor][item_number]
-                    item = self.mqtt_dict[self.sensor][item_name]
+                    item = self.mqtt[self.sensor][item_name]
         except Exception as e:
             self.logger.error(f"Could not get item for {self.sensor} item number {item_number}.  Error: {e}. There should be an entry in name_dict.")
         return item

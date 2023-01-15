@@ -126,7 +126,7 @@ def main():
 
     .. code-block:: json
 
-        "snifferbuddy_mqtt_dict":
+        "snifferbuddy_mqtt":
                                     {"tele/snifferbuddy/SENSOR": "on_snifferbuddy_readings",
                                      "tele/snifferbuddy/LWT": "on_snifferbuddy_status"},
 
@@ -137,9 +137,8 @@ def main():
     """
     settings = Settings()
     settings.load()
-    # Create an MQTTService instance
-    obj = Callbacks()
-    methods = settings.get_callbacks("snifferbuddy_mqtt_dict", obj)
+    callbacks = Callbacks()
+    methods = settings.get_callbacks("snifferbuddy_mqtt", callbacks)
     mqtt_service = MQTTService(methods)
     mqtt_service.start()
     while True:

@@ -54,11 +54,11 @@ def main():
     settings = Settings()
     settings.load()
     obj = CallbacksDripBuddy()
-    methods = settings.get_callbacks("dripbuddy_mqtt_dict", obj)
+    methods = settings.get_callbacks("dripbuddy_mqtt", obj)
     mqtt_service = MQTTService(client_id="DripBuddy", callbacks_dict=methods)
     mqtt_service.start()
     obj = CallbacksTensiometer()
-    methods = settings.get_callbacks("calibrate_mqtt_dict", obj)
+    methods = settings.get_callbacks("calibrate_mqtt", obj)
     mqtt_service_1 = MQTTService(client_id="Tensiometer", callbacks_dict=methods)
     mqtt_service_1.start()
     while True:

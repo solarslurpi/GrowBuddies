@@ -112,6 +112,9 @@ MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmot
 
 .. autoclass:: Callbacks
    :members:
+
+.. autoclass:: growbuddies.mistbuddy_code.MistBuddy
+   :members: _pid
 ```
 
 
