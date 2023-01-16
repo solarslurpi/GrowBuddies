@@ -3,7 +3,11 @@
 ## Data Sources
 
 [PlantDoc dataset](https://github.com/pratikkayal/PlantDoc-Dataset)
+- this dataset doesn't look that great...
 [Plant Leaf dataset](https://data.mendeley.com/datasets/tywbtsjrjv/1)
+J, ARUN PANDIAN; GOPAL, GEETHARAMANI (2019), “Data for: Identification of Plant Leaf Diseases Using a 9-layer Deep Convolutional Neural Network”, Mendeley Data, V1, doi: 10.17632/tywbtsjrjv.1
+
+
 [Plant Village dataset](https://knowyourdata-tfds.withgoogle.com/#tab=STATS&dataset=plant_village)
 
 See other data sets. Seems to be many plant leaves. https://knowyourdata-tfds.withgoogle.com/
