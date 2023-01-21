@@ -52,7 +52,9 @@ class growthStage(Enum):
 
 
 class PID(object):
-    """This class is a modified version of the `simple-pid <https://github.com/m-lundberg/simple-pid>`_ package.  Thanks to the initial work of `Brett Beauregard and his Arduino PID controller as well as documentation <http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/>`_.  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+    """This class is a modified version of the `simple-pid <https://github.com/m-lundberg/simple-pid>`_ package.  Which evolved from `Brett Beauregard's Arduino PID controller <http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/>`_.  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+
+    The PID controller is initialized with values from the growbuddies_settings.file.:
 
     .. code-block:: json
 
@@ -69,7 +71,7 @@ class PID(object):
         "integral_limits":[0, 7],
         "tolerance": 0.01
         }
-
+    The meanings of the parameters will be discussed below under __init__
     - The PID controller returns how many seconds to turn the DIY humidifier on.
     - MistBuddy turns the humidifier on for the number of seconds returned.  The humidifier is turned off after the number of seconds expires."""
 
