@@ -26,45 +26,10 @@ import time
 
 class MistBuddy:
 
-    """MistBuddy uses the readings from SnifferBuddy and a PID controller to calculate the
-    ideal duration to turn on the humidifier in order to provide the plants with the optimal vapor
-    pressure deficit (VPD) value. In addition to this, MistBuddy inherits various capabilities from Gus,
-    such as the ability to log data and participate in mqtt traffic.
-
-    The growbuddy_settings.json file contains several parameters that are used as input for the program.
-
-    .. code-block:: json
-
-        "vpd_growth_stage": "veg",
-        "vpd_setpoints": {
-            "veg": 0.9,
-            "flower": 1.0
-            }
+    """MistBuddy utilizes SnifferBuddy's readings and a PID controller to determine the optimal duration to activate the humidifier for the amount
+    of time needed to raise the humidity to the level needed to reach the ideal vpd level.
 
 
-    `vpd_growth_stage` lets MistBuddy know what growth stage the plants are in.  There are two stages:
-    - "veg" for vegetative.
-    - "flower" For the flowering stage.
-
-    The ideal vpd level is determined from this vpd chart:
-
-       .. image:: ../docs/images/vpd_chart.jpg
-            :scale: 50
-            :alt: Flu's vpd chart
-            :align: center
-
-    Args:
-        :snifferbuddy_status_callback: This callback function is activated when Gus (our mqtt broker) sends out a Last Will and Testament (LWT) mqtt message. The function is called with a string that indicates either "online" or "offline" status. If the returned string is "offline," it indicates that SnifferBuddy has not been sending mqtt messages. This callback function is optional and is set to "None" by default.
-
-        :growth_stage: This parameter specifies the growth stage of the plant, either vegetation or flowering. This is important to set to either the vegetative ("veg") or flowering ("flower") string.
-
-        :readings_table_name: A string that will be the name of the table (or a Measurement using influxdb terminology) in InfluxDB containing SnifferBuddy readings, including vpd, while MistBuddy is running. By default, SnifferBuddy readings
-        will not be stored.
-
-        :manage: A False setting for this parameter causes MistBuddy to refrain from turning the humidifier on and off. This can be helpful for initial debugging, but it has little effect on the PID controller's output. The default setting is True.
-
-    Raises:
-        The code checks if the vpd setpoint is within an expected range. If it is not, an exception is raised.
 
     """
 
@@ -72,6 +37,40 @@ class MistBuddy:
         self,
         manage=True,
     ):
+        """The growbuddy_settings.json file contains several parameters that are used as input for the program.
+
+        `vpd_growth_stage` lets MistBuddy know what growth stage the plants are in.  There are two stages:
+        - "veg" for vegetative.
+        - "flower" For the flowering stage.
+
+        The ideal vpd level is determined from this vpd chart:
+
+           .. image:: ../docs/images/vpd_chart.jpg
+                :scale: 50
+                :alt: Flu's vpd chart
+                :align: center
+
+        Args:
+            :snifferbuddy_status_callback: This callback function is activated when Gus (our mqtt broker) sends out a Last Will and Testament (LWT) mqtt message. The function is called with a string that indicates either "online" or "offline" status. If the returned string is "offline," it indicates that SnifferBuddy has not been sending mqtt messages. This callback function is optional and is set to "None" by default.
+
+            :growth_stage: This parameter specifies the growth stage of the plant, either vegetation or flowering. This is important to set to either the vegetative ("veg") or flowering ("flower") string.
+
+            :readings_table_name: A string that will be the name of the table (or a Measurement using influxdb terminology) in InfluxDB containing SnifferBuddy readings, including vpd, while MistBuddy is running. By default, SnifferBuddy readings will not be stored.
+
+            :manage: A False setting for this parameter causes MistBuddy to refrain from turning the humidifier on and off. This can be helpful for initial debugging, but it has little effect on the PID controller's output. The default setting is True.
+
+        Raises:
+            The code checks if the vpd setpoint is within an expected range. If it is not, an exception is raised.
+
+
+            hfellpo
+
+            Args:
+                manage (bool, optional): _description_. Defaults to True.
+
+            Raises:
+                Exception: _description_
+        """
         self.logger = LoggingHandler()
 
         self.manage = manage
@@ -101,63 +100,20 @@ class MistBuddy:
         # on when the number is low
         return light_level < 512
 
-    def adjust_humidity(self, s: SnifferBuddyReadings):
-        """This method is called when a SnifferBuddy readings comes in.
+    def adjust_humidity(self, vpd: float) -> None:
+        """This method calls the PID controller and turns the humidifier on if the PID controller determines that the vpd is too low.
 
         Args:
             s (SnifferBuddyReadings): A reading from SnifferBuddy within an instance of SnifferBuddyReadings.
         """
-        nSecondsON, error = self._pid(s.vpd)
+        nSecondsON, error = self.pid(vpd)
 
         # Log the vpd and nSecondsON with error
-        self.logger.debug(f"vpd: {s.vpd}   num seconds to turn humidifier on: {nSecondsON}. The error is {error}")
+        self.logger.debug(f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}. The error is {error}")
 
         # Only execute the mistBuddy if manage is true and nSecondsON is greater than 0
         if self.manage and nSecondsON > 0:
             self._turn_on_mistBuddy(nSecondsON)
-
-    def _pid(self, reading: float) -> int:
-        """This is the code for the PID controller.
-
-        Args:
-            reading (float): The vpd value that will be compared to the setpoint.
-
-        Returns:
-            int: The number of seconds to turn on mistBuddy.
-
-        The goals of this PID controller are:
-
-        * Automatically adjust the humidity within a grow tent to the vpd setpoint.
-
-        * Be better than a "BANG-BANG" controller by not constantly turning mistBuddy on and off.
-
-
-        More like **This**
-
-        .. image:: ../docs/images/PID_controller.jpg
-            :scale: 35
-            :alt: PID Controller
-            :align: center
-
-        Than **This**
-
-        .. image:: ../docs/images/bangbang_controller.jpg
-            :scale: 30
-            :alt: BANG BANG Controller
-            :align: center
-
-        .. note::
-            I expect this method to evolve over time.
-
-            - I am new to PID controllers.  I'm bumbling about tuning it.  My goal is to get advice from folks that know more than me,
-              and then improve the code.
-
-            - I am optimizing for my environment - a climate controlled area with a grow tent.  The temperature is in the 70's F.  The relative
-              humidity is typically around 40-50%.
-        """
-
-        nSecondsOn, error = self.pid(reading)
-        return nSecondsOn, error
 
     def turn_on_mistBuddy(self, nSecondsON: int) -> None:
         """Sends an mqtt messages to mistBuddy's two power sources plugged into Tasmotized Smart plugs, a fan and a mister.
@@ -177,25 +133,25 @@ class MistBuddy:
         mqtt_client.start()
         # Randomly the fan would not be turned off.  I added a sleep to see if that helps within turning on
         # as well as turning off.
-        time.sleep(.25)
+        time.sleep(0.25)
         mqtt_client.publish(self.fan_power_topic, "ON")
-        time.sleep(.25)
+        time.sleep(0.25)
         mqtt_client.publish(self.mister_power_topic, "ON")
-        time.sleep(.25)
+        time.sleep(0.25)
         mqtt_client.stop()
         self.logger.debug(f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds.")
         timer.start()
 
-    def turn_off_mistBuddy(self):
+    def turn_off_mistBuddy(self) -> None:
         """The timer set in _turn_on_mistBuddy has expired.  Send messages to the
         mistBuddy plugs to turn OFF."""
         mqtt_client = MQTTClient("MistBuddy")
-        time.sleep(.25)
+        time.sleep(0.25)
         mqtt_client.start()
-        time.sleep(.25)
+        time.sleep(0.25)
         mqtt_client.publish(self.fan_power_topic, "OFF")
-        time.sleep(.25)
+        time.sleep(0.25)
         mqtt_client.publish(self.mister_power_topic, "OFF")
-        time.sleep(.25)
+        time.sleep(0.25)
         mqtt_client.stop()
         self.logger.debug("...Sent mqtt messages to the two mistBuddy plugs to turn OFF.")

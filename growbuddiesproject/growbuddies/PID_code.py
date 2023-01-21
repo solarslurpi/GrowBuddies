@@ -1,3 +1,19 @@
+#
+# The PID controller returns how many seconds to turn the DIY humidifier on.
+#
+# Copyright 2023 Happy Day
+
+# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
 import time
 import warnings
 from enum import Enum
@@ -36,33 +52,77 @@ class growthStage(Enum):
 
 
 class PID(object):
-    """A simple PID controller."""
+    """This class is a modified version of the `simple-pid <https://github.com/m-lundberg/simple-pid>`_ package.  Thanks to the initial work of `Brett Beauregard and his Arduino PID controller as well as documentation <http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/>`_.  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+
+    .. code-block:: json
+
+        "vpd_growth_stage": "veg",
+        "vpd_setpoints": {
+            "veg": 0.9,
+            "flower": 1.0
+            }
+        "PID_settings": {
+        "Kp": 240,
+        "Ki": 0.1,
+        "Kd": 0.1,
+        "output_limits": [0, 20],
+        "integral_limits":[0, 7],
+        "tolerance": 0.01
+        }
+
+    - The PID controller returns how many seconds to turn the DIY humidifier on.
+    - MistBuddy turns the humidifier on for the number of seconds returned.  The humidifier is turned off after the number of seconds expires."""
 
     def __init__(self):
-        """
-        Initialize a new PID controller.
+        """Initialize a new PID controller.  Instead of passing parameters into the constructor, the PID controller is
+        initialized with values from the growbuddies_settings.file.:
 
-        :param Kp: The value for the proportional gain Kp.
-        :param Ki: The value for the integral gain Ki.
-        :param Kd: The value for the derivative gain Kd.
-        :param setpoint: The setpoint is the target value that the PID controller will attempt to achieve.
-        :param sample_time: **MistBuddy does not use the sample time.** The sampling time for the PID controller
-            is determined by the frequency of SnifferBuddy MQTT messages.
-        :param output_limits: Output limits can be specified as an iterable with two elements, such as (lower, upper).
-            These limits ensure that the output will never exceed the upper limit or fall below the lower limit. Either
-            limit can be set to None if there is no limit in that direction.
-        :param auto_mode: **not used by MistBuddy** Whether the controller should be enabled (auto mode) or not (manual mode)
-        :param proportional_on_measurement: **not used by MistBuddy** Whether the proportional term should be calculated on
-            the input directly rather than on the error (which is the traditional way). Using
-            proportional-on-measurement avoids overshoot for some types of systems.
-        :param error_map: **not used by MistBuddy** Function to transform the error value in another constrained value.
+        .. code-block:: python
+
+            settings = Settings()
+            settings.load()
+            callbacks = Callbacks()
+            methods = settings.get_callbacks("snifferbuddy_mqtt", callbacks)
+            mqtt_service = MQTTService(methods)
+            mqtt_service.start()
+
+
+        .. code-block:: python
+
+            "vpd_growth_stage": "veg",
+            "vpd_setpoints": {
+            "veg": 0.9,
+            "flower": 1.0
+            }
+
+
+
+            Args:
+                :vpd_growth_stage: The growth stage of the plants being cared for.  This can be either 'veg' or 'flower'.
+                :vpd_setpoints: The setpoint for the PID controller.  This is the target value that the PID controller will
+                attempt to achieve.If the vpd_growth_stage is set to 'veg', the setpoint will be 0.9.  If the vpd_growth_stage
+                is set to 'flower', the setpoint will be 1.0.
+                :Kp: The value for the proportional gain Kp.
+                :Ki: The value for the integral gain Ki.
+                :Kd: The value for the derivative gain Kd.
+
+            .. note::
+                 See :ref:`The section on PID tuning<PID_tuning>` for more information on tuning these values.
+                :output_limits: Output limits can be specified as an iterable with two elements, such as (lower, upper).
+                These limits ensure that the output will never exceed the upper limit. Either
+                limit can be set to None if there is no limit in that direction.
+                :integral_limits: Integral limits can be specified as an iterable with two elements, such as (lower, upper).
+                These limits ensure that the integral will never exceed the upper limit. Either limit can be set to None if there is no limit in that direction.
+                :tolerance: If the vpd_current is within the tolerance of the setpoint, the PID controller will return 0 for the number of
+                seconds to turn the humidifier on.
+
         """
+
         self.logger = LoggingHandler()
+        # Load the settings discussed above from growbuddies_settings.json.
         settings = Settings()
         settings.load()
-        # Extract the logging level
         pid_settings = settings.get("PID_settings")
-        # Start out with these as the base values.  They will be increased if the error tolerance is too much.
         self.Kp = pid_settings["Kp"]
         self.Ki = pid_settings["Ki"]
         self.Kd = pid_settings["Kd"]
@@ -103,16 +163,15 @@ class PID(object):
 
         self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
-    def __call__(self, input_, dt=None):
-        """
-        Update the PID controller.
+    def __call__(self, vpd_current):
 
-        Call the PID controller with *input_* and calculate and return a control output if
-        sample_time seconds has passed since the last update. If no new output is calculated,
-        return the previous output instead (or None if no value has been calculated yet).
+        """Update the PID controller with the vpd value just calculated from the latest SnifferBuddyReading and figure out
+        how many seconds to turn on the humidifier if the vpd value is above the vpd setpoint (i.e.: ideal)
+        value.  0 seconds is returned if the vpd value is and calculate and return a control output if
+        sample_time seconds has passed since the last update.
 
-        :param dt: If set, uses this value for timestep instead of real time. This can be used in
-            simulations when simulation time is different from real time.
+        Args:
+            :vpd_current: The most recent vpd value calculated from the latest SnifferBuddyReading.
         """
 
         now = _current_time()
@@ -124,9 +183,9 @@ class PID(object):
         self._last_time = now
         # Compute error terms - Note: When the error is positive, the humidity is too low.  There is no dehumidifier.
         # However, we'll keep note of the error in the derivative and integral terms since these accumulate.
-        error = self.setpoint - input_
-        d_input = input_ - (self._last_input if (self._last_input is not None) else input_)
-        self._compute_terms(d_input, error, dt)
+        error = self.setpoint - vpd_current
+        d_vpd = vpd_current - (self._last_vpd if (self._last_vpd is not None) else vpd_current)
+        self._compute_terms(d_vpd, error, dt)
         self.logger.debug(
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
         )
@@ -154,22 +213,29 @@ class PID(object):
 
         # Keep track of state
         self._last_output = output
-        self._last_input = input_
+        self._last_vpd = vpd_current
         self._prev_error = error
         return nSecondsOn, error
 
-    def _compute_terms(self, d_input, error, dt):
+    def _compute_terms(self, d_vpd, error, dt):
+        """Compute the integral and derivative terms.  Clamp the integral term to prevent it from growing too large.
+
+        Args:
+            :d_vpd (float): The difference between the current and previous vpd values.  Used by the derivative term.
+            :error (float): The difference between the current vpd value and the setpoint.  Used by the proportional
+             integral term.
+            :dt (float): The difference in time between the current and previous vpd values.  Used by the integral and
+             derivative terms.
+        """
         # Compute integral and derivative terms
         # Since we are not using PID during the night, we reset the error terms and start over.
         self._proportional = self.Kp * error
         self._integral += self.Ki * error * dt
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
-        # watching the vpd values, I'm clamping the contribution to a maximum of 2 seconds.
-        self._integral = -_clamp(
-            abs(self._integral), [self.integral_limits_min, self.integral_limits_max]
-        )  # Avoid integral windup.
-        self._derivative = -self.Kd * d_input / dt
+        # watching the vpd values, having an ability to clamp the integral term seems to help.
+        self._integral = -_clamp(abs(self._integral), [self.integral_limits_min, self.integral_limits_max])
+        self._derivative = -self.Kd * d_vpd / dt
 
     def __repr__(self):
         return (

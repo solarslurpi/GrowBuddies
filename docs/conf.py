@@ -22,6 +22,10 @@ exclude_patterns = ["py_env/*", '**/_*']
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.autosectionlabel", "sphinx_design", "myst_parser", 'sphinx.ext.doctest']
+# Include doc strings for __init__ and __call__ methods.  The __call__ method is used in PID_code.py.
+autodoc_default_options = {
+    'special-members': '__init__,__call__'
+}
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
 

@@ -25,23 +25,7 @@ except AttributeError:
 
 
 class PID(object):
-    """A simple PID controller."""
-
-    def __init__(
-        self,
-        Kp=1.0,
-        Ki=0.0,
-        Kd=0.0,
-        setpoint=0,
-        sample_time=0.01,
-        output_limits=(None, None),
-        auto_mode=True,
-        proportional_on_measurement=False,
-        error_map=None,
-        mqqt_time=True,
-        log_level=logging.DEBUG
-    ):
-        """
+    """
         Initialize a new PID controller.
 
         :param Kp: The value for the proportional gain Kp
@@ -64,6 +48,22 @@ class PID(object):
             proportional-on-measurement avoids overshoot for some types of systems.
         :param error_map: Function to transform the error value in another constrained value.
         """
+
+    def __init__(
+        self,
+        Kp=1.0,
+        Ki=0.0,
+        Kd=0.0,
+        setpoint=0,
+        sample_time=0.01,
+        output_limits=(None, None),
+        auto_mode=True,
+        proportional_on_measurement=False,
+        error_map=None,
+        mqqt_time=True,
+        log_level=logging.DEBUG
+    ):
+
         self.mqtt_time = mqqt_time
         self.logger = LoggingHandler(log_level)
         self.Kp, self.Ki, self.Kd = Kp, Ki, Kd

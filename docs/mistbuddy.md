@@ -106,45 +106,29 @@ MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmot
  {octicon}`mark-github;1em;sd-text-success` View manage_vpd.py source
 ```
 ```{eval-rst}
+
+
 .. automodule:: growbuddies.manage_vpd
    :members: main
    :noindex:
 
-.. autoclass:: Callbacks
-   :members:
-
 .. autoclass:: growbuddies.mistbuddy_code.MistBuddy
-   :members: _pid
+   :members:
+.. autoclass:: growbuddies.PID_code.PID
+   :members:
+   :private-members:
+   :member-order: bysource
+
+
 ```
 
 
 
 
 
+(PID_tuning)=
+TBD: TUNING....
 
-==========================
-
-
-
-Keep doing these steps until told to stop:
-
-- Get temperature and humidity values by subscribing to [SnifferBuddy](snifferbuddy) messages.
-```{note} I set the SnifferBuddy time between readings to be 30 seconds using [the Tasmota Teleperiod command](set_time_between_readings).
-```
-- When a SnifferBuddy reading comes in, calculate the vpd based on the temperature and humidity readings.  Send the vpd value to the PID controller.   MistBuddy implements a modified version of the [simple-pid](https://github.com/m-lundberg/simple-pid) package.  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
-- The PID controller returns how many seconds to turn the DIY humidifier on.
-- MistBuddy turns the humidifier on for the number of seconds returned.  The humidifier is turned off after the number of seconds expires.
-
-
-MistBuddy relies on a modified version of the [simple-pid](https://github.com/m-lundberg/simple-pid) Python [PID control](https://en.wikipedia.org/wiki/PID_controller) code to maintain the ideal vpd.  Thanks to the initial work of [Brett Beauregard and his Arduino PID controller as well as documentation](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/).  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
-
-In this case, the setpoints MistBuddy cares about are in the `growbuddy_settings.json` file:
-```
-    "vpd_setpoints": {
-        "veg": 0.9,
-        "flower": 1.0
-    }
-```
 According to the [vpd chart](vpd_chart), the ideal vpd value when the plant is in the vegetative growth stage ranges between 0.8 and 0.95.  The ideal vpd value when the plant is in the flowering growth stage ranges between 0.95 and 1.15.  The setpoints comfortably fit within these ranges.
 
 

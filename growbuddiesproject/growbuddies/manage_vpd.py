@@ -99,7 +99,7 @@ class Callbacks:
         self.logger.debug(f"The light is {on_or_off_str}")
         # Adjust vpd. vpd is most relevant when the plants are transpiring when the lights are on.
         if self.mistbuddy.isLightOn(s.light_level):
-            self.mistbuddy.adjust_humidity(s)
+            self.mistbuddy.adjust_humidity(s.vpd)
         # Store readings
         if self.table_name:
             self.readings_store.store_readings(s.dict)
