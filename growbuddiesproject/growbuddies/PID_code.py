@@ -52,7 +52,8 @@ class growthStage(Enum):
 
 
 class PID(object):
-    """This class is a modified version of the `simple-pid <https://github.com/m-lundberg/simple-pid>`_ package.  Which evolved from `Brett Beauregard's Arduino PID controller <http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/>`_.  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
+    """The PID controller returns how many seconds to turn the DIY humidifier on.
+    This class is a modified version of the `simple-pid <https://github.com/m-lundberg/simple-pid>`_ package.  Which evolved from `Brett Beauregard's Arduino PID controller <http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/>`_.  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
 
     The PID controller is initialized with values from the growbuddies_settings.file.:
 
@@ -71,52 +72,36 @@ class PID(object):
         "integral_limits":[0, 7],
         "tolerance": 0.01
         }
-    The meanings of the parameters will be discussed below under __init__
-    - The PID controller returns how many seconds to turn the DIY humidifier on.
-    - MistBuddy turns the humidifier on for the number of seconds returned.  The humidifier is turned off after the number of seconds expires."""
+
+    The meanings of the parameters will be discussed below under __init__().
+    """
 
     def __init__(self):
+
         """Initialize a new PID controller.  Instead of passing parameters into the constructor, the PID controller is
         initialized with values from the growbuddies_settings.file.:
-
-        .. code-block:: python
-
-            settings = Settings()
-            settings.load()
-            callbacks = Callbacks()
-            methods = settings.get_callbacks("snifferbuddy_mqtt", callbacks)
-            mqtt_service = MQTTService(methods)
-            mqtt_service.start()
-
-
-        .. code-block:: python
-
-            "vpd_growth_stage": "veg",
-            "vpd_setpoints": {
-            "veg": 0.9,
-            "flower": 1.0
-            }
-
-
 
             Args:
                 :vpd_growth_stage: The growth stage of the plants being cared for.  This can be either 'veg' or 'flower'.
                 :vpd_setpoints: The setpoint for the PID controller.  This is the target value that the PID controller will
-                attempt to achieve.If the vpd_growth_stage is set to 'veg', the setpoint will be 0.9.  If the vpd_growth_stage
-                is set to 'flower', the setpoint will be 1.0.
+                 attempt to achieve.If the vpd_growth_stage is set to 'veg', the setpoint will be 0.9.  If the vpd_growth_stage
+                 is set to 'flower', the setpoint will be 1.0.
                 :Kp: The value for the proportional gain Kp.
                 :Ki: The value for the integral gain Ki.
                 :Kd: The value for the derivative gain Kd.
+                :output_limits: The upper limit for the humidifier to be on is determined by the output_limits. For example,
+                 if the output_limits is set to [0,20], the humidifier will turn off after 20 seconds, even if the PID calculation
+                 suggests it should run for a longer duration.
+                :integral_limits: The upper limit for the integral is determined by the integral_limits. As the process continues,
+                 the integral value will increase.  If the integral_limits is set to [0,7], the integral influence will be limited to 7 seconds.
+                :tolerance: If the vpd_current is within the tolerance of the setpoint, the PID controller will return 0 for the number of
+                 seconds to turn the humidifier on.
+
 
             .. note::
-                 See :ref:`The section on PID tuning<PID_tuning>` for more information on tuning these values.
-                :output_limits: Output limits can be specified as an iterable with two elements, such as (lower, upper).
-                These limits ensure that the output will never exceed the upper limit. Either
-                limit can be set to None if there is no limit in that direction.
-                :integral_limits: Integral limits can be specified as an iterable with two elements, such as (lower, upper).
-                These limits ensure that the integral will never exceed the upper limit. Either limit can be set to None if there is no limit in that direction.
-                :tolerance: If the vpd_current is within the tolerance of the setpoint, the PID controller will return 0 for the number of
-                seconds to turn the humidifier on.
+                See :ref:`The section on PID tuning<PID_tuning>` for more information on tuning these values.
+
+
 
         """
 
@@ -177,10 +162,11 @@ class PID(object):
         """
 
         now = _current_time()
-        if dt is None:
+        # if dt doesn't exist, it's the first time through. There is no self._last_time yet.
+        try:
+            dt
+        except NameError:
             dt = now - self._last_time if (now - self._last_time) else 1e-16
-        elif dt <= 0:
-            raise ValueError("dt has negative value {}, must be positive".format(dt))
         self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
         self._last_time = now
         # Compute error terms - Note: When the error is positive, the humidity is too low.  There is no dehumidifier.

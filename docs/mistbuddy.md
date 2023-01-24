@@ -118,16 +118,9 @@ MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmot
    :members:
    :private-members:
    :member-order: bysource
-
-
 ```
-
-
-
-
-
 (PID_tuning)=
-TBD: TUNING....
+## PID Tuning {material-regular}`settings;1em;sd-text-success`
 
 According to the [vpd chart](vpd_chart), the ideal vpd value when the plant is in the vegetative growth stage ranges between 0.8 and 0.95.  The ideal vpd value when the plant is in the flowering growth stage ranges between 0.95 and 1.15.  The setpoints comfortably fit within these ranges.
 
