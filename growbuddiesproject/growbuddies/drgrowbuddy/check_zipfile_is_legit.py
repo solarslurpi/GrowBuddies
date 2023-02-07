@@ -13,13 +13,16 @@ def check_zipfile(zip_file):
                 raise ValueError(f"{colors.Red}Directory structure is deeper than 2 levels: {name}{colors.Original}")
             for i in range(len(components)):
                 directories.add("/".join(components[:i + 1]))
-        jpg_count = {}
-        for directory in directories:
-            jpg_count[directory] = len([name for name in names if name.startswith(directory) and name.endswith(".jpg")])
-        return sorted(list(directories)), jpg_count
 
-zip_file = "drgb.zip"
-directories, jpg_count = check_zipfile(zip_file)
-print(f"Done. \n-----\n{len(directories)} directories found.")
-for directory in directories:
-    print(f"  - {directory}: {jpg_count[directory]} .jpg files")
+        base_directory = "datasets"
+        categories = [directory.split("/")[1] for directory in directories if directory != base_directory and directory.startswith(base_directory + "/")]
+
+        jpg_count = {}
+        for category in categories:
+            jpg_count[category] = len([name for name in names if category in name])
+        return jpg_count
+
+# zip_file = "drgb.zip"
+# jpg_count = check_zipfile(zip_file)
+# for key, value in jpg_count.items():
+#     print(f"Key: {key}, Value: {value}")
