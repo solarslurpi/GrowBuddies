@@ -1,5 +1,4 @@
 import zipfile
-import colors
 
 def check_zipfile(zip_file):
     with zipfile.ZipFile(zip_file) as archive:
@@ -7,10 +6,10 @@ def check_zipfile(zip_file):
         directories = set()
         for name in names:
             if not name.endswith(".jpg"):
-                raise ValueError(f"{colors.Red}Error {name} does not end in .jpg. Was the zip file created with the Python script `transfer_files.py`{colors.Original}")
+                raise ValueError(f"Error {name} does not end in .jpg. Was the zip file created with the Python script `transfer_files.py`")
             components = name.split("/")[:-1]
             if len(components) > 2:
-                raise ValueError(f"{colors.Red}Directory structure is deeper than 2 levels: {name}{colors.Original}")
+                raise ValueError(f"Directory structure is deeper than 2 levels: {name}")
             for i in range(len(components)):
                 directories.add("/".join(components[:i + 1]))
 
@@ -22,7 +21,7 @@ def check_zipfile(zip_file):
             jpg_count[category] = len([name for name in names if category in name])
         return jpg_count
 
-# zip_file = "drgb.zip"
-# jpg_count = check_zipfile(zip_file)
-# for key, value in jpg_count.items():
-#     print(f"Key: {key}, Value: {value}")
+zip_file = "drgb.zip"
+jpg_count = check_zipfile(zip_file)
+for key, value in jpg_count.items():
+    print(f"Key: {key}, Value: {value}")
