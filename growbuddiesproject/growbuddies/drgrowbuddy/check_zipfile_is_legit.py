@@ -21,7 +21,7 @@ def check_zipfile(zip_file):
             jpg_count[category] = len([name for name in names if category in name])
         return jpg_count
 
-zip_file = "drgb.zip"
-jpg_count = check_zipfile(zip_file)
-for key, value in jpg_count.items():
-    print(f"Key: {key}, Value: {value}")
+# zip_file = "drgb.zip"
+# jpg_count = check_zipfile(zip_file)
+# for key, value in jpg_count.items():
+#     print(f"Key: {key}, Value: {value}")
