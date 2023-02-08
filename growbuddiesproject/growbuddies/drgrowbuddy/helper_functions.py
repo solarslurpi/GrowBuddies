@@ -18,9 +18,8 @@ def check_zipfile(zip_file):
         base_directory = "datasets"
         categories = [directory.split("/")[1] for directory in directories if directory != base_directory and directory.startswith(base_directory + "/")]
 
-        jpg_count = {}
-        for category in categories:
-            jpg_count[category] = len([name for name in names if category in name])
+        jpg_count = {category: len([name for name in names if category in name]) for category in categories}
+
         return jpg_count
 
 #zip_file = "drgb.zip"
@@ -28,8 +27,7 @@ def check_zipfile(zip_file):
 #for key, value in jpg_count.items():
 #    print(f"Key: {key}, Value: {value}")
 #------------------------------------------------------------------------------------------------------
-# specify the zip file and the target directory
-def pull_out_images(zip_filepath="drgb.zip", categories=["healthy","powdery_mildew"], target_dir="datasets",nImages_per_directory=10):
+def pull_out_images(zip_filepath="drgb.zip", categories=["healthy","powdery_mildew"],nImages_per_directory=10):
 
     # open the zip file
     filepaths = {}
@@ -40,9 +38,7 @@ def pull_out_images(zip_filepath="drgb.zip", categories=["healthy","powdery_mild
             filepaths[category] = random.sample(filepaths[category], nImages_per_directory)
             # Make a new directory for the category under the datasets directory. Create the datasets directory if it doesn't exist.    
             # Copy the files in filepaths to the target directory.
-            for filepath in filepaths[category]:
-                zip_ref.extract(filepath)
-            # [zip_ref.extract(filepath, category_target_dir) for filepath in filepaths[category]]
+            [zip_ref.extract(filepath) for filepath in filepaths[category]]
 
 # pull_out_images()
 # print("Done")
