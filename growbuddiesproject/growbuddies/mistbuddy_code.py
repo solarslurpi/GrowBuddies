@@ -17,7 +17,6 @@
 
 from growbuddies.PID_code import PID
 from growbuddies.logginghandler import LoggingHandler
-from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
 from growbuddies.settings_code import Settings
 from growbuddies.mqtt_code import MQTTClient
 import threading
@@ -63,8 +62,6 @@ class MistBuddy:
             The code checks if the vpd setpoint is within an expected range. If it is not, an exception is raised.
 
 
-            hfellpo
-
             Args:
                 manage (bool, optional): _description_. Defaults to True.
 
@@ -84,8 +81,8 @@ class MistBuddy:
             raise Exception(
                 f"ERROR - Expecting a topic for the fan power and a topic for the mister power.  Received {len(topics_and_methods)} topics."
             )
-        self.fan_power_topic = topics_and_methods.popitem()
-        self.mister_power_topic = topics_and_methods.popitem()
+        self.fan_power_topic = topics_and_methods.popitem()[0]
+        self.mister_power_topic = topics_and_methods.popitem()[0]
 
         # These are used in the _pid() routine.
         self.pid_cum_error = 0.0
@@ -104,7 +101,7 @@ class MistBuddy:
         """This method calls the PID controller and turns the humidifier on if the PID controller determines that the vpd is too low.
 
         Args:
-            s (SnifferBuddyReadings): A reading from SnifferBuddy within an instance of SnifferBuddyReadings.
+            vpd (float): The most current vpd reading.
         """
         nSecondsON, error = self.pid(vpd)
 
@@ -113,7 +110,7 @@ class MistBuddy:
 
         # Only execute the mistBuddy if manage is true and nSecondsON is greater than 0
         if self.manage and nSecondsON > 0:
-            self._turn_on_mistBuddy(nSecondsON)
+            self.turn_on_mistBuddy(nSecondsON)
 
     def turn_on_mistBuddy(self, nSecondsON: int) -> None:
         """Sends an mqtt messages to mistBuddy's two power sources plugged into Tasmotized Smart plugs, a fan and a mister.
@@ -126,7 +123,7 @@ class MistBuddy:
         method is called. A connection to the mqtt broker is made, and the mqtt message payload "ON" is sent to the two plugs.
         """
         # Set up a timer with the callback on completion.
-        timer = threading.Timer(nSecondsON, self._turn_off_mistBuddy)
+        timer = threading.Timer(nSecondsON, self.turn_off_mistBuddy)
         # The command to a Sonoff plug can be either TOGGLE, ON, OFF.
         # Send the command to power ON.
         mqtt_client = MQTTClient("MistBuddy")

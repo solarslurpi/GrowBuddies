@@ -78,16 +78,20 @@ class SnifferBuddyReadings:
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler()
         self.logger.debug("-> Initializing SnifferBuddy class.")
+        self.valid_packet = True
 
         self.mqtt = json.loads(mqtt_payload)
-        # The air quality sensor's name in the mqtt message.
+        # The air quality sensor's name in the mqtt message. If it isn't there, we assume
+        # This payload is not from a SnifferBuddy.
         try:
             self.sensor = self._find_sensor_name(self.mqtt)
             self.name_dict = {self.sensor: ["Temperature", "Humidity", "CarbonDioxide"]}
-        except Exception as e:
-            self.logger.error(f"Could not identify the air quality sensor. Error: {e}")
+        except Exception:
+            self.logger.warning("Could not identify the air quality sensor. Not a SnifferBuddy packet.")
+            self.valid_packet = False
 
-    def _find_sensor_name(self, mqtt):
+
+    def _find_sensor_name(self, mqtt) -> str:
         sensor_names = ["SCD30", "SCD40"]
         for item in sensor_names:
             for key in mqtt.items():

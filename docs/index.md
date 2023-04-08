@@ -70,4 +70,5 @@ Stay tuned for more updates. In the meantime, happy gardening!
    tasmota
    systemd
    drgrowbuddy
+   troubleshooting
 ```

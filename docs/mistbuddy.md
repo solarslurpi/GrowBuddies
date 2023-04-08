@@ -122,19 +122,126 @@ MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmot
 (PID_tuning)=
 ## PID Tuning {material-regular}`settings;1em;sd-text-success`
 
-According to the [vpd chart](vpd_chart), the ideal vpd value when the plant is in the vegetative growth stage ranges between 0.8 and 0.95.  The ideal vpd value when the plant is in the flowering growth stage ranges between 0.95 and 1.15.  The setpoints comfortably fit within these ranges.
+PID tuning is a process of finding the "right values" for the Kp, Ki, and Kd gains.  The gains are used to calculate the output of the PID controller. In MistBuddy's case, the output is the number of seconds to turn on the humidifier. The tuning will be unique to each humidifier.
+### Time between Readings
+The time between readings is set within Tasmota (see the Tasmota section on ["Time Between Readings"](set_time_between_readings)).  I originally had this set to one minute. This was to accommodate longer times the humidifier would be on.  I am now testing getting SnifferBuddy readings every 30 seconds.
 
+The output is used to turn on/off the humidifier.  The gains are set in the `PID_settings` section of the `snifferbuddy_settings.json` file.  To tune the PID, I'll be using [the Ziegler-Nichols method](https://en.wikipedia.org/wiki/Ziegler%E2%80%93Nichols_method).
+### Difference Between Day and Night vpd
+:::{figure} images/day_night_vpd.jpg
+:align: center
+:scale: 100
 
-I came up with the following values for Kp, Ki, Kd after runs I made in my attempt to tune the PID controller:
+Step 3: Determine Ku and Tu
+:::
+The image shows the difference between vpd values during the day versus night.  vpd management is turned off when the lights are turned off.  vpd is about managing transpiration.  Transpiration is not happening when the lights are off.  A steep decline in the vpd value happens around 5PM.  This is when the lights turn off.  The vpd value increases again at 5AM when the lights turn on.
+
+### Tuning using the Ziegler-Nichols method
+The steps are:
+- Set the time between readings to 30 seconds.
+- Increment the proportional gain (Kp) until the system oscillates at a constant amplitude. This is called "the ultimate gain (Ku)".
+- Rerun the system with the new Kp value. The rerun is to verify the oscillation is stable.
+- Measure the oscillation period (Tu).
+- Calculate Kp, Ki, and Kd
+- Implement the PID controller with the calculated values of Kp, Ki, and Kd.
+Test the system and make adjustments as necessary.
+#### Set Time Between SnifferBuddy Readings
+The time between readings is set within Tasmota (see the Tasmota section on ["Time Between Readings"](set_time_between_readings)).  I originally had this set to one minute. This was to accommodate longer times the humidifier would be on.  I am now testing getting SnifferBuddy readings every 30 seconds. This appears to be working better.
+#### Determine the Ultimate Gain (Ku)
+The ultimate gain, Ku, is a measure of the maximum closed-loop control response of the system and is used to determine the proportional gain (Kp) of the PID controller.  The ultimate gain is determined by increasing the proportional gain (Kp) until the system oscillates at a constant amplitude.  This is what setting the `tune` variable in the `growbuddies_settings.json` file to `True` does.  When `tune` is set to `True`, each loop of the PID controller increases the proportional gain (Kp) by one.
+- Set the influxdb measurement table name in `growbuddies_settings.json`:
+```
+   "snifferbuddy_table_name": "ziegler_nichols_to_stable",
+```
+I named the table for this test `ziegler_nichols_to_stable`.  You can name it whatever you want.
+- Set `"tune": true` in growbuddies_settings.json:
 ```
     "PID_settings": {
-        "Kp": 43,
-        "Ki": 0.1,
-        "Kd": 0.1,
-        "output_limits": [0, 30]
+        "Kp": 250,
+        "Ki": 0,
+        "Kd": 0,
+        "output_limits": [0, 20],
+        "integral_limits":[0, 7],
+        "tolerance": 0.01,
+        "tune": true
     }
 ```
-Using 43 for the Kp gain includes converting from vpd errors that are in tenths values to several seconds to turn on the humidifier.
+- Set Kp to a low starting value.
+_Note: I had done this.  However, the table in influxdb got corrupted.  Looking at the debug files, I used 250 as the starting value._
+- Start `manage_vpd.service`.  Readings will be stored in the measurement table defined within the `"snifferbuddy_table_name"` key in `growbuddies_settings.json`.
+   - Evaluate the readings.
+
+:::{figure} images/FindingKu_mistbuddy.jpg
+:align: center
+:scale: 50
+
+Determine the ultimate Gain (Ku)
+:::
+While the image is blurry, the plot shows a steady oscillation starting at 13:49:55.  The Ku value is the Kp value at 13:49:55.  I'll use this value as the starting value for Kp in the next step.  The debug record at about this time:
+```
+Feb 10 13:49:58 gus python[21086]: 2023-02-10 13:49:58,675:\[\]/home/pi/GrowBuddies/growbuddiesproject/growbuddies/PID_code.py:189  __call__   ...K values: Kp 361 Ki 0  Kd 0
+```
+Shows Kp=__Ku=361__.
+
+#### Rerun with Kp set at 361
+- Set the influxdb measurement table name in `growbuddies_settings.json`:
+```
+   "snifferbuddy_table_name": "ziegler_nichols_361",
+```
+- Set `tune` to false,
+- Set the Kp setting to 361:
+```
+    "PID_settings": {
+        "Kp": 361,
+        "Ki": 0,
+        "Kd": 0,
+        "output_limits": [0, 20],
+        "integral_limits":[0, 7],
+        "tolerance": 0.01,
+        "tune": false
+    }
+```
+The results:
+:::{figure} images/Kp361.jpg
+:align: center
+
+Run with Kp set at 361
+:::
+The plot shows the os
+#### Measure the Oscillation Period (Tu)
+The oscillation period (Tu) is the time it takes for the system to complete one oscillation.
+#### Step 3: Calculate the Gain Values
+:::{figure} images/Tu361_jpg.jpg
+:align: center
+
+Oscillation Period (Tu)
+:::
+Tu = 3 minues = 180 seconds
+Ku = 361
+
+Using [the Ziegler-Nichols table for a classic PID controller](https://www.allaboutcircuits.com/projects/embedded-pid-temperature-control-part-6-zieglernichols-tuning/)
+
+|          | Kp       |      Ti       |  Td   |
+|----------|----------|:-------------:|------:|
+|  P-only  |  Ku/2    |               |       |
+|  Pi      |  Ku/2.2  |    Tu/1.2     |       |
+|  PID     |  Ku/1.7  |    Tu/2       | Tu/8  |
+
+
+
+- Kp = Ku/1.7 = 361/1.7 = 212.35 = 212
+- Ti = Tu/2 = 180/2 = 90 seconds
+- Td = Tu/8 = 180/8 = 22.5 seconds
+
+Ki = Kp(T/Ti) = 212*(180/90) = 424
+Kd = Kp(Td/T) = 212*(22.5/180) = 23
+
+| Gains | Kp    | Ki    | Kd
+|-------|:-----:|:-----:|:-----:
+|       | 182.4 | 364.8 | 22.8
+
+
+
 
 
 ### Let's Play

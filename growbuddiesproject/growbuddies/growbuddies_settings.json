@@ -3,7 +3,7 @@
     "log_level": "DEBUG",
     "db_name": "gus",
     "dripbuddy_table_name": "dripbuddy_calibration",
-    "snifferbuddy_table_name": "POST Ziegler-Nichols",
+    "snifferbuddy_table_name": "new_grow_week1",
     "snifferbuddy_mqtt": {"tele/snifferbuddy/SENSOR": "on_snifferbuddy_readings",
                           "tele/snifferbuddy/LWT": "on_snifferbuddy_status"},
     "dripbuddy_mqtt": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",
@@ -12,7 +12,7 @@
     "mistbuddy_mqtt": {"cmnd/mistbuddy_fan/POWER": "",
                         "cmnd/mistbuddy_mister/POWER": ""},
     "snapbuddy_mqtt": {"timelapse": "on_timelapse"},
-    "vpd_growth_stage": "flower",
+    "vpd_growth_stage": "veg",
     "vpd_setpoints": {
         "veg": 0.9,
         "flower": 1.0
@@ -20,11 +20,12 @@
     "snapbuddy_settings_1": {"hostname": "snapbuddy1", "interval_secs": 3600, "timelapse_dir": "/home/pi/GrowBuddies/growbuddiesproject/growbuddies/timelapse/snapbuddy1"},
 
     "PID_settings": {
-        "Kp": 240,
+        "Kp": 361,
         "Ki": 0.1,
         "Kd": 0.1,
         "output_limits": [0, 20],
         "integral_limits":[0, 7],
-        "tolerance": 0.01
+        "tolerance": 0.01,
+        "tune": false
     }
 }

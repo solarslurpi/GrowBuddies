@@ -26,7 +26,20 @@ I found the following info useful to figure out how to get systemd to do what I 
 4. Enable the service with `sudo systemctl enable snifferbuddy_storereadings.service`.
 5. Check to make sure the service has been enabled with `systemctl is-enabled snifferbuddy_storereadings.service`.
 6. Start the service with `sudo systemctl start snifferbuddy_storereadings.service`.
-7. Check to make sure the service has been started with `systemctl is-active snifferbuddy_storereadings.service`.  In this example, starting the service failed.  To find out why, try `journalctl -u snifferbuddy_storereadings.service`.  Here are log lines from one of the services I ran:
+7. Check to make sure the service has been started with `systemctl is-active snifferbuddy_storereadings.service`.  In this example, starting the service failed.
+- To find out why, try `journalctl -u snifferbuddy_storereadings.service`.
+_Note: When a process terminates, its PID becomes available for use by a new process. If a new process is assigned the same PID as a previous process, the logs from the previous process can appear mixed with the logs from the new process.  To resolve this, use the `--since` option:
+```
+journalctl --since "2023-02-09 14:06:10" -u manage_vpd.service
+
+Feb 09 14:06:10 gus systemd[1]: Started MistBuddy adjusts the humidifier based on the vpd.
+Feb 09 14:06:11 gus python[3520]: 2023-02-09 14:06:11,345:\[\]/home/pi/GrowBuddies/growbuddiesproject/growbuddies/mistbuddy_code.py:75  __init__   ...Managing vpd.
+.
+.
+.
+```
+
+Here are log lines from one of the services I ran:
 
 ```{literalinclude} logreadings.txt
 :language: bash

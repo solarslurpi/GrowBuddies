@@ -1,4 +1,5 @@
 # Dr GrowBuddy
+- [colab notebook with data pre-processing learnings](https://colab.research.google.com/github/solarslurpi/GrowBuddies/blob/main/growbuddiesproject/growbuddies/drgrowbuddy/data_preprocessing_learnings.ipynb)
 
 ## Data Sources
 

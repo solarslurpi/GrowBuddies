@@ -59,8 +59,6 @@ class Settings:
             str: The value associated with the key.
         """
         value = self.settings.get(key)
-        if not value and not default:
-            raise Exception(f"There Key {key} is {value}")
         return value if value else default
 
     def get_callbacks(self, key: str, instance_of_callbacks_class) -> dict:
@@ -108,14 +106,10 @@ class Settings:
         """
         callbacks_for_topic = self.get(key)
         callback_methods = {}
-        for k in callbacks_for_topic.keys():
-            callback_name = k
-            if callback_name:
-                try:
-                    callback_methods[k] = getattr(instance_of_callbacks_class, callback_name)
-                except AttributeError:
-                    print(f"Callback {callback_name} not found.")
-                    callback_methods[k] = None
-            else:
-                callback_methods[k] = None
+        for topic in callbacks_for_topic.keys():
+            try:
+                callback_methods[topic] = getattr(instance_of_callbacks_class, callbacks_for_topic[topic])
+            except AttributeError:
+                print(f"Callback for mqtt topic {topic}  not found.")
+                callback_methods[topic] = None
         return callback_methods

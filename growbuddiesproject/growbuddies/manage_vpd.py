@@ -94,15 +94,16 @@ class Callbacks:
         """
         # Translate the mqtt message into a SnifferBuddy class.
         s = SnifferBuddyReadings(msg)
-        self.logger.debug(f"the snifferbuddy values: {s.dict}")
-        on_or_off_str = "ON" if self.mistbuddy.isLightOn(s.light_level) else "OFF"
-        self.logger.debug(f"The light is {on_or_off_str}")
-        # Adjust vpd. vpd is most relevant when the plants are transpiring when the lights are on.
-        if self.mistbuddy.isLightOn(s.light_level):
-            self.mistbuddy.adjust_humidity(s.vpd)
-        # Store readings
-        if self.table_name:
-            self.readings_store.store_readings(s.dict)
+        if s.valid_packet:
+            self.logger.debug(f"the snifferbuddy values: {s.dict}")
+            on_or_off_str = "ON" if self.mistbuddy.isLightOn(s.light_level) else "OFF"
+            self.logger.debug(f"The light is {on_or_off_str}")
+            # Adjust vpd. vpd is most relevant when the plants are transpiring when the lights are on.
+            if self.mistbuddy.isLightOn(s.light_level):
+                self.mistbuddy.adjust_humidity(s.vpd)
+            # Store readings
+            if self.table_name:
+                self.readings_store.store_readings(s.dict)
 
     # The vpd value is returned. Turn on and off the humidifier based on it's value.
 

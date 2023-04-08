@@ -1,0 +1,3957 @@
+[
+    {
+        "id": "b2b2cf3fbcec5eed",
+        "type": "tab",
+        "label": "SB incoming readings flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "a7f76a515c8544a2",
+        "type": "tab",
+        "label": "SB UI Grafana flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e276300d7cbaa457",
+        "type": "tab",
+        "label": "SB UI Buddy Stuff Flow",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1163bcff9c10da0f",
+        "type": "tab",
+        "label": "PB Humidifier",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "80e2328c091f49c9",
+        "type": "tab",
+        "label": "CamBuddy",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "421e80d521f48098",
+        "type": "tab",
+        "label": "Irrigation Pump",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "e9f57d902aeecba9",
+        "type": "tab",
+        "label": "PAR Buddy",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "f8b9694fdc50d17f",
+        "type": "tab",
+        "label": "Turn S3 on/off",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "9ae175b32b26f367",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7f5b70e481620d6e",
+        "type": "subflow",
+        "name": "SB - Error Check",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": -20,
+                "y": 80,
+                "wires": [
+                    {
+                        "id": "34247234f0668477"
+                    },
+                    {
+                        "id": "35956015b760807c"
+                    }
+                ]
+            }
+        ],
+        "out": [
+            {
+                "x": 1380,
+                "y": 40,
+                "wires": [
+                    {
+                        "id": "23104b00346c1d1f",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "299ed8b77420c170",
+        "type": "subflow",
+        "name": "SB - influxdb and grafana",
+        "info": "",
+        "category": "",
+        "in": [
+            {
+                "x": 240,
+                "y": 300,
+                "wires": [
+                    {
+                        "id": "73136c801db1d7fa"
+                    },
+                    {
+                        "id": "ab4f06407c0edae6"
+                    },
+                    {
+                        "id": "6d28b3d4d68d0354"
+                    },
+                    {
+                        "id": "30145a16f0cec555"
+                    }
+                ]
+            }
+        ],
+        "out": [],
+        "env": [],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "dd5b4280471fc9a9",
+        "type": "group",
+        "z": "b2b2cf3fbcec5eed",
+        "name": "Incoming Sniffer Buddy Readings via mqtt",
+        "style": {
+            "stroke": "#0070c0",
+            "fill": "#bfdbef",
+            "label": true,
+            "label-position": "n",
+            "color": "#000000"
+        },
+        "nodes": [
+            "f581f181cd9850c5",
+            "bc065d6677b1f46b",
+            "16f1e159dc4f3e84",
+            "6a9a0ec21f3d6810",
+            "840d20f7b8b2844b",
+            "fbeb377931dbc8e2",
+            "b6f864048abe85d4",
+            "07098a2be29dd344",
+            "f41c631bb0e33bf4",
+            "504e5db12d254cbb",
+            "eb121a6b1c64fc57",
+            "6c18c78d2e27e1d1",
+            "91d6114c8d9f582b",
+            "573be0a2b1ea622e",
+            "863490e53bc7a204",
+            "e8c381448de3c5aa",
+            "60d37fa549693ae8"
+        ],
+        "x": -6,
+        "y": 219,
+        "w": 1572,
+        "h": 302
+    },
+    {
+        "id": "dbd31ea25ec2540d",
+        "type": "group",
+        "z": "1163bcff9c10da0f",
+        "name": "Debug",
+        "style": {
+            "label": true,
+            "color": "#000000"
+        },
+        "nodes": [
+            "d80291d6175bab6b",
+            "abd476dd6444940f"
+        ],
+        "x": 174,
+        "y": 419,
+        "w": 332,
+        "h": 82
+    },
+    {
+        "id": "c319afa4.557968",
+        "type": "group",
+        "z": "9ae175b32b26f367",
+        "style": {
+            "stroke": "#999999",
+            "stroke-opacity": "1",
+            "fill": "none",
+            "fill-opacity": "1",
+            "label": true,
+            "label-position": "nw",
+            "color": "#a4a4a4"
+        },
+        "nodes": [
+            "14ce4cc6.d66e1b",
+            "130b08c0.946dff",
+            "a0cd749f.8635c8",
+            "ab9a436b.1dbad8",
+            "7ac12a79.c2e98c",
+            "3f58c8f3.cdbed",
+            "dd4ec3f6.31e2a",
+            "cb47b44.cab4c48"
+        ],
+        "x": 129.66668701171875,
+        "y": 362.00001335144043,
+        "w": 1027.6665344238281,
+        "h": 210.33335876464844
+    },
+    {
+        "id": "77fed1c377eed3df",
+        "type": "mqtt-broker",
+        "name": "growbuddy",
+        "broker": "growbuddy",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "120",
+        "cleansession": true,
+        "birthTopic": "stat/plug_fillerup/POWER",
+        "birthQos": "0",
+        "birthPayload": "ON",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "2a76ce87b12bff46",
+        "type": "ui_base",
+        "theme": {
+            "name": "theme-dark",
+            "lightTheme": {
+                "default": "#0094CE",
+                "baseColor": "#0094CE",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": false
+            },
+            "darkTheme": {
+                "default": "#097479",
+                "baseColor": "#37adb3",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif",
+                "edited": true,
+                "reset": false
+            },
+            "customTheme": {
+                "name": "Untitled Theme 1",
+                "default": "#4B7930",
+                "baseColor": "#4B7930",
+                "baseFont": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+            },
+            "themeState": {
+                "base-color": {
+                    "default": "#097479",
+                    "value": "#097479",
+                    "edited": false
+                },
+                "page-titlebar-backgroundColor": {
+                    "value": "#37adb3",
+                    "edited": false
+                },
+                "page-backgroundColor": {
+                    "value": "#111111",
+                    "edited": false
+                },
+                "page-sidebar-backgroundColor": {
+                    "value": "#ffffff",
+                    "edited": false
+                },
+                "group-textColor": {
+                    "value": "#66cbd0",
+                    "edited": false
+                },
+                "group-borderColor": {
+                    "value": "#555555",
+                    "edited": false
+                },
+                "group-backgroundColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "widget-textColor": {
+                    "value": "#eeeeee",
+                    "edited": false
+                },
+                "widget-backgroundColor": {
+                    "value": "#37adb3",
+                    "edited": false
+                },
+                "widget-borderColor": {
+                    "value": "#333333",
+                    "edited": false
+                },
+                "base-font": {
+                    "value": "-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif"
+                }
+            },
+            "angularTheme": {
+                "primary": "indigo",
+                "accents": "blue",
+                "warn": "red",
+                "background": "grey",
+                "palette": "light"
+            }
+        },
+        "site": {
+            "name": "Sniffer Buddy",
+            "hideToolbar": "false",
+            "allowSwipe": "false",
+            "lockMenu": "false",
+            "allowTempTheme": "true",
+            "dateFormat": "M/DD/YYYY",
+            "sizes": {
+                "sx": 48,
+                "sy": 48,
+                "gx": 6,
+                "gy": 6,
+                "cx": 6,
+                "cy": 6,
+                "px": 0,
+                "py": 0
+            }
+        }
+    },
+    {
+        "id": "ab7d13904246734b",
+        "type": "influxdb",
+        "hostname": "growbuddy",
+        "port": "8086",
+        "protocol": "http",
+        "database": "growbuddy",
+        "name": "growbuddy",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "1.x",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "d1840c4451e46f7b",
+        "type": "ui_group",
+        "name": "Readings",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "bbc3532f.41ca7",
+        "type": "ui_group",
+        "name": "Readings",
+        "tab": "1ff97cd4.681d5b",
+        "order": 2,
+        "disp": true,
+        "width": 16,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1ff97cd4.681d5b",
+        "type": "ui_tab",
+        "name": "Grow Buddy",
+        "icon": "dashboard",
+        "order": 37,
+        "disabled": false,
+        "hidden": false
+    },
+    {
+        "id": "83aa45e7.130ea8",
+        "type": "ui_group",
+        "name": "test",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": true,
+        "className": ""
+    },
+    {
+        "id": "7a0c3262d7dd5dc0",
+        "type": "ui_group",
+        "name": "Buddy Stuff",
+        "tab": "1ff97cd4.681d5b",
+        "order": 1,
+        "disp": true,
+        "width": 16,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "e16e06ca.f38438",
+        "type": "ui_group",
+        "name": "Frame Statistics",
+        "tab": "",
+        "order": 2,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "675036dd.603328",
+        "type": "ui_group",
+        "name": "Frame Grab",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "8",
+        "collapse": false
+    },
+    {
+        "id": "ac133c3c.7c708",
+        "type": "ui_group",
+        "z": "e276300d7cbaa457",
+        "name": "Default",
+        "tab": "",
+        "order": 1,
+        "disp": true,
+        "width": "6"
+    },
+    {
+        "id": "1f16ea14e7cf23c6",
+        "type": "ui_group",
+        "name": "Web cam",
+        "tab": "1ff97cd4.681d5b",
+        "order": 3,
+        "disp": true,
+        "width": 8,
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1c55f86af6093688",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 2,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "af78efd7df6d6c47",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 4,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "04826e21fb754e9f",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 6,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "02747195595bb7f0",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 8,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "8166046b3f139aa8",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 10,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "9a5481d182a27436",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 12,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "3c82ca3d080f2e03",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 14,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "5c118483eb1485c1",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 16,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "791cefac6d20a24c",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 17,
+        "width": 4,
+        "height": 1
+    },
+    {
+        "id": "20bcf82485fcc87d",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 18,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "4bcba760d28d5734",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 19,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "c971e938531b1950",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 20,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "0d046e25ece278a7",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "bbc3532f.41ca7",
+        "order": 1,
+        "width": 2,
+        "height": 1
+    },
+    {
+        "id": "3579ac0111768862",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "bbc3532f.41ca7",
+        "order": 3,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "34613f6d1d6ec150",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "bbc3532f.41ca7",
+        "order": 5,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "be7d67c8c86285fb",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "bbc3532f.41ca7",
+        "order": 7,
+        "width": 1,
+        "height": 1
+    },
+    {
+        "id": "a5e580242c1ff193",
+        "type": "ui_spacer",
+        "z": "80e2328c091f49c9",
+        "name": "spacer",
+        "group": "bbc3532f.41ca7",
+        "order": 9,
+        "width": 3,
+        "height": 1
+    },
+    {
+        "id": "34247234f0668477",
+        "type": "function",
+        "z": "7f5b70e481620d6e",
+        "name": "Check if we're getting valid readings",
+        "func": "\n/* ASSUMPTIONS:\n- Humidity should read at least greater than 30 (percent) and less than or equal to 100.\n- Temperature should read at least greater than 50 (degrees F) and less than 100 degrees F.\n- CO2 level should read at least 350 (ppm) and less than 1800.\n*/\n\n/* I did separate if statements because of the way I was finding\nerrors coming in.  If the I2C interface isn't working, there \nis a different error than if the I2C interface is working but the \nthe sensor is not.\n*/\n if (msg.payload == \"read-measurement\") {\n    node.warn(\"** Error: Check Sensor.  I2C interface is not working...\");\n    msg.payload.good_readings = false;\n    return msg;\n    \n}\nif (msg.payload.SCD30== undefined){\n    node.warn(\"** ERROR: Not getting SCD30 readings...\");\n    msg.payload.good_readings = false;\n    return msg;\n}\n/* Convert Temp reading to F from C */\nmsg.payload.SCD30.Temperature = msg.payload.SCD30.Temperature*9/5 + 32;\n/* The Sensor could be sending bad readings */\n\nif (isNaN(msg.payload.SCD30.CarbonDioxide) ){\n    node.warn(\"** ERROR: Check Sensor. Not getting valid readings. ..\");\n    msg.payload.good_readings = false;\n    \n}else if (msg.payload.SCD30.Humidity < 30 || msg.payload.SCD30.Humidity > 100){\n    node.warn(\"** ERROR: Check Sensor. Humidity reading is \"+msg.payload.Humidity);\n    msg.payload.good_readings = false;\n}else if (msg.payload.SCD30.Temperature < 50 || msg.payload.SCD30.Temperature > 90){\n    node.warn(\"** ERROR: Check Sensor. Temperature reading is \"+msg.payload.SCD30.Temperature);\n    msg.payload.good_readings = false;\n}else if (msg.payload.SCD30.CarbonDioxide < 350 || msg.payload.SCD30.CarbonDioxide > 1800){\n    node.warn(\"** ERROR: Check Sensor. CO2 level reading is \"+msg.payload.SCD30.CarbonDioxide);\n    msg.payload.good_readings = false;\n}\nelse {\n    msg.payload.good_readings = true;\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 430,
+        "y": 100,
+        "wires": [
+            [
+                "3c657af948247c47"
+            ]
+        ],
+        "inputLabels": [
+            "Unvalidated Sensor Readings"
+        ],
+        "outputLabels": [
+            "Validated Sensor readings"
+        ]
+    },
+    {
+        "id": "3c657af948247c47",
+        "type": "switch",
+        "z": "7f5b70e481620d6e",
+        "name": "true if we are getting readings",
+        "property": "payload.good_readings",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 730,
+        "y": 100,
+        "wires": [
+            [
+                "96ad718c50324646"
+            ],
+            [
+                "232789a045a98448"
+            ]
+        ]
+    },
+    {
+        "id": "23104b00346c1d1f",
+        "type": "change",
+        "z": "7f5b70e481620d6e",
+        "name": "set snifferBuddy_working to true",
+        "rules": [
+            {
+                "t": "set",
+                "p": "snifferBuddy_working",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1190,
+        "y": 40,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "232789a045a98448",
+        "type": "change",
+        "z": "7f5b70e481620d6e",
+        "name": "add 1 to n_bad_readings",
+        "rules": [
+            {
+                "t": "set",
+                "p": "n_bad_readings",
+                "pt": "flow",
+                "to": "$flowContext(\"n_bad_readings\")+1",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 160,
+        "wires": [
+            [
+                "7c2d03e0b4809e9e",
+                "5c0e2f583f51111c"
+            ]
+        ]
+    },
+    {
+        "id": "7c2d03e0b4809e9e",
+        "type": "switch",
+        "z": "7f5b70e481620d6e",
+        "name": "n_bad_readings > 3?",
+        "property": "n_bad_readings",
+        "propertyType": "flow",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "3",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 1220,
+        "y": 100,
+        "wires": [
+            [
+                "5746a4c7a8a82e23"
+            ]
+        ]
+    },
+    {
+        "id": "5c0e2f583f51111c",
+        "type": "function",
+        "z": "7f5b70e481620d6e",
+        "name": "print n_bad_readings",
+        "func": "msg.payload = \"number of bad readings: \" + flow.get(\"n_bad_readings\");\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1190,
+        "y": 200,
+        "wires": [
+            [
+                "4408918677e3640b"
+            ]
+        ]
+    },
+    {
+        "id": "4408918677e3640b",
+        "type": "debug",
+        "z": "7f5b70e481620d6e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1430,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "96ad718c50324646",
+        "type": "change",
+        "z": "7f5b70e481620d6e",
+        "name": "set n_bad_readings to 0",
+        "rules": [
+            {
+                "t": "set",
+                "p": "n_bad_readings",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 930,
+        "y": 40,
+        "wires": [
+            [
+                "23104b00346c1d1f"
+            ]
+        ]
+    },
+    {
+        "id": "5746a4c7a8a82e23",
+        "type": "change",
+        "z": "7f5b70e481620d6e",
+        "name": "set snifferBuddy_working to false",
+        "rules": [
+            {
+                "t": "set",
+                "p": "snifferBuddy_working",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1520,
+        "y": 100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a0ea1b32b045e152",
+        "type": "config",
+        "z": "7f5b70e481620d6e",
+        "name": "State Variables",
+        "properties": [
+            {
+                "p": "n_bad_readings",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "active": true,
+        "x": 460,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "35956015b760807c",
+        "type": "debug",
+        "z": "7f5b70e481620d6e",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 210,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "ea57ab63d4689d43",
+        "type": "debug",
+        "z": "299ed8b77420c170",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "73136c801db1d7fa",
+        "type": "change",
+        "z": "299ed8b77420c170",
+        "name": "CO2",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.SCD30.CarbonDioxide",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "CO2",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 410,
+        "y": 240,
+        "wires": [
+            [
+                "715ab9fd33f18591"
+            ]
+        ]
+    },
+    {
+        "id": "ab4f06407c0edae6",
+        "type": "change",
+        "z": "299ed8b77420c170",
+        "name": "Humidity",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.SCD30.Humidity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Humidity",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 420,
+        "y": 300,
+        "wires": [
+            [
+                "715ab9fd33f18591"
+            ]
+        ]
+    },
+    {
+        "id": "715ab9fd33f18591",
+        "type": "join",
+        "z": "299ed8b77420c170",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "4",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "",
+        "reduceFixup": "",
+        "x": 620,
+        "y": 280,
+        "wires": [
+            [
+                "ea57ab63d4689d43",
+                "c756ccc1259c0c8d"
+            ]
+        ]
+    },
+    {
+        "id": "6d28b3d4d68d0354",
+        "type": "change",
+        "z": "299ed8b77420c170",
+        "name": "Temperature",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "payload.SCD30.Temperature",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "Temperature",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 360,
+        "wires": [
+            [
+                "715ab9fd33f18591"
+            ]
+        ]
+    },
+    {
+        "id": "c756ccc1259c0c8d",
+        "type": "influxdb out",
+        "z": "299ed8b77420c170",
+        "influxdb": "ab7d13904246734b",
+        "name": "snifferbuddy readings to influxdb",
+        "measurement": "readings",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 880,
+        "y": 360,
+        "wires": []
+    },
+    {
+        "id": "30145a16f0cec555",
+        "type": "function",
+        "z": "299ed8b77420c170",
+        "name": "calc VPD",
+        "func": "var air_T = msg.payload.SCD30.Temperature;\n/* Assume leaf temp is 2 degrees F less */\nvar leaf_T = air_T - 2;\nvar RH = msg.payload.SCD30.Humidity;\n\n/* see https://www.questclimate.com/vapor-pressure-deficit-indoor-growing-part-3-different-stages-vpd/ */\nleaf_vpd = 3.386*(Math.exp(17.863-9621/(leaf_T+460))-((RH/100)*Math.exp(17.863-9621/(air_T+460))));\nmsg.payload = Number(leaf_vpd.toFixed(2));\nmsg.topic = \"vpd\"\n/* The global vpd variable is used when determining if humidifier should be on or off */\nglobal.set(\"vpd\",msg.payload)\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 420,
+        "wires": [
+            [
+                "715ab9fd33f18591"
+            ]
+        ]
+    },
+    {
+        "id": "4724912cabff749a",
+        "type": "config",
+        "z": "b2b2cf3fbcec5eed",
+        "name": "Sniffer Buddy Variables",
+        "properties": [
+            {
+                "p": "CO2_level",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "p": "Temperature",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "p": "Humidity",
+                "pt": "flow",
+                "to": "0",
+                "tot": "num"
+            },
+            {
+                "p": "CONST_LIGHT_ON_OFF_THRESHOLD",
+                "pt": "flow",
+                "to": "700",
+                "tot": "num"
+            }
+        ],
+        "active": true,
+        "x": 310,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "627d37df22406854",
+        "type": "config",
+        "z": "b2b2cf3fbcec5eed",
+        "name": "Global Variables",
+        "properties": [
+            {
+                "p": "snifferBuddy_working",
+                "pt": "global",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "active": true,
+        "x": 640,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "6128f7ed51f44173",
+        "type": "change",
+        "z": "b2b2cf3fbcec5eed",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 800,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f581f181cd9850c5",
+        "type": "mqtt in",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "Sniffer Buddy readings",
+        "topic": "tele/snifferbuddy/SENSOR",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "77fed1c377eed3df",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 120,
+        "y": 320,
+        "wires": [
+            [
+                "16f1e159dc4f3e84"
+            ]
+        ]
+    },
+    {
+        "id": "bc065d6677b1f46b",
+        "type": "subflow:7f5b70e481620d6e",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "",
+        "x": 470,
+        "y": 320,
+        "wires": [
+            [
+                "504e5db12d254cbb"
+            ]
+        ]
+    },
+    {
+        "id": "16f1e159dc4f3e84",
+        "type": "json",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 310,
+        "y": 320,
+        "wires": [
+            [
+                "bc065d6677b1f46b",
+                "60d37fa549693ae8"
+            ]
+        ]
+    },
+    {
+        "id": "6a9a0ec21f3d6810",
+        "type": "change",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "set Variables",
+        "rules": [
+            {
+                "t": "set",
+                "p": "CO2",
+                "pt": "flow",
+                "to": "payload.SCD30.CarbonDioxide",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "Humidity",
+                "pt": "global",
+                "to": "payload.SCD30.Humidity",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "Temperature",
+                "pt": "global",
+                "to": "payload.SCD30.Temperature",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "Light_ON",
+                "pt": "global",
+                "to": "payload.ANALOG.A0 > $flowContext(\"CONST_LIGHT_ON_OFF_THRESHOLD\") ? true : false",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 930,
+        "y": 320,
+        "wires": [
+            [
+                "fbeb377931dbc8e2"
+            ]
+        ]
+    },
+    {
+        "id": "840d20f7b8b2844b",
+        "type": "mqtt in",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "Sniffer Buddy LWT",
+        "topic": "tele/snifferbuddy/LWT",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "77fed1c377eed3df",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 110,
+        "y": 420,
+        "wires": [
+            [
+                "07098a2be29dd344"
+            ]
+        ]
+    },
+    {
+        "id": "fbeb377931dbc8e2",
+        "type": "change",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "put LED on/off in msg",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Light_ON",
+                "tot": "global"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1220,
+        "y": 320,
+        "wires": [
+            [
+                "b6f864048abe85d4"
+            ]
+        ]
+    },
+    {
+        "id": "b6f864048abe85d4",
+        "type": "rbe",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "Block unless LED on/off changes",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload",
+        "topi": "topic",
+        "x": 1080,
+        "y": 380,
+        "wires": [
+            [
+                "f41c631bb0e33bf4",
+                "e8c381448de3c5aa"
+            ]
+        ]
+    },
+    {
+        "id": "07098a2be29dd344",
+        "type": "function",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "Check if getting mqtt readings.",
+        "func": "if (msg.payload == 'Online') {\n  //  node.warn(\"***> INFO: receiving readings from Sniffer Buddy.\");\n} else {\n //   node.warn(\"***> ERROR: UhOh! Not receiving readings from Sniffer Buddy\");\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 420,
+        "wires": [
+            [
+                "573be0a2b1ea622e"
+            ]
+        ]
+    },
+    {
+        "id": "f41c631bb0e33bf4",
+        "type": "e-mail",
+        "z": "b2b2cf3fbcec5eed",
+        "d": true,
+        "g": "dd5b4280471fc9a9",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "happyday.mjohnson@gmail.com",
+        "dname": "Send Lights ON/OFF email",
+        "x": 1300,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "504e5db12d254cbb",
+        "type": "switch",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "snifferBuddy_working?",
+        "property": "snifferBuddy_working",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 730,
+        "y": 320,
+        "wires": [
+            [
+                "6a9a0ec21f3d6810",
+                "863490e53bc7a204"
+            ],
+            [
+                "6c18c78d2e27e1d1"
+            ]
+        ]
+    },
+    {
+        "id": "eb121a6b1c64fc57",
+        "type": "e-mail",
+        "z": "b2b2cf3fbcec5eed",
+        "d": true,
+        "g": "dd5b4280471fc9a9",
+        "server": "smtp.gmail.com",
+        "port": "465",
+        "secure": true,
+        "tls": true,
+        "name": "happyday.mjohnson@gmail.com",
+        "dname": "Send not working email",
+        "x": 1030,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "6c18c78d2e27e1d1",
+        "type": "change",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "set msg to SnifferBuddy not working.",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "UHOH!!! SnifferBuddy is not working",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 380,
+        "wires": [
+            [
+                "eb121a6b1c64fc57"
+            ]
+        ]
+    },
+    {
+        "id": "91d6114c8d9f582b",
+        "type": "change",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "handle mqtt broker down.",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "UHOH!!! Not receiving messages from SnifferBuddy!",
+                "tot": "str"
+            },
+            {
+                "t": "set",
+                "p": "snifferBuddy_working",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 730,
+        "y": 480,
+        "wires": [
+            [
+                "eb121a6b1c64fc57"
+            ]
+        ]
+    },
+    {
+        "id": "573be0a2b1ea622e",
+        "type": "switch",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "are messages being sent?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "neq",
+                "v": "Online",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 680,
+        "y": 420,
+        "wires": [
+            [
+                "91d6114c8d9f582b"
+            ]
+        ]
+    },
+    {
+        "id": "863490e53bc7a204",
+        "type": "subflow:299ed8b77420c170",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "",
+        "x": 1110,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "e8c381448de3c5aa",
+        "type": "influxdb out",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "influxdb": "ab7d13904246734b",
+        "name": "record light on/off event in influxdb",
+        "measurement": "light",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 1400,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "60d37fa549693ae8",
+        "type": "debug",
+        "z": "b2b2cf3fbcec5eed",
+        "g": "dd5b4280471fc9a9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "14f5cd67.1fbd6b",
+        "type": "ui_template",
+        "z": "a7f76a515c8544a2",
+        "group": "bbc3532f.41ca7",
+        "name": "Temp and Humidity Grafana",
+        "order": 10,
+        "width": 8,
+        "height": 8,
+        "format": "<html>\n<iframe id=\"scd30Frame\" width=\"400px\" height=\"350px\" style = \"overflow:hidden; margin:auto; border:0px solid blue;\"></iframe>\n\n<script>\n//NOTE, more then one chart on a page, rename in the second and following \n//templates the \"myframe\" variable so that every template has a unique name.\n(function(scope) {\n    // watch msg object from Node-RED\n    scope.$watch('msg', function(msg) {\n        // new message received\n        var x = document.getElementById('scd30Frame');\n        x.setAttribute('src', msg.payload); \n        });\n})(scope);\n</script>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1340,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "aeaaadf4.7dcb",
+        "type": "function",
+        "z": "a7f76a515c8544a2",
+        "name": "Build SCD30 Template",
+        "func": "//NOTE, more then one chart on a page, rename in the second and following \n//templates the \"myframe\" variable so that every template has a unique name.\n\npanelid=2\n\nmsg.payload= \"http://growbuddy:3000/d/7ZzVJ2mRk/snifferbuddy-thv?orgId=1\"+\n\"&refresh=1m\"+\n\"&theme=dark\"+\n\"&from=\"+ msg.fromdate +\n\"&to=\"+ msg.enddate +\n\"&panelId=\"+panelid +\n\"&kiosk\"\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 440,
+        "wires": [
+            [
+                "14f5cd67.1fbd6b",
+                "11c2075d1462ed51"
+            ]
+        ]
+    },
+    {
+        "id": "a4654193.3b49e8",
+        "type": "function",
+        "z": "a7f76a515c8544a2",
+        "name": "SetTimeTodaySofar",
+        "func": "msg.fromdate = \"now/d\";\nmsg.enddate = \"now\";\nflow.set(\"date_offset\",0);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 500,
+        "wires": [
+            [
+                "aeaaadf4.7dcb",
+                "4d9c0d995889eeec",
+                "445ee39e69ac2c9d"
+            ]
+        ]
+    },
+    {
+        "id": "a82f23f8e4fcc4ed",
+        "type": "ui_button",
+        "z": "a7f76a515c8544a2",
+        "name": "<< button",
+        "group": "bbc3532f.41ca7",
+        "order": 2,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "<<",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "-1",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 220,
+        "y": 420,
+        "wires": [
+            [
+                "c98e9cae51e15458",
+                "dd5f9c2446c06495"
+            ]
+        ]
+    },
+    {
+        "id": "0a3f2c79e6afd0ab",
+        "type": "ui_button",
+        "z": "a7f76a515c8544a2",
+        "name": "Today button",
+        "group": "bbc3532f.41ca7",
+        "order": 8,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": "Today",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "0",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 550,
+        "y": 540,
+        "wires": [
+            [
+                "a4654193.3b49e8"
+            ]
+        ]
+    },
+    {
+        "id": "c98e9cae51e15458",
+        "type": "function",
+        "z": "a7f76a515c8544a2",
+        "name": "set flow.date_offset",
+        "func": "node.warn(\"msg.payload: \" + msg.payload);\nlet date_offset = flow.get(\"date_offset\");\nif ( (msg.payload == 0) || (date_offset+msg.payload > 0)) {\n    flow.set(\"date_offset\",0);\n}else{\n    flow.set(\"date_offset\",date_offset+msg.payload);\n}\nnode.warn(\"date offset: \" + flow.get(\"date_offset\"));\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 420,
+        "wires": [
+            [
+                "0a0bd043a814bf0a"
+            ]
+        ]
+    },
+    {
+        "id": "0a0bd043a814bf0a",
+        "type": "function",
+        "z": "a7f76a515c8544a2",
+        "name": "Set From and end Date/Time",
+        "func": "var p_30d  = 1000*60*60*24*30 ; //30 Days\nvar p_7d  = 1000*60*60*24*7 ; //7 Days\nvar p_1d   =  1000*60*60*24 ; // 1 Day\nvar p_hr = 1000*60*60; //1 Hour\n\nvar d = new Date();\nvar today0h = d.setHours(0,0,0,0); //Timestamp midnight\n\n\n/* Date Offset is negative to show days previous from today */\nmsg.fromdate = today0h + flow.get(\"date_offset\")*p_1d;\nmsg.enddate = msg.fromdate + p_1d;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 800,
+        "y": 440,
+        "wires": [
+            [
+                "aeaaadf4.7dcb",
+                "445ee39e69ac2c9d"
+            ]
+        ]
+    },
+    {
+        "id": "fd90d91defb2be37",
+        "type": "ui_button",
+        "z": "a7f76a515c8544a2",
+        "name": ">> button",
+        "group": "bbc3532f.41ca7",
+        "order": 6,
+        "width": 2,
+        "height": 1,
+        "passthru": false,
+        "label": ">>",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "1",
+        "payloadType": "num",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 320,
+        "y": 540,
+        "wires": [
+            [
+                "c98e9cae51e15458",
+                "4d9c0d995889eeec"
+            ]
+        ]
+    },
+    {
+        "id": "4d9c0d995889eeec",
+        "type": "change",
+        "z": "a7f76a515c8544a2",
+        "name": ">> off",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enabled",
+                "pt": "msg",
+                "to": "($flowContext(\"date_offset\") = 0 )? false : true",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 330,
+        "y": 660,
+        "wires": [
+            [
+                "fd90d91defb2be37"
+            ]
+        ]
+    },
+    {
+        "id": "dd5f9c2446c06495",
+        "type": "change",
+        "z": "a7f76a515c8544a2",
+        "name": ">> on",
+        "rules": [
+            {
+                "t": "set",
+                "p": "enabled",
+                "pt": "msg",
+                "to": "true",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 210,
+        "y": 480,
+        "wires": [
+            [
+                "fd90d91defb2be37"
+            ]
+        ]
+    },
+    {
+        "id": "11c2075d1462ed51",
+        "type": "change",
+        "z": "a7f76a515c8544a2",
+        "name": "set date string",
+        "rules": [
+            {
+                "t": "set",
+                "p": "fromdate",
+                "pt": "msg",
+                "to": "(\t\t$contains($string(msg.fromdate), \"now\") ? $now( '[M]/[D]/[Y]') : $fromMillis(msg.fromdate,'[M]/[D]/[Y]')\t)",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1300,
+        "y": 400,
+        "wires": [
+            [
+                "42ccb0ac682f545e"
+            ]
+        ]
+    },
+    {
+        "id": "42ccb0ac682f545e",
+        "type": "ui_text",
+        "z": "a7f76a515c8544a2",
+        "group": "bbc3532f.41ca7",
+        "order": 4,
+        "width": 2,
+        "height": 1,
+        "name": "date text field",
+        "label": "",
+        "format": "{{msg.fromdate}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 1470,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "d8bd7de23f9706cd",
+        "type": "ui_template",
+        "z": "a7f76a515c8544a2",
+        "group": "bbc3532f.41ca7",
+        "name": "CO2 Grafana",
+        "order": 11,
+        "width": 8,
+        "height": 8,
+        "format": "<html>\n<iframe id=\"co2Frame\" width=\"400px\" height=\"350px\" style = \"overflow:hidden; margin:auto; border:0px solid blue;\"></iframe>\n\n<script>\n//NOTE, more then one chart on a page, rename in the second and following \n//templates the \"myframe\" variable so that every template has a unique name.\n(function(scope) {\n    // watch msg object from Node-RED\n    scope.$watch('msg', function(msg) {\n        // new message received\n        var x = document.getElementById('co2Frame');\n        x.setAttribute('src', msg.payload); \n        });\n})(scope);\n</script>\n</html>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1290,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "445ee39e69ac2c9d",
+        "type": "function",
+        "z": "a7f76a515c8544a2",
+        "name": "Build CO2 Template",
+        "func": "//NOTE, more then one chart on a page, rename in the second and following \n//templates the \"myframe\" variable so that every template has a unique name.\n\npanelid=2\n\nmsg.payload= \"http://growbuddy:3000/d/b-XXf-iRk/co2?orgId=1\"+\n\"&refresh=1m\"+\n\"&theme=dark\"+\n\"&from=\"+ msg.fromdate +\n\"&to=\"+ msg.enddate +\n\"&panelId=\"+panelid +\n\"&kiosk\"\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 480,
+        "wires": [
+            [
+                "d8bd7de23f9706cd"
+            ]
+        ]
+    },
+    {
+        "id": "9cd9bf5fb4272ccc",
+        "type": "config",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "properties": [
+            {
+                "p": "PPFD",
+                "pt": "flow",
+                "to": "{\"week\":[100,250,300,500,650,650,800,950,950,950,950,950,950,950,950,950,950,950,950,950]}",
+                "tot": "json"
+            },
+            {
+                "p": "maintenance",
+                "pt": "global",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "active": true,
+        "x": 190,
+        "y": 40,
+        "wires": []
+    },
+    {
+        "id": "6cd204e8bf49a58c",
+        "type": "ui_date_picker",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "label": "Start Date:",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 1,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 490,
+        "y": 420,
+        "wires": [
+            [
+                "d464c762581695b0",
+                "22e85440c0f67164",
+                "e31c34c23ffe518b"
+            ]
+        ]
+    },
+    {
+        "id": "d382c68206a2053e",
+        "type": "ui_text",
+        "z": "e276300d7cbaa457",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 3,
+        "width": 3,
+        "height": 1,
+        "name": "",
+        "label": "Time Growing",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 840,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "6d3c0fd9f0011a14",
+        "type": "function",
+        "z": "e276300d7cbaa457",
+        "name": "set payload to this week's PPFD value",
+        "func": "const this_week_index = flow.get(\"weeks\") - 1;\nPPFD_by_week = flow.get(\"PPFD\");\n//node.warn(\"setting payload for what PPFD should be...week \"+(this_week_index+1))\nmsg.payload = PPFD_by_week.week[this_week_index];\n//node.warn(\"---> Setting PPFD in UI to \" + msg.payload);\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 630,
+        "y": 740,
+        "wires": [
+            [
+                "340c4f220b6068d2"
+            ]
+        ]
+    },
+    {
+        "id": "340c4f220b6068d2",
+        "type": "ui_text",
+        "z": "e276300d7cbaa457",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 9,
+        "width": 3,
+        "height": 1,
+        "name": "",
+        "label": "PPFD Setpoint",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 940,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "5cfb8d7a44b7e879",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "Add vpd settings to msg",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "vpd",
+        "payload": "{\t    \"vpd\": {\t        \"veg_min\":0.80,\t        \"veg_max\":0.95,\t        \"flower_min\":0.96,\t        \"flower_max\":1.15\t    }\t}",
+        "payloadType": "jsonata",
+        "x": 290,
+        "y": 820,
+        "wires": [
+            [
+                "5831e67647a86ff2"
+            ]
+        ]
+    },
+    {
+        "id": "ad1fd26f721c87fc",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "send in flow.grow_start_date to datepicker",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "start_date",
+        "payload": "grow_start_date",
+        "payloadType": "flow",
+        "x": 220,
+        "y": 420,
+        "wires": [
+            [
+                "6cd204e8bf49a58c"
+            ]
+        ]
+    },
+    {
+        "id": "d4f2d9a5.a90858",
+        "type": "ui_template",
+        "z": "e276300d7cbaa457",
+        "d": true,
+        "group": "ac133c3c.7c708",
+        "name": "",
+        "order": 1,
+        "width": "",
+        "height": "",
+        "format": "<div>\n   <md-datepicker ng-model=\"myDate\" md-placeholder=\"Enter date\" ng-change=\"send({payload: myDate})\"></md-datepicker>\n</div>\n",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 1280,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9f0e3b83acc88407",
+        "type": "influxdb out",
+        "z": "e276300d7cbaa457",
+        "influxdb": "ab7d13904246734b",
+        "name": "insert grow start date",
+        "measurement": "config",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 960,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "d464c762581695b0",
+        "type": "change",
+        "z": "e276300d7cbaa457",
+        "name": "set influx insert",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\t   \"start_date\" : msg.payload,\t   \"time\": $flowContext(\"date_config_added\")\t}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 680,
+        "y": 420,
+        "wires": [
+            [
+                "9f0e3b83acc88407"
+            ]
+        ]
+    },
+    {
+        "id": "fd15d2ea2e9cdc36",
+        "type": "influxdb in",
+        "z": "e276300d7cbaa457",
+        "influxdb": "ab7d13904246734b",
+        "name": "Get start_date entry from config table in influxdb.",
+        "query": "SELECT * from config",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "organisation",
+        "x": 520,
+        "y": 320,
+        "wires": [
+            [
+                "a936166a8bead6f2",
+                "80b6edcdbd2471c0"
+            ]
+        ]
+    },
+    {
+        "id": "284783931ebc6d6a",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "01 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 210,
+        "y": 320,
+        "wires": [
+            [
+                "fd15d2ea2e9cdc36"
+            ]
+        ]
+    },
+    {
+        "id": "80b6edcdbd2471c0",
+        "type": "debug",
+        "z": "e276300d7cbaa457",
+        "d": true,
+        "name": "show flow values",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1410,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "504cd824a0c89f12",
+        "type": "change",
+        "z": "e276300d7cbaa457",
+        "name": "set flow.grow_start_date and flow.date_config_added",
+        "rules": [
+            {
+                "t": "set",
+                "p": "grow_start_date",
+                "pt": "flow",
+                "to": "payload[0].start_date",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "date_config_added",
+                "pt": "flow",
+                "to": "payload[0].time",
+                "tot": "msg"
+            },
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "{\t    \"start_date\":$flowContext(\"grow_start_date\"),\t    \"time\":$flowContext(\"date_config_added\")\t}",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1080,
+        "y": 300,
+        "wires": [
+            [
+                "80b6edcdbd2471c0"
+            ]
+        ]
+    },
+    {
+        "id": "386d14dca405cbc3",
+        "type": "comment",
+        "z": "e276300d7cbaa457",
+        "name": "Get the grow_start_date from influx and store in flow.grow_start_date",
+        "info": "",
+        "x": 540,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "153701809f87fc0f",
+        "type": "comment",
+        "z": "e276300d7cbaa457",
+        "name": "Set up the start date UI. Update flow.grow_start_date and config table in influxdb if another start date is chosen.",
+        "info": "",
+        "x": 670,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "a936166a8bead6f2",
+        "type": "switch",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "property": "payload.length",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 790,
+        "y": 320,
+        "wires": [
+            [
+                "504cd824a0c89f12"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "22e85440c0f67164",
+        "type": "change",
+        "z": "e276300d7cbaa457",
+        "name": "set flow.grow_date_start",
+        "rules": [
+            {
+                "t": "set",
+                "p": "grow_start_date",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 710,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "118fc95ef4b75ff1",
+        "type": "comment",
+        "z": "e276300d7cbaa457",
+        "name": "Figure out the number of weeks/days have passed since flow.grow_start_date",
+        "info": "",
+        "x": 570,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "e31c34c23ffe518b",
+        "type": "function",
+        "z": "e276300d7cbaa457",
+        "name": "figure out weeks/days since start of grow",
+        "func": "\nvar oneDay = 1000*60*60*24;\n\n\n\nvar date_today = new Date();\nvar date_grow_start = new Date(flow.get(\"grow_start_date\")+1000);\n// To calculate the time difference of two dates\nvar diff = date_today.getTime() - date_grow_start.getTime();\nnode.warn(\"time diff: \" + diff);\n// To calculate the no. of days between two dates\nflow.set(\"weeks\",Math.floor((diff/oneDay)/7));\nflow.set(\"days\", Math.round((diff/oneDay)%7));\nflow.set(\"growth_stage\",flow.get(\"weeks\") < 4 ? \"baby\" : flow.get(\"weeks\")  < 9 ? \"veg\" : \"flower\");\n\n//node.warn(\"Growth stage is \"+flow.get(\"growth_stage\"))\nmsg.payload = flow.get(\"weeks\") + \" weeks, \" + flow.get(\"days\") + \" days\";\n\nnode.warn(flow.get(\"weeks\") + \" weeks, \" + flow.get(\"days\") + \" days\")\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 600,
+        "wires": [
+            [
+                "d382c68206a2053e",
+                "b303ac47d0817e07",
+                "6d3c0fd9f0011a14"
+            ]
+        ]
+    },
+    {
+        "id": "c833e3acfc263e2b",
+        "type": "comment",
+        "z": "e276300d7cbaa457",
+        "name": "Add PPFD and vpd recommendations",
+        "info": "",
+        "x": 450,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "f2f31efacf7ce175",
+        "type": "comment",
+        "z": "e276300d7cbaa457",
+        "name": "Set the growth stage to be either baby, veg, or flower.",
+        "info": "",
+        "x": 1280,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "23cd491833e7aa2f",
+        "type": "ui_text",
+        "z": "e276300d7cbaa457",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 5,
+        "width": 3,
+        "height": 1,
+        "name": "",
+        "label": "Growth Stage",
+        "format": "{{msg.payload}}",
+        "layout": "col-center",
+        "className": "",
+        "x": 1240,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "5831e67647a86ff2",
+        "type": "function",
+        "z": "e276300d7cbaa457",
+        "name": "Figure out \"best\" VPD range.",
+        "func": "if (flow.get(\"growth_stage\") != \"flower\") {\n    global.set(\"vpd_min\",msg.payload.vpd.veg_min);\n    global.set(\"vpd_max\",msg.payload.vpd.veg_max);\n\n}else {\n    global.set(\"vpd_min\",msg.payload.vpd.flower_min);\n    global.set(\"vpd_max\",msg.payload.vpd.flower_max);\n}\nmsg.payload = \"min: \" + global.get(\"vpd_min\") + \" max: \" + global.get(\"vpd_max\");\n//node.warn(global.get(\"vpd_min\"));\n//node.warn(global.get(\"vpd_max\"));\nvar min = global.get('vpd_min') || 0;\nvar max = global.get('vpd_max') || 100;\nvar data = global.get(\"vpd\").toFixed(2);\nmsg = {payload:data,ui_control:{min:min,max:max},topic:\"vpd\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 600,
+        "y": 820,
+        "wires": [
+            [
+                "4b5eb0901fd0bb75"
+            ]
+        ]
+    },
+    {
+        "id": "b303ac47d0817e07",
+        "type": "change",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "growth_stage",
+                "tot": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1030,
+        "y": 600,
+        "wires": [
+            [
+                "23cd491833e7aa2f"
+            ]
+        ]
+    },
+    {
+        "id": "afa8fb372e9a96f4",
+        "type": "ui_switch",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "label": "Maintanence Mode",
+        "tooltip": "",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 7,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 690,
+        "y": 180,
+        "wires": [
+            [
+                "27a05dadfb4eec06"
+            ]
+        ]
+    },
+    {
+        "id": "d83461cc276012f0",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "maintenance",
+        "payloadType": "global",
+        "x": 450,
+        "y": 180,
+        "wires": [
+            [
+                "afa8fb372e9a96f4"
+            ]
+        ]
+    },
+    {
+        "id": "27a05dadfb4eec06",
+        "type": "change",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "maintenance",
+                "pt": "global",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4c394f80c73ba285",
+        "type": "comment",
+        "z": "e276300d7cbaa457",
+        "name": "Turning ON maintenance STOPS on/off activity.",
+        "info": "",
+        "x": 610,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "4b5eb0901fd0bb75",
+        "type": "ui_gauge",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 11,
+        "width": 3,
+        "height": 2,
+        "gtype": "gage",
+        "title": "vpd",
+        "label": "units",
+        "format": "{{value}}",
+        "min": "0.80",
+        "max": "0.95",
+        "colors": [
+            "#fffff5",
+            "#00e67a",
+            "#cb8e48"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 810,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "f1f3082e33d2de95",
+        "type": "comment",
+        "z": "e276300d7cbaa457",
+        "name": "Note: Updating in influx means keeping all entries in the row the same except the entry to change.",
+        "info": "",
+        "x": 1070,
+        "y": 560,
+        "wires": []
+    },
+    {
+        "id": "b4c672f23eb8ae4a",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "Add Temperature settings to msg",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\t   \"temperature\": {\t       \"baby_min_day\":68,\t       \"baby_max_day\":72,\t       \"baby_min_night\":68,\t       \"baby_max_night\":72,\t       \"veg_min_day\":74,\t       \"veg_max_day\":84,\t       \"veg_min_night\":68,\t       \"veg_max_night\":76,\t       \"flower_min_day\":68,\t       \"flower_max_day\":84,\t       \"flower_min_night\":68,\t       \"flower_max_night\":78\t    }\t}",
+        "payloadType": "jsonata",
+        "x": 280,
+        "y": 880,
+        "wires": [
+            [
+                "ba4c14d575f6e2da"
+            ]
+        ]
+    },
+    {
+        "id": "ba4c14d575f6e2da",
+        "type": "function",
+        "z": "e276300d7cbaa457",
+        "name": "figure out \"best\" Temperature range.",
+        "func": "if (flow.get(\"growth_stage\") == \"baby\") {\n    if (global.get(\"Light_ON\") ){\n        global.set(\"temperature_min\",msg.payload.temperature.baby_min_day);\n        global.set(\"temperature_max\",msg.payload.temperature.baby_max_day);\n    }else {\n        global.set(\"temperature_min\",msg.payload.temperature.baby_min_night);\n        global.set(\"temperature_max\",msg.payload.temperature.baby_max_night);\n    }\n}\nif (flow.get(\"growth_stage\") == \"veg\") {\n    if (global.get(\"Light_ON\") ){\n        global.set(\"temperature_min\",msg.payload.temperature.veg_min_day);\n        global.set(\"temperature_max\",msg.payload.temperature.veg_max_day);\n    }else {\n        global.set(\"temperature_min\",msg.payload.temperature.veg_min_night);\n        global.set(\"temperature_max\",msg.payload.temperature.veg_max_night);\n    }\n}\nif (flow.get(\"growth_stage\") == \"flower\") {\n    if (global.get(\"Light_ON\") ){\n        global.set(\"temperature_min\",msg.payload.temperature.flower_min_day);\n        global.set(\"temperature_max\",msg.payload.temperature.flower_max_day);\n    }else {\n        global.set(\"temperature_min\",msg.payload.temperature.flower_min_night);\n        global.set(\"temperature_max\",msg.payload.temperature.flower_max_night);\n    }\n}\n\nmsg.payload = \"min: \" + global.get(\"temperature_min\") + \" max: \" + global.get(\"temperature_max\");\n//node.warn(global.get(\"temperature_min\"));\n//node.warn(global.get(\"temperature_max\"));\n//node.warn(global.get(\"Temperature\"));\nvar min = global.get('temperature_min') || 0;\nvar max = global.get('temperature_max') || 100;\nvar data = global.get(\"Temperature\").toFixed(2);\nmsg = {payload:data,ui_control:{min:min,max:max},topic:\"temperature\"};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 670,
+        "y": 880,
+        "wires": [
+            [
+                "514ce573410ef9f0"
+            ]
+        ]
+    },
+    {
+        "id": "514ce573410ef9f0",
+        "type": "ui_gauge",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 13,
+        "width": 3,
+        "height": 2,
+        "gtype": "gage",
+        "title": "temperature",
+        "label": "units",
+        "format": "{{value}}",
+        "min": "0.80",
+        "max": "0.95",
+        "colors": [
+            "#90a5c6",
+            "#265f9c",
+            "#6870ac"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 950,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "e129b558952bdd52",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "Add Humidity Gauge",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\t   \"humidity\": {\t       \"baby_min\":50,\t       \"baby_max\":90,\t       \"veg_min\":55,\t       \"veg_max\":75,\t       \"flower_min\":50,\t       \"flower_max\":60\t    }\t}",
+        "payloadType": "jsonata",
+        "x": 240,
+        "y": 940,
+        "wires": [
+            [
+                "48334c6f7796479c"
+            ]
+        ]
+    },
+    {
+        "id": "ba8d95338627b104",
+        "type": "ui_gauge",
+        "z": "e276300d7cbaa457",
+        "name": "",
+        "group": "7a0c3262d7dd5dc0",
+        "order": 15,
+        "width": 3,
+        "height": 2,
+        "gtype": "gage",
+        "title": "humidity",
+        "label": "units",
+        "format": "{{value}}",
+        "min": "25",
+        "max": "65",
+        "colors": [
+            "#fffff5",
+            "#00e67a",
+            "#d0d76a"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "className": "",
+        "x": 840,
+        "y": 940,
+        "wires": []
+    },
+    {
+        "id": "48334c6f7796479c",
+        "type": "function",
+        "z": "e276300d7cbaa457",
+        "name": "figure out \"best\" Humidity range.",
+        "func": "if (flow.get(\"growth_stage\") == \"baby\") {\n        global.set(\"humidity_min\",msg.payload.humidity.baby_min);\n        global.set(\"humidity_max\",msg.payload.humidity.baby_max);\n}\nif (flow.get(\"growth_stage\") == \"veg\") {\n        global.set(\"humidity_min\",msg.payload.humidity.veg_min);\n        global.set(\"humidity_max\",msg.payload.humidity.veg_max);\n}\nif (flow.get(\"growth_stage\") == \"flower\") {\n        global.set(\"humidity_min\",msg.payload.humidity.flower_min);\n        global.set(\"humidity_max\",msg.payload.humidity.flower_max);\n}\nmin = global.get(\"humidity_min\");\nmax = global.get(\"humidity_max\");\nmsg.payload = \"min: \" + min + \" max: \" + max;\nnode.warn(min);\nnode.warn(max);\nnode.warn(global.get(\"Humidity\"));\nvar data = global.get(\"Humidity\").toFixed(2);\nmsg = {payload:data,ui_control:{min:min,max:max},topic:\"humidity\"};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 940,
+        "wires": [
+            [
+                "ba8d95338627b104"
+            ]
+        ]
+    },
+    {
+        "id": "766ae31041bcf5c9",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "Update daily",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "01 00 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 600,
+        "wires": [
+            [
+                "e31c34c23ffe518b"
+            ]
+        ]
+    },
+    {
+        "id": "94ec2054722aa0eb",
+        "type": "inject",
+        "z": "e276300d7cbaa457",
+        "name": "update when flow is updated",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 660,
+        "wires": [
+            [
+                "e31c34c23ffe518b"
+            ]
+        ]
+    },
+    {
+        "id": "3e1ad74ac9731f9a",
+        "type": "comment",
+        "z": "1163bcff9c10da0f",
+        "name": "Turn the humidifier on/off based on the VPD value or LED ON/OFF",
+        "info": "",
+        "x": 700,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "0ab2f8256788dd2f",
+        "type": "switch",
+        "z": "1163bcff9c10da0f",
+        "name": "Turn humidifier on or off?",
+        "property": "vpd",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "vpd_max",
+                "vt": "global"
+            },
+            {
+                "t": "lt",
+                "v": "vpd_min",
+                "vt": "global"
+            },
+            {
+                "t": "btwn",
+                "v": "vpd_min",
+                "vt": "global",
+                "v2": "vpd_max",
+                "v2t": "global"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 810,
+        "y": 220,
+        "wires": [
+            [
+                "f51fa10b184702e1"
+            ],
+            [
+                "380a0f21481d61fb"
+            ],
+            [
+                "19a4b154d03c77ce"
+            ]
+        ]
+    },
+    {
+        "id": "7e55e5375615a386",
+        "type": "inject",
+        "z": "1163bcff9c10da0f",
+        "name": "repeat every minute",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "60",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 180,
+        "y": 220,
+        "wires": [
+            [
+                "a08cdc42ebcf6ae8"
+            ]
+        ]
+    },
+    {
+        "id": "b1f813cf68a7bc14",
+        "type": "mqtt out",
+        "z": "1163bcff9c10da0f",
+        "name": "",
+        "topic": "cmnd/plug_humidifier/POWER",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "77fed1c377eed3df",
+        "x": 1330,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "f51fa10b184702e1",
+        "type": "change",
+        "z": "1163bcff9c10da0f",
+        "name": "payload = ON",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ON",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1040,
+        "y": 160,
+        "wires": [
+            [
+                "b1f813cf68a7bc14",
+                "bffa12144efc64b9"
+            ]
+        ]
+    },
+    {
+        "id": "380a0f21481d61fb",
+        "type": "change",
+        "z": "1163bcff9c10da0f",
+        "name": "payload = OFF",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "OFF",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1060,
+        "y": 240,
+        "wires": [
+            [
+                "b1f813cf68a7bc14",
+                "bffa12144efc64b9"
+            ]
+        ]
+    },
+    {
+        "id": "bffa12144efc64b9",
+        "type": "debug",
+        "z": "1163bcff9c10da0f",
+        "d": true,
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1310,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "c80236e902ee6e62",
+        "type": "switch",
+        "z": "1163bcff9c10da0f",
+        "name": "LED is ON?",
+        "property": "Light_ON",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "true"
+            },
+            {
+                "t": "false"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 590,
+        "y": 220,
+        "wires": [
+            [
+                "0ab2f8256788dd2f"
+            ],
+            [
+                "380a0f21481d61fb"
+            ]
+        ]
+    },
+    {
+        "id": "19a4b154d03c77ce",
+        "type": "change",
+        "z": "1163bcff9c10da0f",
+        "name": "vpd in range",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "vpd in range.",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1070,
+        "y": 300,
+        "wires": [
+            [
+                "c203b4b5f0f7de40"
+            ]
+        ]
+    },
+    {
+        "id": "c203b4b5f0f7de40",
+        "type": "debug",
+        "z": "1163bcff9c10da0f",
+        "d": true,
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1270,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "d80291d6175bab6b",
+        "type": "function",
+        "z": "1163bcff9c10da0f",
+        "g": "dbd31ea25ec2540d",
+        "name": "",
+        "func": "node.warn(\"vpd: \" + global.get(\"vpd\"));\nnode.warn(\"vpd min: \" + global.get(\"vpd_min\"));\nnode.warn(\"vpd max:\" + global.get(\"vpd_max\"));\nnode.warn(\"Light on:\" + global.get(\"Light_ON\"));\nnode.warn(\"Maintanence is on: \"+global.get(\"maintenance\"));\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 420,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "abd476dd6444940f",
+        "type": "inject",
+        "z": "1163bcff9c10da0f",
+        "g": "dbd31ea25ec2540d",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 280,
+        "y": 460,
+        "wires": [
+            [
+                "d80291d6175bab6b"
+            ]
+        ]
+    },
+    {
+        "id": "559e5d102aacd037",
+        "type": "mqtt in",
+        "z": "1163bcff9c10da0f",
+        "name": "",
+        "topic": "tele/fillerup/SENSOR",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "77fed1c377eed3df",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 180,
+        "y": 700,
+        "wires": [
+            [
+                "b66747f75bc1e256"
+            ]
+        ]
+    },
+    {
+        "id": "adbd025b05eb2784",
+        "type": "comment",
+        "z": "1163bcff9c10da0f",
+        "name": "SWITCH 1 is LOW water and SWITCH 2 is HIGH water ",
+        "info": "",
+        "x": 780,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "49427b81f8a8fb4e",
+        "type": "json",
+        "z": "1163bcff9c10da0f",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 570,
+        "y": 720,
+        "wires": [
+            [
+                "9cc55c975fb3581d",
+                "2832addc1a56feca"
+            ]
+        ]
+    },
+    {
+        "id": "9cc55c975fb3581d",
+        "type": "switch",
+        "z": "1163bcff9c10da0f",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "jsonata_exp",
+                "v": "payload.Switch1 = \"ON\"",
+                "vt": "jsonata"
+            },
+            {
+                "t": "jsonata_exp",
+                "v": "payload.Switch2 = \"OFF\" ",
+                "vt": "jsonata"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 690,
+        "y": 760,
+        "wires": [
+            [
+                "614a04f57490a307",
+                "8b099ea029f77864"
+            ],
+            [
+                "66bf849d25aaa632",
+                "f578f6a91c8b9fd2"
+            ]
+        ]
+    },
+    {
+        "id": "976cd08d3d1db891",
+        "type": "comment",
+        "z": "1163bcff9c10da0f",
+        "name": "NOT Intuitive!! -> When a Switch (Low or High Water) is \"OFF\",it means it is in contact wth water.",
+        "info": "",
+        "x": 910,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "0392061eddec9cc8",
+        "type": "mqtt out",
+        "z": "1163bcff9c10da0f",
+        "name": "",
+        "topic": "cmnd/plug_fillerup/POWER",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "77fed1c377eed3df",
+        "x": 1340,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "614a04f57490a307",
+        "type": "change",
+        "z": "1163bcff9c10da0f",
+        "name": "Low water Threshold met.  Start pump.",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "ON",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 780,
+        "wires": [
+            [
+                "0392061eddec9cc8"
+            ]
+        ]
+    },
+    {
+        "id": "66bf849d25aaa632",
+        "type": "change",
+        "z": "1163bcff9c10da0f",
+        "name": "High water level threshold met.  Stop pump.",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "OFF",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 970,
+        "y": 840,
+        "wires": [
+            [
+                "0392061eddec9cc8"
+            ]
+        ]
+    },
+    {
+        "id": "a08cdc42ebcf6ae8",
+        "type": "switch",
+        "z": "1163bcff9c10da0f",
+        "name": "Maintenance is OFF?",
+        "property": "maintenance",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "false"
+            },
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 420,
+        "y": 320,
+        "wires": [
+            [
+                "c80236e902ee6e62"
+            ],
+            [
+                "380a0f21481d61fb"
+            ]
+        ]
+    },
+    {
+        "id": "4e64f0f3450af5da",
+        "type": "comment",
+        "z": "1163bcff9c10da0f",
+        "name": "If maintanence is ON, turn off the humidifier.",
+        "info": "",
+        "x": 750,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "b66747f75bc1e256",
+        "type": "switch",
+        "z": "1163bcff9c10da0f",
+        "name": "Maintenance is OFF?",
+        "property": "maintenance",
+        "propertyType": "global",
+        "rules": [
+            {
+                "t": "false"
+            },
+            {
+                "t": "true"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 400,
+        "y": 760,
+        "wires": [
+            [
+                "49427b81f8a8fb4e"
+            ],
+            [
+                "66bf849d25aaa632"
+            ]
+        ]
+    },
+    {
+        "id": "22f223394ee61671",
+        "type": "comment",
+        "z": "1163bcff9c10da0f",
+        "name": "If maintanence is ON, turn off the pump.",
+        "info": "",
+        "x": 570,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "8b099ea029f77864",
+        "type": "change",
+        "z": "1163bcff9c10da0f",
+        "name": "payload = start pump (1)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "1",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 660,
+        "wires": [
+            [
+                "fe79fee09f523b89",
+                "edf5ec0e391a2805"
+            ]
+        ]
+    },
+    {
+        "id": "fe79fee09f523b89",
+        "type": "debug",
+        "z": "1163bcff9c10da0f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1190,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "f578f6a91c8b9fd2",
+        "type": "change",
+        "z": "1163bcff9c10da0f",
+        "name": "payload = stop pump (0)",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "0",
+                "tot": "num"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 950,
+        "y": 720,
+        "wires": [
+            [
+                "fe79fee09f523b89",
+                "edf5ec0e391a2805"
+            ]
+        ]
+    },
+    {
+        "id": "2832addc1a56feca",
+        "type": "debug",
+        "z": "1163bcff9c10da0f",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 700,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "edf5ec0e391a2805",
+        "type": "influxdb out",
+        "z": "1163bcff9c10da0f",
+        "influxdb": "ab7d13904246734b",
+        "name": "fillerup_pump on/off readings to influxdb",
+        "measurement": "fillerup_pump",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "ms",
+        "retentionPolicyV18Flux": "",
+        "org": "organisation",
+        "bucket": "bucket",
+        "x": 1300,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "04d35575eb3eefaf",
+        "type": "inject",
+        "z": "1163bcff9c10da0f",
+        "name": "Manual pump Test ON",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 640,
+        "y": 920,
+        "wires": [
+            [
+                "614a04f57490a307"
+            ]
+        ]
+    },
+    {
+        "id": "68b6cb5f0d7c8612",
+        "type": "inject",
+        "z": "1163bcff9c10da0f",
+        "name": "Manual pump test OFF",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 910,
+        "y": 940,
+        "wires": [
+            [
+                "66bf849d25aaa632"
+            ]
+        ]
+    },
+    {
+        "id": "6f03da4f17d90efd",
+        "type": "ui_template",
+        "z": "80e2328c091f49c9",
+        "group": "1f16ea14e7cf23c6",
+        "name": "",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<div style=\"margin-bottom: 10px;\">\n<img src=\"http://192.168.86.46/\" width=\"400px\" height=\"350\">\n</div>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 890,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "41a64fc24a8f4d41",
+        "type": "inject",
+        "z": "80e2328c091f49c9",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 710,
+        "y": 460,
+        "wires": [
+            [
+                "6f03da4f17d90efd"
+            ]
+        ]
+    },
+    {
+        "id": "676c0c9acf389e8c",
+        "type": "inject",
+        "z": "421e80d521f48098",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "30 11 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "ON",
+        "payloadType": "str",
+        "x": 540,
+        "y": 320,
+        "wires": [
+            [
+                "304d4d2121317f1d",
+                "c58ce17594982198"
+            ]
+        ]
+    },
+    {
+        "id": "304d4d2121317f1d",
+        "type": "stoptimer",
+        "z": "421e80d521f48098",
+        "duration": "1",
+        "units": "Minute",
+        "payloadtype": "str",
+        "payloadval": "OFF",
+        "name": "",
+        "x": 740,
+        "y": 320,
+        "wires": [
+            [],
+            [
+                "c58ce17594982198"
+            ]
+        ]
+    },
+    {
+        "id": "c58ce17594982198",
+        "type": "mqtt out",
+        "z": "421e80d521f48098",
+        "name": "",
+        "topic": "cmnd/plug_fillerup_irrigation/POWER",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "77fed1c377eed3df",
+        "x": 1070,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "90749f75e0cef4da",
+        "type": "mqtt in",
+        "z": "e9f57d902aeecba9",
+        "name": "",
+        "topic": "PAR/READING_SEND",
+        "qos": "2",
+        "datatype": "auto",
+        "broker": "77fed1c377eed3df",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 270,
+        "y": 160,
+        "wires": [
+            [
+                "e32f6cc1541a9fbd"
+            ]
+        ]
+    },
+    {
+        "id": "b84080d003502288",
+        "type": "debug",
+        "z": "e9f57d902aeecba9",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "e32f6cc1541a9fbd",
+        "type": "json",
+        "z": "e9f57d902aeecba9",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 430,
+        "y": 160,
+        "wires": [
+            [
+                "e8bae33d11d80985"
+            ]
+        ]
+    },
+    {
+        "id": "e8bae33d11d80985",
+        "type": "csv",
+        "z": "e9f57d902aeecba9",
+        "name": "",
+        "sep": ",",
+        "hdrin": "",
+        "hdrout": "none",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "ch1,ch2,ch3,ch4,ch5,ch6,ch7,ch8",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": "",
+        "include_null_values": "",
+        "x": 600,
+        "y": 160,
+        "wires": [
+            [
+                "b84080d003502288",
+                "3b4e8a43a6673b15"
+            ]
+        ]
+    },
+    {
+        "id": "3b4e8a43a6673b15",
+        "type": "file",
+        "z": "e9f57d902aeecba9",
+        "name": "as7341 readings stored in csv",
+        "filename": "/home/pi/PAR_BUDDY/as7341_readings.csv",
+        "appendNewline": false,
+        "createDir": false,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 790,
+        "y": 240,
+        "wires": [
+            [
+                "05d1c8191ae846a4"
+            ]
+        ]
+    },
+    {
+        "id": "05d1c8191ae846a4",
+        "type": "mqtt out",
+        "z": "e9f57d902aeecba9",
+        "name": "",
+        "topic": "PAR/READING_OK",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "77fed1c377eed3df",
+        "x": 1080,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "68daa8883d202e0f",
+        "type": "Sonoff device Enhanced",
+        "z": "f8b9694fdc50d17f",
+        "mode": "0",
+        "broker": "77fed1c377eed3df",
+        "device": "plug_fillerup",
+        "name": "TEST",
+        "onValue": "ON",
+        "offValue": "OFF",
+        "toggleValue": "toggle",
+        "cmdPrefix": "cmnd",
+        "statPrefix": "stat",
+        "telePrefix": "tele",
+        "x": 570,
+        "y": 200,
+        "wires": [
+            [
+                "f788a23cb2f3d135"
+            ]
+        ]
+    },
+    {
+        "id": "89e101f62bed5943",
+        "type": "inject",
+        "z": "f8b9694fdc50d17f",
+        "name": "TOGGLE",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "cmnd/plug_fillerup/POWER",
+        "payload": "toggle",
+        "payloadType": "str",
+        "x": 220,
+        "y": 220,
+        "wires": [
+            [
+                "68daa8883d202e0f"
+            ]
+        ]
+    },
+    {
+        "id": "f788a23cb2f3d135",
+        "type": "debug",
+        "z": "f8b9694fdc50d17f",
+        "d": true,
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 760,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "6b5d09d46f1c0f6c",
+        "type": "inject",
+        "z": "f8b9694fdc50d17f",
+        "name": "ON",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "cmnd/plug_fillerup/POWER",
+        "payload": "on",
+        "payloadType": "str",
+        "x": 210,
+        "y": 300,
+        "wires": [
+            [
+                "68daa8883d202e0f"
+            ]
+        ]
+    },
+    {
+        "id": "c1e1bba532566b46",
+        "type": "inject",
+        "z": "f8b9694fdc50d17f",
+        "name": "OFF",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "cmnd/plug_fillerup/POWER",
+        "payload": "off",
+        "payloadType": "str",
+        "x": 230,
+        "y": 360,
+        "wires": [
+            [
+                "68daa8883d202e0f"
+            ]
+        ]
+    },
+    {
+        "id": "7298078f3ce26848",
+        "type": "comment",
+        "z": "f8b9694fdc50d17f",
+        "name": "README",
+        "info": "Example of turning on and off a Sonoff S3 or S3 lite switch.",
+        "x": 270,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "14ce4cc6.d66e1b",
+        "type": "ui_ui_control",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Startup",
+        "events": "connect",
+        "x": 460,
+        "y": 460,
+        "wires": [
+            [
+                "3f58c8f3.cdbed"
+            ]
+        ]
+    },
+    {
+        "id": "130b08c0.946dff",
+        "type": "link out",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Dashboard Startup - Out",
+        "links": [
+            "2b3b452f.1dac22",
+            "411c1b85.f50ec4",
+            "480b0328.37263c",
+            "4ef418da.8ab538",
+            "c07805cd.355d4",
+            "c41552b6.8571a",
+            "c64a8499.028398",
+            "d294caea.d30598",
+            "f72fda03.2de5e8",
+            "95c28f77.44567",
+            "57d384c3.4321e4",
+            "11d3a079.a43b28",
+            "a7c22f20.f7faa",
+            "df3da41b.01b6c",
+            "17be7d99.8c0312",
+            "acfe7184.9dee58",
+            "a38b5895.f8c6a8",
+            "ae0a9fb7.a3c5c8"
+        ],
+        "x": 921.6665649414062,
+        "y": 408.9999828338623,
+        "wires": [],
+        "l": true
+    },
+    {
+        "id": "a0cd749f.8635c8",
+        "type": "comment",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Change log",
+        "info": "2021-03-24: Created to replace individual statup ui_control nodes for each tab\n2021-04-17: Added logic to refresh current tab on \"change\" tab event, pull data only on \"connect\" event.",
+        "x": 248.66668701171875,
+        "y": 531.3333721160889,
+        "wires": []
+    },
+    {
+        "id": "ab9a436b.1dbad8",
+        "type": "inject",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Manual Startup",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 259.66668701171875,
+        "y": 460.3333740234375,
+        "wires": [
+            [
+                "14ce4cc6.d66e1b"
+            ]
+        ]
+    },
+    {
+        "id": "7ac12a79.c2e98c",
+        "type": "comment",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Dashboard Startup",
+        "info": "",
+        "x": 245.66668701171875,
+        "y": 403.00001335144043,
+        "wires": []
+    },
+    {
+        "id": "3f58c8f3.cdbed",
+        "type": "switch",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Connect or Change",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "connect",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "change",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 668.6667327880859,
+        "y": 460.3333797454834,
+        "wires": [
+            [
+                "130b08c0.946dff"
+            ],
+            [
+                "dd4ec3f6.31e2a"
+            ]
+        ]
+    },
+    {
+        "id": "dd4ec3f6.31e2a",
+        "type": "change",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Refresh Tab",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 878.3333435058594,
+        "y": 506.00002098083496,
+        "wires": [
+            [
+                "cb47b44.cab4c48"
+            ]
+        ]
+    },
+    {
+        "id": "cb47b44.cab4c48",
+        "type": "ui_ui_control",
+        "z": "9ae175b32b26f367",
+        "g": "c319afa4.557968",
+        "name": "Refresh tab",
+        "events": "change",
+        "x": 1061.3332214355469,
+        "y": 506.33351707458496,
+        "wires": [
+            []
+        ]
+    }
+]

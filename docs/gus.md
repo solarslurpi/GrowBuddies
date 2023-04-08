@@ -343,3 +343,10 @@ This is a File-wide metadata option. Read more from the [Sphinx documentation](h
 
 ### Packaging
 There is so much history with Python.  Resource: [Python packaging](https://realpython.com/pypi-publish-python-package).
+
+## Useful InfluxDB Stuff
+### Drop all measurements
+within a database:
+```
+DROP SERIES FROM /.*/
+```

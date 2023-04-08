@@ -132,6 +132,7 @@ class PID(object):
 
         self._min_output, self._max_output = None, None
         pid_settings = settings.get("PID_settings")
+        self._last_vpd = None
 
         self._proportional = 0
         self._integral = 0
@@ -146,7 +147,7 @@ class PID(object):
         self._last_output = None
         self._last_input = None
 
-        self.auto_tune = True  # Used in the pid routine to raise up the K values as needed.
+        self.tune = pid_settings["tune"]  # If true, in Ziegler-Nichols tuning mode.
 
         self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
@@ -180,19 +181,12 @@ class PID(object):
         # It is getting too humid.  Since we only have a humidifier to adjust, we return.
         if error > self.tolerance:
             return 0, 0
-        # Do a bit of autotuning until it grows to big.  Cap it when the air gets too moist.
+        # Do a bit of autotuning until it grows too big.  Cap it when the air gets too moist.
         # used for the Ziegler-Nichols method of tuning.
-        # if error < self.tolerance and self.auto_tune:
-        #      self.Kp += 1
+        if error < self.tolerance and self.tune:
+            self.Kp += 1
 
         self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
-        #     # self.Ki += 0.05
-        #     # self.Kd += 0.01
-        #     self.logger.debug(f"***>updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
-        # else:
-        #     self.logger.debug(f"***>NOT updating coefficients Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
-
-        # Compute number of seconds to turn on mistBuddy, which is 0 or a positive number of seconds.
 
         output = abs(self._proportional + self._integral + self._derivative)
         nSecondsOn = int(round(output))
@@ -234,7 +228,8 @@ class PID(object):
             f"  setpoint = {self.setpoint}\n"
             f"  output limits = ({self.output_limits_min}, {self.output_limits_max})\n"
             f"  integral limits = ({self.integral_limits_min}, {self.integral_limits_max})\n"
-            f"  tolerance = {self.tolerance}"
+            f"  tolerance = {self.tolerance}\n"
+            f"  tune = {self.tune}"
         )
 
     @property
