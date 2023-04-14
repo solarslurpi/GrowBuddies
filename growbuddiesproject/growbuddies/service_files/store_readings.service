@@ -1,0 +1,13 @@
+
+
+
+[Unit]
+Description=Store SnifferBuddy readings into influxdb.  Table name is in growbuddies_settings.json
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/__main__.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

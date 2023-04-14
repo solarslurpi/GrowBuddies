@@ -74,7 +74,6 @@ class SnifferBuddyReadings:
     """
 
     def __init__(self, mqtt_payload):
-
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler()
         self.logger.debug("-> Initializing SnifferBuddy class.")
@@ -90,7 +89,6 @@ class SnifferBuddyReadings:
             self.logger.warning("Could not identify the air quality sensor. Not a SnifferBuddy packet.")
             self.valid_packet = False
 
-
     def _find_sensor_name(self, mqtt) -> str:
         sensor_names = ["SCD30", "SCD40"]
         for item in sensor_names:
@@ -101,7 +99,6 @@ class SnifferBuddyReadings:
 
     def _get_item(self, item_number: int):
         try:
-
             item = None
             # e.g. for temperature:
             # temperature = item = mqtt["SCD30"]["Temperature"].  If the item is for
@@ -122,8 +119,7 @@ class SnifferBuddyReadings:
             )
         return item
 
-    def _calc_vpd(self, temperature: float, humidity: float) -> (float):
-
+    def _calc_vpd(self, temperature: float, humidity: float) -> float:
         """INTERNAL METHOD. I decided at this point not to measure the leaf temperature but take the much simpler
         approach of assuming 2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for
         my purposes "good enough."

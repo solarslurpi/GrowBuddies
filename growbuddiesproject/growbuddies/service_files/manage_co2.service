@@ -1,0 +1,12 @@
+
+
+
+[Unit]
+Description=StomaBuddy turns the CO2 cylinder off and on.
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/manage_CO2.py
+Restart=always
+[Install]

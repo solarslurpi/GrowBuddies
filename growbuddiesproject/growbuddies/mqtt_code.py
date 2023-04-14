@@ -60,7 +60,6 @@ class MQTTClient:
     """
 
     def __init__(self, callbacks_dict=None):
-
         self.logger = LoggingHandler()
         # The client ID is a unique identifier that is used by the broker to identify this
         # client. If a client ID is not provided, a unique ID is generated and used instead.

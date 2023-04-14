@@ -33,7 +33,6 @@ class Callbacks:
         self.logger = LoggingHandler()
 
     def on_snifferbuddy_readings(self, mqtt_payload: str):
-
         """A message from SnifferBuddy is available via the MQTT protocol. The purpose of this callback is to store
         the reading in an InfluxDB database that has already been installed.
 

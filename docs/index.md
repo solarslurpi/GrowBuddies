@@ -67,6 +67,7 @@ Stay tuned for more updates. In the meantime, happy gardening!
    snifferbuddy
    mistbuddy
    snapbuddy
+   PID Controller
    tasmota
    systemd
    drgrowbuddy

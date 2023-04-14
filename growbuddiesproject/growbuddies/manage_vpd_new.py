@@ -67,8 +67,7 @@ from growbuddies.logginghandler import LoggingHandler
 from growbuddies.settings_code import Settings
 from growbuddies.mqtt_code import MQTTService
 from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
-from growbuddies.mistbuddy_code import MistBuddy
-from growbuddies.influxdb_code import ReadingsStore
+from growbuddies.mistbuddy_code_new import MistBuddy
 import sys
 
 
@@ -81,10 +80,6 @@ class Callbacks:
     def __init__(self):
         self.logger = LoggingHandler()
         self.mistbuddy = MistBuddy()
-        settings = Settings()
-        settings.load()
-        self.table_name = settings.get("snifferbuddy_table_name")
-        self.readings_store = ReadingsStore()
 
     def on_snifferbuddy_readings(self, msg):
         """This callback function handles MQTT messages from SnifferBuddy.  The payload is a JSON string that is converted
@@ -100,9 +95,6 @@ class Callbacks:
             # Adjust vpd. vpd is most relevant when the plants are transpiring when the lights are on.
             if self.mistbuddy.isLightOn(s.light_level):
                 self.mistbuddy.adjust_humidity(s.vpd)
-            # Store readings
-            if self.table_name:
-                self.readings_store.store_readings(s.dict)
 
     # The vpd value is returned. Turn on and off the humidifier based on it's value.
 

@@ -3,7 +3,7 @@
     "log_level": "DEBUG",
     "db_name": "gus",
     "dripbuddy_table_name": "dripbuddy_calibration",
-    "snifferbuddy_table_name": "new_grow_week1",
+    "snifferbuddy_table_name": "co2_tuning",
     "snifferbuddy_mqtt": {"tele/snifferbuddy/SENSOR": "on_snifferbuddy_readings",
                           "tele/snifferbuddy/LWT": "on_snifferbuddy_status"},
     "dripbuddy_mqtt": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",
@@ -11,21 +11,35 @@
     "calibrate_mqtt": {"calibrate": "on_calibrate_readings"},
     "mistbuddy_mqtt": {"cmnd/mistbuddy_fan/POWER": "",
                         "cmnd/mistbuddy_mister/POWER": ""},
+    "stomabuddy_mqtt": {"cmnd/stomabuddy/POWER": ""},
     "snapbuddy_mqtt": {"timelapse": "on_timelapse"},
     "vpd_growth_stage": "veg",
     "vpd_setpoints": {
-        "veg": 0.9,
+        "veg": 0.92,
         "flower": 1.0
     },
+    "co2_setpoint": 1000,
     "snapbuddy_settings_1": {"hostname": "snapbuddy1", "interval_secs": 3600, "timelapse_dir": "/home/pi/GrowBuddies/growbuddiesproject/growbuddies/timelapse/snapbuddy1"},
 
-    "PID_settings": {
-        "Kp": 361,
+    "MistBuddy_PID_key": {
+        "setpoint": 0.92,
+        "Kp": 160,
         "Ki": 0.1,
         "Kd": 0.1,
         "output_limits": [0, 20],
         "integral_limits":[0, 7],
         "tolerance": 0.01,
-        "tune": false
+        "tune": 1
+    },
+
+    "StomaBuddy_PID_key": {
+        "setpoint": 1000,
+        "Kp": 0.05,
+        "Ki": 0.01,
+        "Kd": 0.0,
+        "output_limits": [0, 10],
+        "integral_limits":[0, 2],
+        "tolerance": 1000,
+        "tune": 0
     }
 }

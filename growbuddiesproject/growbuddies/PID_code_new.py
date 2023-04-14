@@ -14,11 +14,10 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 #
-import time
-import warnings
-from enum import Enum
 from growbuddies.settings_code import Settings
 from growbuddies.logginghandler import LoggingHandler
+import time
+import warnings
 
 try:
     # Get monotonic time to ensure that time deltas are always positive
@@ -33,81 +32,21 @@ def _clamp(value, limits):
     lower, upper = limits
     if value is None:
         return None
-    elif (upper is not None) and (value > upper):
+    value = abs(value)  # The direction to move might be up or down. But n seconds is always positive.
+    if (upper is not None) and (value > upper):
         return upper
     elif (lower is not None) and (value < lower):
         return lower
     return value
 
 
-class growthStage(Enum):
-    """An enumeration to let growBuddy know if the plants it is caring for are in the vegetative or flower growth stage.
-
-    :param Enum: This setting can be either 'VEG' for the vegetative stage or 'FLOWER' for the flowering stage of the plant.
-
-    """
-
-    VEG = 2
-    FLOWER = 3
-
-
 class PID(object):
-    """The PID controller returns how many seconds to turn the DIY humidifier on.
-    This class is a modified version of the `simple-pid <https://github.com/m-lundberg/simple-pid>`_ package.  Which evolved from `Brett Beauregard's Arduino PID controller <http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/>`_.  The modification uses the time between mqtt messages as the (fairly) consistent sampling time instead of the system clock.
-
-    The PID controller is initialized with values from the growbuddies_settings.file.:
-
-    .. code-block:: json
-
-        "vpd_growth_stage": "veg",
-        "vpd_setpoints": {
-            "veg": 0.9,
-            "flower": 1.0
-            }
-        "PID_settings": {
-        "Kp": 240,
-        "Ki": 0.1,
-        "Kd": 0.1,
-        "output_limits": [0, 20],
-        "integral_limits":[0, 7],
-        "tolerance": 0.01
-        }
-
-    The meanings of the parameters will be discussed below under __init__().
-    """
-
     def __init__(self, PID_key: str):
-        """Initialize a new PID controller.  Instead of passing parameters into the constructor, the PID controller is
-        initialized with values from the growbuddies_settings.file.:
-
-            Args:
-                :vpd_growth_stage: The growth stage of the plants being cared for.  This can be either 'veg' or 'flower'.
-                :vpd_setpoints: The setpoint for the PID controller.  This is the target value that the PID controller will
-                 attempt to achieve.If the vpd_growth_stage is set to 'veg', the setpoint will be 0.9.  If the vpd_growth_stage
-                 is set to 'flower', the setpoint will be 1.0.
-                :Kp: The value for the proportional gain Kp.
-                :Ki: The value for the integral gain Ki.
-                :Kd: The value for the derivative gain Kd.
-                :output_limits: The upper limit for the humidifier to be on is determined by the output_limits. For example,
-                 if the output_limits is set to [0,20], the humidifier will turn off after 20 seconds, even if the PID calculation
-                 suggests it should run for a longer duration.
-                :integral_limits: The upper limit for the integral is determined by the integral_limits. As the process continues,
-                 the integral value will increase.  If the integral_limits is set to [0,7], the integral influence will be limited to 7 seconds.
-                :tolerance: If the current_value is within the tolerance of the setpoint, the PID controller will return 0 for the number of
-                 seconds to turn the humidifier on.
-
-
-            .. note::
-                See :ref:`The section on PID tuning<PID_tuning>` for more information on tuning these values.
-
-
-
-        """
+        self.logger = LoggingHandler()
         if PID_key is None:
             self.logger.error("No PID_KEY was passed in.")
             raise ValueError("PID_key cannot be None.  Please see growbuddies_settings.json")
         self.PID_key = PID_key
-        self.logger = LoggingHandler()
         # Load the settings discussed above from growbuddies_settings.json.
         settings = Settings()
         settings.load()
@@ -120,25 +59,13 @@ class PID(object):
         self.Ki = pid_settings["Ki"]
         self.Kd = pid_settings["Kd"]
         self.tolerance = pid_settings["tolerance"]
-        # Set up the setpoint to the ideal vpd value.
-        self.setpoint = 0.0
-        vpd_setpoint_settings = settings.get("vpd_setpoints")
-        vpd_growth_stage = settings.get("vpd_growth_stage")
-        # String to enum - match on the name attribute.
-        if vpd_growth_stage.upper() == growthStage.VEG.name:
-            self.setpoint = vpd_setpoint_settings["veg"]
-        else:
-            self.setpoint = vpd_setpoint_settings["flower"]
-        # TODO: PID should be generic.  pid settings that are specific should be handled outside of the pid.
-        # if not isinstance(self.setpoint, float) or self.setpoint * 10 not in range(20):
-        #     raise Exception("The vpd setpoint should be a floating point number between 0.0 and less than 2.0")
+        self.setpoint = pid_settings["setpoint"]
         self.output_limits_min = pid_settings["output_limits"][0]
         self.output_limits_max = pid_settings["output_limits"][1]
         self.integral_limits_min = pid_settings["integral_limits"][0]
         self.integral_limits_max = pid_settings["integral_limits"][1]
 
         self._min_output, self._max_output = None, None
-        pid_settings = settings.get("PID_settings")
         self._last_value = None
 
         self._proportional = 0
@@ -147,18 +74,14 @@ class PID(object):
 
         self._prev_error = None
 
-        self._count = 0
-        self._sum = 0
-
         self._last_time = _current_time()
         self._last_output = None
-        self._last_input = None
 
-        self.tune = pid_settings["tune"]  # If true, in Ziegler-Nichols tuning mode.
+        self.tune = pid_settings["tune"]  # 0 if not wanting Kp to increment by the amount in tune
 
         self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
-    def __call__(self, current_value):
+    def __call__(self, current_value) -> float:
         """Update the PID controller with the vpd value just calculated from the latest SnifferBuddyReading and figure out
         how many seconds to turn on the humidifier if the vpd value is above the vpd setpoint (i.e.: ideal)
         value.  0 seconds is returned if the vpd value is and calculate and return a control output if
@@ -176,34 +99,34 @@ class PID(object):
             dt = now - self._last_time if (now - self._last_time) else 1e-16
         self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
         self._last_time = now
-        # Compute error terms - Note: When the error is positive, the humidity is too low.  There is no dehumidifier.
-        # However, we'll keep note of the error in the derivative and integral terms since these accumulate.
-        error = self.setpoint - current_value
+        # Compute error terms - Note: The error continues to accumulate (integral and derivative) so that when
+        # the error goes within the range that the actuator can address, the response will be faster.
         d_value = current_value - (self._last_value if (self._last_value is not None) else current_value)
+        error = self.setpoint - current_value
         self._compute_terms(d_value, error, dt)
         self.logger.debug(
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
         )
-        # The tolerance term gives flexibility to allow for the random nature of air particles and water vapor.
+        # If the below is true, don't take action because the current value is higher than the setpoint by more than
+        # the defined tolerance. This is done because there is no actuator to remove CO2 or humidity in the system.
+        self.logger.debug(f"error: {error:.2f} > tolerance {self.tolerance}? ")
         if error > self.tolerance:
-            return 0, 0
-        # Do a bit of autotuning until it grows too big.  Cap it when the air gets too moist.
-        # used for the Ziegler-Nichols method of tuning.
-        if error < self.tolerance and self.tune:
-            self.Kp += 1
+            return 0
+
+        # If self.tune is not 0, change the Kp value in support of tuning the Kp value, for example during Ziegler-Nichols tuning.
+        # Set tune = 0 in the json setting file to not adjust Kp.
+        self.Kp += self.tune
 
         self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
 
-        output = abs(self._proportional + self._integral + self._derivative)
-        nSecondsOn = int(round(output))
-        nSecondsOn = _clamp(nSecondsOn, self.output_limits)
-        self.logger.debug(f" nSecondsOn is {nSecondsOn}")
+        output = self._proportional + self._integral + self._derivative
 
         # Keep track of state
         self._last_output = output
         self._last_value = current_value
         self._prev_error = error
-        return nSecondsOn, error
+        output = _clamp(output, self.output_limits)
+        return output
 
     def _compute_terms(self, d_value, error, dt):
         """Compute the integral and derivative terms.  Clamp the integral term to prevent it from growing too large.

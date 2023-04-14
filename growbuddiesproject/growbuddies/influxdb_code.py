@@ -30,9 +30,7 @@ class ReadingsStore:
 
     def store_readings(self, dict_of_snifferbuddy_readings):
         if not self.table_name:
-            self.logger.debug(
-                "No table name is set.  Not storing readings in influxdb"
-            )
+            self.logger.debug("No table name is set.  Not storing readings in influxdb")
             return
         # Create an InfluxDB client
         client = InfluxDBClient(host=self.hostname)

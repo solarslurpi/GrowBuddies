@@ -1,0 +1,3 @@
+# PID Controller
+
+This Python package implements a PID controller for managing Vapor Pressure Deficit (VPD) and CO2 levels in a grow tent environment. A PID controller adjusts its output based on the error between the desired setpoint and current conditions. The error is then converted into the number of seconds to turn the humidifier on or off (for VPD control) or the CO2 solenoid on or off (for CO2 control). Since gases and vapors, like CO2 and humidity, can spread unevenly throughout the grow tent, perfect control is unlikely. Nevertheless, the package aims to approximate ideal conditions to support overall plant health and growth.
