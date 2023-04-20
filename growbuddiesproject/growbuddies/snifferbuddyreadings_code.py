@@ -35,7 +35,7 @@ class SnifferBuddyConstants:
     CO2 = 2
     LIGHT_LEVEL = 3
     TIME = 4
-    # Note: vpd is not listed because it is a function of temperature and humidity.
+    VPD = 5
 
 
 class SnifferBuddyReadings:
@@ -79,147 +79,53 @@ class SnifferBuddyReadings:
         self.logger.debug("-> Initializing SnifferBuddy class.")
         self.valid_packet = True
 
-        self.mqtt = json.loads(mqtt_payload)
+        self.mqtt_payload = json.loads(mqtt_payload)
         # The air quality sensor's name in the mqtt message. If it isn't there, we assume
         # This payload is not from a SnifferBuddy.
         try:
-            self.sensor = self._find_sensor_name(self.mqtt)
-            self.name_dict = {self.sensor: ["Temperature", "Humidity", "CarbonDioxide"]}
-        except Exception:
-            self.logger.warning("Could not identify the air quality sensor. Not a SnifferBuddy packet.")
-            self.valid_packet = False
-
-    def _find_sensor_name(self, mqtt) -> str:
-        sensor_names = ["SCD30", "SCD40"]
-        for item in sensor_names:
-            for key in mqtt.items():
-                if item in key:
-                    return item
-        raise NameError("Could not find a valid sensor. Current valid sensors include the SCD30 and SCD40")
-
-    def _get_item(self, item_number: int):
-        try:
-            item = None
-            # e.g. for temperature:
-            # temperature = item = mqtt["SCD30"]["Temperature"].  If the item is for
-            # the temperature, the item_number is 0.
-            if item_number == SnifferBuddyConstants.TIME:
-                item = self.mqtt["Time"]
-                return item
-            if self.sensor == SnifferBuddySensors.SCD30 or self.sensor == SnifferBuddySensors.SCD40:
-                if item_number == SnifferBuddyConstants.LIGHT_LEVEL:
-                    # Light level is part of SnifferBuddy, but not the SCD30.
-                    item = self.mqtt["ANALOG"]["A0"]
-                else:
-                    item_name = self.name_dict[self.sensor][item_number]
-                    item = self.mqtt[self.sensor][item_name]
+            self.sensor_name = self._find_sensor_name_in_payload()
         except Exception as e:
-            self.logger.error(
-                f"Could not get item for {self.sensor} item number {item_number}.  Error: {e}. There should be an entry in name_dict."
-            )
-        return item
+            self.logger.error(f"Could not identify the air quality sensor.  Error: {e}")
+            self.valid_packet = False
+        self.dict = self._make_dict()
 
-    def _calc_vpd(self, temperature: float, humidity: float) -> float:
-        """INTERNAL METHOD. I decided at this point not to measure the leaf temperature but take the much simpler
-        approach of assuming 2 degrees F less than the air temperature.  Clearly not as accurate as reading.  But for
-        my purposes "good enough."
+    def _find_sensor_name_in_payload(self) -> str:
+        sensor_names_known_set = set(["scd30", "scd40", "scd41"])
+        sensor_name_in_mqtt = next(iter(self.mqtt_payload))
+        if sensor_name_in_mqtt in sensor_names_known_set:
+            return sensor_name_in_mqtt
+        else:
+            # Create a comma-separated string of the sensor names
+            sensor_names_str = ", ".join(sensor_names_known_set)
+            raise NameError(f"Could not find a valid sensor. Current valid sensors include {sensor_names_str}")
 
-        Once an mqtt message is received from the growBuddy broker that a SnifferBuddy reading is available, _calc_vpd()
-        is called to calculate the VPD.  The mqtt message comes in as a JSON string.  The JSON string is converted to a
-        dictionary.  The dictionary contains the values needed for the VPD calculation.
-
-        The VPD equation comes
-        `from a Quest website <https://www.questclimate.com/vapor-pressure-deficit-indoor-growing-part-3-different-stages-vpd/>`_
-
-        Args:
-            dict (dict): Dictionary of values returned from an mqtt message.
-        Raises:
-            Exception: If one of the values needed to calculate the VPD is of a type or value that won't work.
-
-        Returns the calculated VPD value.
-        """
-        # TODO: Make usable for at least the SCD30 or SCD40
-        air_T = temperature
-        RH = humidity
-        if not isinstance(air_T, float) or not isinstance(RH, float) or air_T <= 0.0 or RH <= 0.0:
-            raise Exception(
-                f"Received unexpected values for either the temperature ({air_T}) or humidity ({RH}) or both"
-            )
-        leaf_T = air_T - 2
-        vpd = 3.386 * (
-            math.exp(17.863 - 9621 / (leaf_T + 460)) - ((RH / 100) * math.exp(17.863 - 9621 / (air_T + 460)))
-        )
-        return round(vpd, 2)
-
-    @property
-    def dict(self) -> dict:
-        """Returns SnifferBuddy readings as a dictionary.
-
-        .. code:: python
-
-            return {
-                "temperature": self.temperature,
-                "humidity": self.humidity,
-                "co2": self.co2,
-                "vpd": self.vpd,
-                "light_level": self.light_level,
-            }
-
-        _Note: The time is not returned.  influxdb adds a timestamp when the data is written to the database._
-        """
+    def _make_dict(self) -> dict:
+        # At this point, I made this specific to the SnifferBuddy I built.  This way, I won't overcomplicate,
+        sensor_data = self.mqtt_payload[self.sensor_name]
         return {
-            "temperature": self.temperature,
-            "humidity": self.humidity,
-            "co2": self.co2,
-            "vpd": self.vpd,
-            "light_level": self.light_level,
+            "temperature": sensor_data["temperature"],
+            "humidity": sensor_data["humidity"],
+            "co2": sensor_data["co2"],
+            "vpd": sensor_data["vpd"],
+            "light_level": sensor_data["light"],
         }
 
     @property
     def temperature(self) -> float:
-        """SnifferBuddy's temperature reading. Whether it is in F or C is dependent on how you set up SnifferBuddy.
-        See [GrowBuddy's Tasmota documentation](tasmota_commands) for details.
-
-        Returns:
-            float: SnifferBuddy's reading of the air temperature.
-        """
-        # I set the temperature to F.
-        t = self._get_item(SnifferBuddyConstants.TEMPERATURE)
-        return t
-
-    @property
-    def time(self) -> str:
-        """A string containing the date and time SnifferBuddy sent the MQTT message.
-        _Note: The time is not returned within the dict property, as noted earlier."""
-        t = self._get_item(SnifferBuddyConstants.TIME)
-        return t
+        return self.dict["temperature"]
 
     @property
     def humidity(self) -> float:
-        """SnifferBuddy's reading for the Relative Humidity"""
-        h = self._get_item(SnifferBuddyConstants.HUMIDITY)
-        return h
+        return self.dict["humidity"]
 
     @property
     def co2(self) -> float:
-        """SnifferBuddy's reading for the CO2 concentration."""
-        c = self._get_item(SnifferBuddyConstants.CO2)
-        return c
+        return self.dict["co2"]
 
     @property
     def vpd(self) -> float:
-        """A calculation of the Vapor Pressure Deficit (vpd) based on SnifferBuddy's
-        temperature and humidity readings.  _Note: For now, the leaf temperature is
-        assumed to be 2 degrees F less than the air temperature._"""
-        h = self._get_item(SnifferBuddyConstants.HUMIDITY)
-        t = self._get_item(SnifferBuddyConstants.TEMPERATURE)
-        v = self._calc_vpd(t, h)
-        return v
+        return self.dict["vpd"]
 
     @property
-    def light_level(self) -> int:
-        """The reading of the photoresistor at the top of SnifferBuddy.  The build directions
-        say to use a Pull Down resistor.  This means the lower the value of the light level, the higher
-        the light level.  The value is a number between 0 and 1023."""
-        ll = self._get_item(SnifferBuddyConstants.LIGHT_LEVEL)
-        return ll
+    def light_level(self) -> str:
+        return self.dict["light"]

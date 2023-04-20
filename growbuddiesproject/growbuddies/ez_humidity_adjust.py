@@ -16,7 +16,7 @@ while True:
     send_message(client, "cmnd/mistbuddy_fan/POWER", "ON")
     send_message(client, "cmnd/mistbuddy_mister/POWER", "ON")
     # Wait a bit...
-    time.sleep(13)
+    time.sleep(8)
     send_message(client, "cmnd/mistbuddy_fan/POWER", "OFF")
     send_message(client, "cmnd/mistbuddy_mister/POWER", "OFF")
     client.disconnect()

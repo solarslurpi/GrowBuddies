@@ -15,7 +15,7 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-from growbuddies.PID_code_new import PID
+from growbuddies.PID_code import PID
 from growbuddies.logginghandler import LoggingHandler
 from growbuddies.settings_code import Settings
 from growbuddies.mqtt_code import MQTTClient
@@ -32,7 +32,10 @@ class MistBuddy:
 
     """
 
-    def __init__(self):
+    def __init__(
+        self,
+        manage=True,
+    ):
         """The growbuddy_settings.json file contains several parameters that are used as input for the program.
 
         `vpd_growth_stage` lets MistBuddy know what growth stage the plants are in.  There are two stages:
@@ -66,6 +69,10 @@ class MistBuddy:
                 Exception: _description_
         """
         self.logger = LoggingHandler()
+
+        self.manage = manage
+        msg = "Managing vpd." if self.manage else "Observing vpd."
+        self.logger.debug(msg)
         settings = Settings()
         settings.load()
         topics_and_methods = settings.get_callbacks("mistbuddy_mqtt", None)
@@ -82,7 +89,7 @@ class MistBuddy:
         self.pid_last_error = 0.0
         self.pid = PID("MistBuddy_PID_key")
 
-        self.logger.debug(f"------- Finished Init of MistBuddy....PID Key: {self.pid}")
+        self.logger.debug(self.pid)
 
     def isLightOn(self, light_level) -> bool:
         # Reading if the light level represents on depends if the photoresistor circuit
@@ -96,16 +103,16 @@ class MistBuddy:
         Args:
             vpd (float): The most current vpd reading.
         """
-        seconds_on = self.pid(vpd)
+        nSecondsON, error = self.pid(vpd)
 
         # Log the vpd and nSecondsON with error
-        self.logger.debug(f"vpd: {vpd}   num seconds to turn humidifier on: {seconds_on}. ")
+        self.logger.debug(f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}. The error is {error}")
 
-        # Only execute the mistBuddy if nSecondsON is greater than 0
-        if seconds_on > 0.0:
-            self.turn_on_mistBuddy(seconds_on)
+        # Only execute the mistBuddy if manage is true and nSecondsON is greater than 0
+        if self.manage and nSecondsON > 0:
+            self.turn_on_mistBuddy(nSecondsON)
 
-    def turn_on_mistBuddy(self, seconds_on: float) -> None:
+    def turn_on_mistBuddy(self, nSecondsON: int) -> None:
         """Sends an mqtt messages to mistBuddy's two power sources plugged into Tasmotized Smart plugs, a fan and a mister.
         The self.fan_power_topic and self.mister_power_topic are set in the __init__ method.
 
@@ -116,7 +123,7 @@ class MistBuddy:
         method is called. A connection to the mqtt broker is made, and the mqtt message payload "ON" is sent to the two plugs.
         """
         # Set up a timer with the callback on completion.
-        timer = threading.Timer(seconds_on, self.turn_off_mistBuddy)
+        timer = threading.Timer(nSecondsON, self.turn_off_mistBuddy)
         # The command to a Sonoff plug can be either TOGGLE, ON, OFF.
         # Send the command to power ON.
         mqtt_client = MQTTClient("MistBuddy")
@@ -129,7 +136,7 @@ class MistBuddy:
         mqtt_client.publish(self.mister_power_topic, "ON")
         time.sleep(0.25)
         mqtt_client.stop()
-        self.logger.debug(f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {seconds_on} seconds.")
+        self.logger.debug(f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds.")
         timer.start()
 
     def turn_off_mistBuddy(self) -> None:

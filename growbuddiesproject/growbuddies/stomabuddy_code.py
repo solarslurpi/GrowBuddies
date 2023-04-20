@@ -15,7 +15,7 @@
 # DEALINGS IN THE SOFTWARE.
 #
 
-from growbuddies.PID_code_new import PID
+from growbuddies.PID_code import PID
 from growbuddies.logginghandler import LoggingHandler
 from growbuddies.settings_code import Settings
 from growbuddies.mqtt_code import MQTTClient

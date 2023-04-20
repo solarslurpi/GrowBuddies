@@ -3,9 +3,9 @@
     "log_level": "DEBUG",
     "db_name": "gus",
     "dripbuddy_table_name": "dripbuddy_calibration",
-    "snifferbuddy_table_name": "co2_tuning",
-    "snifferbuddy_mqtt": {"tele/snifferbuddy/SENSOR": "on_snifferbuddy_readings",
-                          "tele/snifferbuddy/LWT": "on_snifferbuddy_status"},
+    "snifferbuddy_table_name": "new_snifferbuddy",
+    "snifferbuddy_mqtt": {"snifferbuddy/reading": "on_snifferbuddy_readings",
+                          "snifferbuddy/lwt": "on_snifferbuddy_status"},
     "dripbuddy_mqtt": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",
                        "tele/dripbuddy/LWT": "on_dripbuddy_status"},
     "calibrate_mqtt": {"calibrate": "on_calibrate_readings"},
@@ -23,23 +23,25 @@
 
     "MistBuddy_PID_key": {
         "setpoint": 0.92,
-        "Kp": 160,
-        "Ki": 0.1,
+        "Kp": 150,
+        "Ki": 0.5,
         "Kd": 0.1,
-        "output_limits": [0, 20],
-        "integral_limits":[0, 7],
-        "tolerance": 0.01,
-        "tune": 1
+        "output_limits": [0, 10],
+        "integral_limits":[0, 2.5],
+        "maximum": 0.93,
+        "tune": 0,
+        "comparison_function": "less_than"
     },
 
     "StomaBuddy_PID_key": {
         "setpoint": 1000,
-        "Kp": 0.05,
-        "Ki": 0.01,
+        "Kp": 0.06,
+        "Ki": 0.002,
         "Kd": 0.0,
         "output_limits": [0, 10],
-        "integral_limits":[0, 2],
-        "tolerance": 1000,
-        "tune": 0
+        "integral_limits":[0, 4],
+        "maximum": 1000,
+        "tune": 0,
+        "comparison_function": "greater_than"
     }
 }
