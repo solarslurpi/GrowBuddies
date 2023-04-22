@@ -90,10 +90,11 @@ class Callbacks:
         s = SnifferBuddyReadings(msg)
         if s.valid_packet:
             self.logger.debug(f"the snifferbuddy values: {s.dict}")
+            # The light level is a string either "ON" or "OFF".
             on_or_off_str = s.light_level.upper()
             self.logger.debug(f"The light is {on_or_off_str}")
             # Adjust vpd. vpd is most relevant when the plants are transpiring when the lights are on.
-            if self.mistbuddy.isLightOn(s.light_level):
+            if on_or_off_str == "ON":
                 self.mistbuddy.adjust_humidity(s.vpd)
 
     # The vpd value is returned. Turn on and off the humidifier based on it's value.

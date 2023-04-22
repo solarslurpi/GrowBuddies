@@ -23,25 +23,27 @@
 
     "MistBuddy_PID_key": {
         "setpoint": 0.92,
-        "Kp": 150,
+        "Kp": 175,
         "Ki": 0.5,
         "Kd": 0.1,
         "output_limits": [0, 10],
-        "integral_limits":[0, 2.5],
+        "integral_limits":[0, 2],
         "maximum": 0.93,
         "tune": 0,
-        "comparison_function": "less_than"
+        "comparison_function": "less_than",
+        "secs_between_pid": 45
     },
 
     "StomaBuddy_PID_key": {
         "setpoint": 1000,
-        "Kp": 0.06,
-        "Ki": 0.002,
+        "Kp": 0.2,
+        "Ki": 0.02,
         "Kd": 0.0,
         "output_limits": [0, 10],
-        "integral_limits":[0, 4],
+        "integral_limits":[0, 5],
         "maximum": 1000,
         "tune": 0,
-        "comparison_function": "greater_than"
+        "comparison_function": "greater_than",
+        "secs_between_pid": 20
     }
 }

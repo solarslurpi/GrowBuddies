@@ -50,6 +50,8 @@ class PID(object):
             self.logger.error("No PID_KEY was passed in.")
             raise ValueError("PID_key cannot be None.  Please see growbuddies_settings.json")
         self.PID_key = PID_key
+        # Used to determine if it is time to tune
+        self._reset()
         # Load the settings discussed above from growbuddies_settings.json.
         settings = Settings()
         settings.load()
@@ -69,6 +71,7 @@ class PID(object):
             self.integral_limits_min = pid_settings["integral_limits"][0]
             self.integral_limits_max = pid_settings["integral_limits"][1]
             self.comparison_func = COMPARISON_FUNCTIONS.get(pid_settings["comparison_function"])
+            self.secs_between_pid = pid_settings["secs_between_pid"]
         except KeyError as e:
             self.logger.error(f"The {e} key was not found in the PID_KEY.  Please see growbuddies_settings.json.")
             raise e
@@ -88,7 +91,13 @@ class PID(object):
 
         self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
-    def __call__(self, current_value) -> float:
+    def _reset(self):
+        """Reset the value accumulation and timer."""
+        self.last_call_time = time.monotonic()
+        self.average_value = 0
+        self.sample_count = 0
+
+    def calc_secs_on(self, current_value) -> float:
         """Update the PID controller with the vpd value just calculated from the latest SnifferBuddyReading and figure out
         how many seconds to turn on the humidifier if the vpd value is above the vpd setpoint (i.e.: ideal)
         value.  0 seconds is returned if the vpd value is and calculate and return a control output if
@@ -97,7 +106,19 @@ class PID(object):
         Args:
             :current_value: The most recent vpd value calculated from the latest SnifferBuddyReading.
         """
-
+        # Determine if it is time to tune.
+        current_time = time.monotonic()
+        time_elapsed = current_time - self.last_call_time
+        if time_elapsed < self.secs_between_pid:
+            self.sample_count += 1
+            self.average_value += (current_value - self.average_value) / self.sample_count
+            self.logger.debug(
+                f"--> Time Elapsed: {time_elapsed}, secs between pid tuning: {self.secs_between_pid} average value: {self.average_value}"
+            )
+            # Not tuning, so return 0 seconds.
+            return 0
+        else:
+            self._reset()
         now = _current_time()
         # if dt doesn't exist, it's the first time through. There is no self._last_time yet.
         try:
@@ -117,9 +138,9 @@ class PID(object):
         # If the below is true, don't take action because the current value is higher than the setpoint by more than
         # the maximum value. This is done because there is no actuator to remove CO2 or humidity in the system.
         self.logger.debug(f"current value: {current_value:.2f} > maximum value {self.maximum}? ")
-        if self.comparison_function(current_value, self.maximum):
+        if self.comparison_func(current_value, self.maximum):
             self.logger.debug("No actuator action needed.  Returning.")
-            return 0
+            return 0.0
 
         # If self.tune is not 0, change the Kp value in support of tuning the Kp value, for example during Ziegler-Nichols tuning.
         # Set tune = 0 in the json setting file to not adjust Kp.

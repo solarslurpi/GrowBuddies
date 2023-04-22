@@ -1,6 +1,6 @@
 #
 # SnifferBuddyReadings takes in the air quality readings within the mqtt payload from a SnifferBuddy and converts it into a
-# SnifferBuddy instance for easier and sensor agnostic access.  The SCD-30 and SCD-40 are supported sensors.
+# SnifferBuddy instance for easier and sensor agnostic access.  The SCD-30 and SCD-4X are supported sensors.
 #
 # Copyright 2023 Happy Day
 
@@ -16,63 +16,10 @@
 # DEALINGS IN THE SOFTWARE.
 #
 from growbuddies.logginghandler import LoggingHandler
-import math
 import json
 
 
-class SnifferBuddySensors:
-    """These are constants containing a string identifying the air quality sensor being used."""
-
-    SCD30 = "SCD30"
-    SCD40 = "SCD40"
-
-
-class SnifferBuddyConstants:
-    """These are the constants representing the item id of a SnifferBuddy measurement."""
-
-    TEMPERATURE = 0
-    HUMIDITY = 1
-    CO2 = 2
-    LIGHT_LEVEL = 3
-    TIME = 4
-    VPD = 5
-
-
 class SnifferBuddyReadings:
-    """An instance of the "SnifferBuddyReadings" class simplifies access to data by processing the MQTT
-    message payload from a SnifferBuddy device and providing properties such as the vpd, as well as a
-    dictionary containing all properties. Using the raw MQTT payload may not be optimal, as it:
-    - Does not include the vpd calculation.
-    - Is specific to the sensor.
-    - Is not as easily accessible as accessing properties directly.
-
-    For example, the mqtt air quality message of the SCD30 is:
-
-    .. code:: python
-
-        {"Time":"2022-09-06T08:52:59",
-         "ANALOG":{"A0":542},
-         "SCD30":{"CarbonDioxide":814,"eCO2":787,"Temperature":71.8,"Humidity":61.6,"DewPoint":57.9},"TempUnit":"F"}
-
-    Another air quality sensor may have a different message format that requires interpretation. However, the process
-    of accessing properties, such as sensor readings, remains consistent and can be done in the same way as demonstrated below.
-
-
-    .. code:: python
-
-        from snifferbuddy_code import SnifferBuddyReadings
-        s = SnifferBuddyReadings(mqtt)
-        print({s.dict})
-        print({s.vpd})
-
-
-    Args:
-        mqtt_payload (str): Sensor model specific mqtt message from a SnifferBuddy.
-        sensor (str, optional):The constant string that identifies the air quality sensor.  The sensor must be listed in
-        SnifferBuddySensors(). Defaults to SnifferBuddySensors.SCD30.
-        log_level (logging level constant, optional):Logging level either logging.DEBUG, logging.INFO, logging.ERROR. Defaults to logging.DEBUG.
-    """
-
     def __init__(self, mqtt_payload):
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler()
@@ -107,7 +54,7 @@ class SnifferBuddyReadings:
             "humidity": sensor_data["humidity"],
             "co2": sensor_data["co2"],
             "vpd": sensor_data["vpd"],
-            "light_level": sensor_data["light"],
+            "light": sensor_data["light"],
         }
 
     @property
