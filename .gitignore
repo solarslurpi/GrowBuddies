@@ -12,3 +12,5 @@ docs/_templates/
 **/.pytest_cache
 **/rst-test-files
 **/tests/*
+**/start_stop.json
+**/chunk_co2.py
