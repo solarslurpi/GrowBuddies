@@ -23,24 +23,39 @@ from growbuddies.stomabuddy_code import StomaBuddy
 import sys
 
 
+
 class Callbacks:
     def __init__(self):
         self.logger = LoggingHandler()
         self.stomabuddy = StomaBuddy()
+        # Used to keep track of the time since the light turned on.
+        # This variable is needed by the adjust_co2() function.
+        self.last_light_on_time = None
 
     def on_snifferbuddy_readings(self, msg):
         # Translate the mqtt message into a SnifferBuddy class.
+        self.logger.debug("Got message {msg} from snifferbuddy.")
         s = SnifferBuddyReadings(msg)
         if s.valid_packet:
+            # Becuase sometimes shit happens...
+            if s.co2 > 1500:
+                self.stomabuddy
             self.logger.debug(f"the snifferbuddy values: {s.dict}")
             on_or_off_str = s.light_level.upper()
             self.logger.debug(f"The light is {on_or_off_str}")
             # Adjust co2 when plants are transpiring.  Transpiration happens when the lights
             # are on.
             if on_or_off_str == "ON":
+                # if self.last_light_on_time is None:
+                #  self.last_light_on_time = time.time()
+                # else:
+                #     # Check if it has been 1/2 hour since the light turned on. This is a co2
+                #     # conservation method based on "talk about" the stoma take time to fully
+                #     # transition to full transpiration.
+                #     if (time.time() - self.last_light_on_time) > 30 * 60:
                 self.stomabuddy.adjust_co2(s.co2)
+                self.last_light_on_time = None
 
-    # The vpd value is returned. Turn on and off the humidifier based on it's value.
 
     def on_snifferbuddy_status(self, status):
         self.logger.debug(f"-> SnifferBuddy is: {status}")

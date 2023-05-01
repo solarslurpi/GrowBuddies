@@ -18,6 +18,7 @@ from growbuddies.settings_code import Settings
 from growbuddies.logginghandler import LoggingHandler
 import time
 import warnings
+import json
 
 COMPARISON_FUNCTIONS = {"greater_than": lambda x, max_val: x > max_val, "less_than": lambda x, max_val: x < max_val}
 
@@ -50,6 +51,17 @@ class PID(object):
             self.logger.error("No PID_KEY was passed in.")
             raise ValueError("PID_key cannot be None.  Please see growbuddies_settings.json")
         self.PID_key = PID_key
+        self._min_output, self._max_output = None, None
+        self._last_value = None
+
+        self._proportional = 0
+        self._integral = 0
+        self._derivative = 0
+
+        self._prev_error = None
+
+        self._last_time = _current_time()
+        self._last_output = None
         # Used to determine if it is time to tune
         self._reset()
         # Load the settings discussed above from growbuddies_settings.json.
@@ -66,30 +78,40 @@ class PID(object):
             self.Kd = pid_settings["Kd"]
             self.maximum = pid_settings["maximum"]
             self.setpoint = pid_settings["setpoint"]
-            self.output_limits_min = pid_settings["output_limits"][0]
-            self.output_limits_max = pid_settings["output_limits"][1]
-            self.integral_limits_min = pid_settings["integral_limits"][0]
-            self.integral_limits_max = pid_settings["integral_limits"][1]
+            self.output_limits = tuple(pid_settings["output_limits"])
+            self.tune_increment = pid_settings["tune"]["increment"]
+            self.tune_start_stop_json = pid_settings["tune"]["start_stop_json"]
+            self.integral_limits = tuple(pid_settings["integral_limits"])
             self.comparison_func = COMPARISON_FUNCTIONS.get(pid_settings["comparison_function"])
             self.secs_between_pid = pid_settings["secs_between_pid"]
         except KeyError as e:
-            self.logger.error(f"The {e} key was not found in the PID_KEY.  Please see growbuddies_settings.json.")
+            self.logger.error(f"ERROR: The {e} key was not found in the PID_KEY.  Please see growbuddies_settings.json.")
             raise e
-        self._min_output, self._max_output = None, None
-        self._last_value = None
+        # The maximum property is how much greater than the setpoint can the value go up to (I did this to somewhat
+        # accomodate drift.).  Thus, maximum must be greater than or equal to the setpoint
+        if self.maximum < self.setpoint:
+            self.logger.error(
+                f"ERROR: The maximum property: {self.maximum} "
+                f"is less than the setpoint: {self.setpoint}. "
+                f"The maximum property is what is the maximum "
+                f"value to be tolerated before adjusting."
+            )
 
-        self._proportional = 0
-        self._integral = 0
-        self._derivative = 0
+        if self.tune_increment > 0:
+            self.logger.debug(f"Writing the start time to the file {self.tune_start_stop_json}")
+            with open(self.tune_start_stop_json, 'w') as f:
+                data = {'start_time': int(time.time())}
+                json.dump(data, f)
 
-        self._prev_error = None
 
-        self._last_time = _current_time()
-        self._last_output = None
+    def _on_exit(self):
+        if self.tune_increment > 0:
+            self.logger.debug(f"Writing the start time to the file {self.tune_start_stop_json}")
+            with open(self.tune_start_stop_json, 'a') as f:
+                data = {'start_time': int(time.time())}
+                json.dump(data, f)
 
-        self.tune = pid_settings["tune"]  # 0 if not wanting Kp to increment by the amount in tune
 
-        self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
 
     def _reset(self):
         """Reset the value accumulation and timer."""
@@ -142,9 +164,9 @@ class PID(object):
             self.logger.debug("No actuator action needed.  Returning.")
             return 0.0
 
-        # If self.tune is not 0, change the Kp value in support of tuning the Kp value, for example during Ziegler-Nichols tuning.
+        # If self.tune_increment is not 0, change the Kp value in support of tuning the Kp value, for example during Ziegler-Nichols tuning.
         # Set tune = 0 in the json setting file to not adjust Kp.
-        self.Kp += self.tune
+        self.Kp += self.tune_increment
 
         self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
 
@@ -160,12 +182,6 @@ class PID(object):
     def _compute_terms(self, d_value, error, dt):
         """Compute the integral and derivative terms.  Clamp the integral term to prevent it from growing too large.
 
-        Args:
-            :d_value (float): The difference between the current and previous vpd values.  Used by the derivative term.
-            :error (float): The difference between the current vpd value and the setpoint.  Used by the proportional
-             integral term.
-            :dt (float): The difference in time between the current and previous vpd values.  Used by the integral and
-             derivative terms.
         """
         # Compute integral and derivative terms
         # Since we are not using PID during the night, we reset the error terms and start over.
@@ -174,7 +190,7 @@ class PID(object):
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, having an ability to clamp the integral term seems to help.
-        self._integral = -_clamp(abs(self._integral), [self.integral_limits_min, self.integral_limits_max])
+        self._integral = -_clamp(abs(self._integral), self.integral_limits)
         self._derivative = -self.Kd * d_value / dt
 
     def __repr__(self):
@@ -184,10 +200,10 @@ class PID(object):
             f"  Ki = {self.Ki}\n"
             f"  Kd = {self.Kd}\n"
             f"  setpoint = {self.setpoint}\n"
-            f"  output limits = ({self.output_limits_min}, {self.output_limits_max})\n"
-            f"  integral limits = ({self.integral_limits_min}, {self.integral_limits_max})\n"
+            f"  output limits = ({self.output_limits}, {self.output_limits})\n"
+            f"  integral limits = ({self.integral_limits})\n"
             f"  maximum value = {self.maximum}\n"
-            f"  tune = {self.tune}\n"
+            f"  tune = {self.tune_increment}\n"
             f"  comparison function = {self.comparison_func}\n"
         )
 

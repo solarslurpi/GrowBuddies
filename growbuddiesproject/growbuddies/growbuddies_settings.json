@@ -3,7 +3,7 @@
     "log_level": "DEBUG",
     "db_name": "gus",
     "dripbuddy_table_name": "dripbuddy_calibration",
-    "snifferbuddy_table_name": "new_snifferbuddy",
+    "snifferbuddy_table_name": "MAY_1_TUNE",
     "snifferbuddy_mqtt": {"snifferbuddy/reading": "on_snifferbuddy_readings",
                           "snifferbuddy/lwt": "on_snifferbuddy_status"},
     "dripbuddy_mqtt": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",
@@ -22,27 +22,27 @@
     "snapbuddy_settings_1": {"hostname": "snapbuddy1", "interval_secs": 3600, "timelapse_dir": "/home/pi/GrowBuddies/growbuddiesproject/growbuddies/timelapse/snapbuddy1"},
 
     "MistBuddy_PID_key": {
-        "setpoint": 0.92,
-        "Kp": 175,
+        "setpoint": 1.0,
+        "Kp": 180,
         "Ki": 0.5,
         "Kd": 0.1,
         "output_limits": [0, 10],
-        "integral_limits":[0, 2.5],
-        "maximum": 0.93,
-        "tune": 0,
+        "integral_limits":[0, 4],
+        "maximum": 1.0,
+        "tune": {"increment": 0.0, "start_stop_json": "start_stop.json"},
         "comparison_function": "less_than",
-        "secs_between_pid": 45
+        "secs_between_pid": 25
     },
 
     "StomaBuddy_PID_key": {
         "setpoint": 1000,
-        "Kp": 0.18,
-        "Ki": 0.01,
-        "Kd": 0.0,
-        "output_limits": [0, 10],
-        "integral_limits":[0, 3.5],
+        "Kp": 0.0,
+        "Ki": 0.0,
+        "Kd": 0,
+        "output_limits": [0, 8],
+        "integral_limits":[0, 4],
         "maximum": 1000,
-        "tune": 0,
+        "tune": {"increment": 0.01, "start_stop_json": "start_stop.json"},
         "comparison_function": "greater_than",
         "secs_between_pid": 25
     }
