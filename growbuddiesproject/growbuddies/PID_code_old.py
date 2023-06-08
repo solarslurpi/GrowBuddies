@@ -26,7 +26,9 @@ try:
 except AttributeError:
     # time.monotonic() not available (using python < 3.3), fallback to time.time()
     _current_time = time.time
-    warnings.warn("time.monotonic() not available in python < 3.3, using time.time() as fallback")
+    warnings.warn(
+        "time.monotonic() not available in python < 3.3, using time.time() as fallback"
+    )
 
 
 def _clamp(value, limits):
@@ -105,7 +107,9 @@ class PID(object):
         """
         if PID_key is None:
             self.logger.error("No PID_KEY was passed in.")
-            raise ValueError("PID_key cannot be None.  Please see growbuddies_settings.json")
+            raise ValueError(
+                "PID_key cannot be None.  Please see growbuddies_settings.json"
+            )
         self.PID_key = PID_key
         self.logger = LoggingHandler()
         # Load the settings discussed above from growbuddies_settings.json.
@@ -113,7 +117,9 @@ class PID(object):
         settings.load()
         pid_settings = settings.get(self.PID_key)
         if pid_settings is None:
-            self.logger.error("The PID_KEY was invalid.  Please see growbuddies_settings.json.")
+            self.logger.error(
+                "The PID_KEY was invalid.  Please see growbuddies_settings.json."
+            )
             raise KeyError(f"{self.PID_key} not found in settings dictionary")
 
         self.Kp = pid_settings["Kp"]
@@ -156,7 +162,10 @@ class PID(object):
 
         self.tune = pid_settings["tune"]  # If true, in Ziegler-Nichols tuning mode.
 
-        self.output_limits = pid_settings["output_limits"][0], pid_settings["output_limits"][1]
+        self.output_limits = (
+            pid_settings["output_limits"][0],
+            pid_settings["output_limits"][1],
+        )
 
     def __call__(self, current_value):
         """Update the PID controller with the vpd value just calculated from the latest SnifferBuddyReading and figure out
@@ -174,12 +183,16 @@ class PID(object):
             dt
         except NameError:
             dt = now - self._last_time if (now - self._last_time) else 1e-16
-        self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
+        self.logger.debug(
+            f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading."
+        )
         self._last_time = now
         # Compute error terms - Note: When the error is positive, the humidity is too low.  There is no dehumidifier.
         # However, we'll keep note of the error in the derivative and integral terms since these accumulate.
         error = self.setpoint - current_value
-        d_value = current_value - (self._last_value if (self._last_value is not None) else current_value)
+        d_value = current_value - (
+            self._last_value if (self._last_value is not None) else current_value
+        )
         self._compute_terms(d_value, error, dt)
         self.logger.debug(
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
@@ -222,7 +235,9 @@ class PID(object):
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, having an ability to clamp the integral term seems to help.
-        self._integral = -_clamp(abs(self._integral), [self.integral_limits_min, self.integral_limits_max])
+        self._integral = -_clamp(
+            abs(self._integral), [self.integral_limits_min, self.integral_limits_max]
+        )
         self._derivative = -self.Kd * d_value / dt
 
     def __repr__(self):

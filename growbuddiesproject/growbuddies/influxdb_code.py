@@ -20,13 +20,19 @@ from growbuddies.logginghandler import LoggingHandler
 
 
 class ReadingsStore:
-    def __init__(self):
+    def __init__(self, table_name=None):
         self.settings = Settings()
         self.settings.load()
         self.logger = LoggingHandler()
+        # By default this code assumes the standard snifferbuddy readings...
+        # But for example in MistBuddy a table of readings can be created for
+        # tuning purposes.
         self.hostname = self.settings.get("hostname")
         self.db_name = self.settings.get("db_name")
-        self.table_name = self.settings.get("snifferbuddy_table_name")
+        if table_name:
+            self.table_name = table_name
+        else:
+            self.table_name = self.settings.get("snifferbuddy_table_name")
 
     def store_readings(self, dict_of_snifferbuddy_readings):
         if not self.table_name:
@@ -37,7 +43,9 @@ class ReadingsStore:
         # Select the database to use
         client.switch_database(self.db_name)
         # Set up the data in the dictionary format influxdb uses.
-        data = [{"measurement": self.table_name, "fields": dict_of_snifferbuddy_readings}]
+        data = [
+            {"measurement": self.table_name, "fields": dict_of_snifferbuddy_readings}
+        ]
         # Write the data to InfluxDB
         try:
             client.write_points(data)

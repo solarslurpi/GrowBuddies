@@ -298,7 +298,7 @@ find /path -type f -exec sed -i 's/oldstr/newstr/g' {} \;
 
 #### Find the ProcessID
 
-Using the command:
+Using the command: `netstat -tulnp | grep :8000`
 ```
  pi@gus:~/gus $
 pi        2465  0.2  0.4  25956 17520 pts/0    T    09:31   0:00 /home/pi/gus/py_env/bin/python /home/pi/gus/py_env/bin/sphinx-autobuild docs docs/_build/html

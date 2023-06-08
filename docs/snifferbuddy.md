@@ -1,157 +1,148 @@
 
 (snifferbuddy_doc)=
 # SnifferBuddy
-:::{div}
-<img src="images/dog.jpg" class="sd-avatar-md sd-border-3">
-:::
-
-
-## About {material-regular}`question_mark;1em;sd-text-success`
-:::{div}
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vRrE_3IbPv7-cLCCn8CVXGG6jkQmeFNBvoSk6niyWYkE4fkSfZJRDWDI0uPFfgMnYsDITjzoF773lOR/pub?w=728&h=465">
-:::
-
-SnifferBuddy is a device that measures the temperature, humidity, and CO2 level of the air using an [SCD30](https://www.adafruit.com/product/4867) or [SCD40](https://www.adafruit.com/product/5187) sensor. It is controlled by an ESP286 microcontroller - a Wemos D1 - running [Tasmota firmware](https://tasmota.github.io/docs/About/), which publishes the readings to an MQTT broker.
-
-
-
-### Supported Sensors
-SnifferBuddy's sensors were chosen for their accurate CO2 readings, price, and ease of use. Initially, Buddies use temperature and humidity readings. Eventually, we will also monitor and adjust CO2 levels, but first, we need to optimize the grow area for proper water distribution in the air and soil.
-
-The [SCD-30](https://www.adafruit.com/product/4867) and [SCD-40](https://www.adafruit.com/product/5187) sensors are currently supported. I initially used the SCD-30, but later switched to the SCD-40 because it is more affordable and smaller in size, yet still of high quality.
-
-
-```{figure} images/snifferbuddy_in_growtent.jpg
+This guide details the process of assembling SnifferBuddy, configuring its software, and understanding its operation.
+```{figure} images/SnifferBuddy_mqtt.png
 :align: center
 :height: 350
 
-A Happy SnifferBuddy with an SCD-30 Sensor hanging about
+A SnifferBuddy with an SCD-40 Sensor Sending Readings over MQTT
 ```
 
-```{figure} images/snifferbuddy_scd40_inaction.jpg
+SnifferBuddy broadcasts MQTT messages packed with SCD-4x sensor data. Node-red, home assistant, and any software tuned to SnifferBuddy's MQTT topic can pick up and utilize this data. Additionally, another GrowBuddies device - Gus, a Raspberry Pi server, can archive SnifferBuddy data in an influx db while optionally controlling VPD and CO2 levels.
+Here is an example payload:
+```
+{"scd41": {"vpd": 1.43, "temperature": 78.314, "name": "sunshine", "light": "OFF", "co2": 929, "humidity": 45.5017, "unit": "F", "version": 0.1}}
+```
+
+## Build Steps
+### 1. Get the parts together
+
+The hardware needed to build SnifferBuddy includes:
+
+| Component | Cost | Reason |
+|-----------|------|--------|
+| [QT Py ESP32-S2](https://www.adafruit.com/product/5325) | $12.50 | Excellent quality.  Easy to use with CircuitPython and WiFi. STEMMA connector makes it easy to connect the SCD-40 or 41.  Small size.
+| [USB-C DATA Cable](https://amzn.to/3OW5SdE) | $10 | Includes wires for data transfer.  There are probably more inexpensive cables.  Please make sure to use one with data wires.
+| [SCD-40 BoB](https://www.adafruit.com/product/5187) | $44.95 | Excellent quality.  Provides accurate CO2 readings.  STEMMA connector makes it easy to connect to the QT PY.
+| [JST SH 4-Pin Cable](https://www.adafruit.com/product/4399) | $0.95 | Excellent quality. Connects the QT PY to the SCD-4x. No soldering required.
+| Photoresistor | pennies | At some point I bought [a pack of photoresistors on Amazon](https://www.amazon.com/s?k=photoresistor).
+| 10K  Resistor | pennies | As with photoresistors, I bought [a pack of resistors on Amazon](https://www.amazon.com/s?k=resistor).
+| wiring | pennies | I like to use [silicone wires like this wire kit on Amazon](https://amzn.to/3C6chLU).
+| enclosure | pennies | The files are found TBD.....
+
+
+
+:::{dropdown} SnifferBuddy Hardware Meanderings (Other hardware options)
+I've tried different hardware with previous SnifferBuddy builds.
+:::
+
+
+### 2. Print out the Enclosure
+```{figure} images/snifferbuddy_on_printbed.jpg
 :align: center
 :height: 350
 
-A Happy SnifferBuddy with an SCD-40 Sensor hanging about
+Top and Bottom Rings of the SnifferBuddy enclosure.
 ```
+#### a. Download the Files
 
-(make_snifferbuddy)=
-## Let's Make One {material-regular}`build;1em;sd-text-success`
-```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
-:outline:
-:color: success
+Print out these files on your 3D printer:
+- Top Ring: Print out [scd40-ring.3mf](../enclosures/SnifferBuddy/scd-40/scd40-ring.3mf).
+- Bottom Ring: Print out [bottom_qtpy.3mf](../enclosures/SnifferBuddy/scd-40/bottom_qtpy.3mf).
 
- {octicon}`comment;1em;sd-text-success` Comments & Questions
+(_connect_wires)=
+### 3. Connect Wires
+- Connect the photoresistor wiring.  This requires a bit of soldering.
+```{figure} images/SnifferBuddy_photoresistor_wiring.png
+:align: center
+:height: 350
+
+Diagram of Photoresistor Wiring
 ```
+```{figure} images/snifferbuddy_photoresistor_wiring_real.jpg
+:align: center
+:height: 350
+
+QT Py wired with the Photoresistor circuit.
+```
+- Connect the QT Py and the SCD40.
+```{figure} images/snifferbuddy_connected_scd4x.jpeg
+:align: center
+:height: 350
+
+QT Py connected to scd4x sensor using Adafruit's STEMMA QT
+```
+### 4. Install CircuitPython onto the QT Py
+
+Follow [Adafruit's instructions](https://learn.adafruit.com/adafruit-qt-py-esp32-s2/circuitpython).
 
 ```{note}
-SnifferBuddy sends out MQTT messages containing sensor readings as the payload. It can be used in any MQTT environment. If you have set up Gus, it will be able to handle the messages sent by SnifferBuddy. This document assumes that you have already built Gus.
+The CircuitPython version tested for compatibility with SnifferBuddy was 8.1.0.
 ```
 
-### Gather The Materials
+### 5. Download Files To CircuitPython's Root Dir
+{material-regular}`celebration;1em;sd-text-blue`  It is so wonderfully amazing that we can just drag and drop files onto our QT Py {material-regular}`celebration;1em;sd-text-blue`
 
-- [SCD30 sensor or SCD40 sensor](https://www.adafruit.com/product/4867) component.
-```{warning} The SCD40 driver is not included by default in the Tasmota sensor build for the ESP286.  I compiled a Tasmota sensor build that includes the SCD40.  There will also be different Tasmota installation steps.
+Download these two files to the CIRCUITPY drive:
+
+{material-regular}`download;1em;sd-text-success` [code.py](../growbuddiesproject/growbuddies/CircuitPython/src/code.py)
+   - contains all of SnifferBuddy's code.  The code is discussed [later](_code_doc).
+
+{material-regular}`download;1em;sd-text-success` [conf.json](../growbuddiesproject/growbuddies/CircuitPython/src/config.json)
+   - contains all the values that can be changed.  The contents of the config file is discussed below.
+### 6. Edit then Save the config file
+The contents of the config file are listed below.  At a minimum, the wifi ssid and password must be set.
+
+```{eval-rst}
+.. literalinclude:: ../growbuddiesproject/growbuddies/CircuitPython/src/config.json
+
 ```
-- [ESP8286](https://www.aliexpress.us/item/2251832645039000.html) component.
-- Photoresistor and 10K through hole resistor.  I had a lot of these kicking around. I bought something similar to [this kit](https://amzn.to/3yNZtZd).
-- 3D printer and PLA filament for printing out [the enclosure](enclosure).
-- Superglue for gluing the top Wemos part of the enclosure to the cap part of the enclosure.
-- USB cord and plug the ESP8286 to power.
-- 4 4mm M2.5 or M3 bolts.
-(enclosure)=
-### Make the Enclosure
-Enclosures are made in Fusion 360 and printed on a Prusa MK3S printer.
+- **name and version**: The 'name' field distinguishes each SnifferBuddy when multiple units are used. The 'version' field indicates the code version running on each SnifferBuddy's QT Py microcontroller, ensuring accurate tracking of software updates.
+- **wifi ssid and password**:  **Before deploying SnifferBuddy, it's essential to update these values** to align with your home network's WiFi settings.
+- **mqtt broker and port**: Use any MQTT broker.  By default, the MQTT broker is Gus.  The default MQTT port is 1883.
+- **temperature_unit**: The value is either an "F" or a "C", depending if readings should be stored in Fahrenheit or in Celsius.
+- **sensor_type**: Supported types include scd40 and scd41.
+- **light_threshold**: It is essential to know whether the grow light is on or off. SnifferBuddy uses the Photoresistor as a means to determine the relative light level.  As shown in the diagram within the [wiring section](_connect_wires), the light level is read from an analog pin on the QT Py.  The Photoresistor is the bottom resistor in the Voltage Divider circuit.  This means the more light, the higher the reading will be for the light level.  When code.py is run from Mu, print statements will show the light reading as shown below:
 
-#### SCD-30
-```{button-link} https://github.com/solarslurpi/GrowBuddies/tree/main/enclosures/SnifferBuddy
-:outline:
-:color: success
-
- {octicon}`file-directory;1em;sd-text-success` Directory containing scd-30 enclosure files
 ```
-To make the enclosure, download and print the 4 mesh files.
-:::{figure} images/snifferbuddy_parts_on_printer_plate.jpg
-:align: center
-:height: 350
-
-SnifferBuddy Enclosure Parts
-:::
-
-I use the F360 app extension [Parameter I/O](https://apps.autodesk.com/FUSION/en/Detail/Index?id=1801418194626000805&appLang=en&os=Win64) while modeling to import/export the parameters found in [SnifferBuddyParams.csv](https://github.com/solarslurpi/GrowBuddies/blob/c100124acaab285eadb284a5e7015e569ed76d3c/enclosures/SnifferBuddy/SnifferBuddyParams.csv).
-#### SCD-40
-```{note} Thank you, [sumpfing](https://www.thingiverse.com/sumpfing/designs), for your [modular Wemos D1 design](https://www.thingiverse.com/thing:4084654).
+Published: {"scd41": {"vpd": 1.43, "temperature": 78.314, "name": "sunshine", "light": "OFF", "co2": 929, "humidity": 45.5017, "unit": "F", "version": 0.1}}
+light reading: 45735
 ```
-```{button-link} https://github.com/solarslurpi/GrowBuddies/tree/main/enclosures/SnifferBuddy/scd-40
-:outline:
-:color: success
-
- {octicon}`file-directory;1em;sd-text-success` Directory containing scd-40 enclosure files
+In this case, the reading is 45,735.  You may want to experiment to find the "ideal" threshold value for your setup.  It turned out 51000 was the ideal value for mine.
+- **log_topic**: The MQTT topic used by the logging handler to send log messages to the MQTT broker.
+- **lwt_topic**: Used along with **offline_payload** to set the Last Will and Testament. The **online_payload** is sent to the **lwt_topic** upon receiving a callback from the MQTT Broker that SnifferBuddy has connected.
 ```
-The SCD-40 I built is made of two rings as shown in the image:
-
-```{figure} images/snifferbuddy_scd40_enclosure.jpg
-:align: center
-:scale: 60
-
-SCD-40 Ring Design
+    mqtt_client.will_set(config["lwt_topic"], config["offline_payload"], retain=True)
 ```
-Moving forward, I will use a third ring for the photoresistor and put it between the bottom and scd-40 ring.
+- **payload_topic**: The topic used to send the light info and scd4x readings.
+### 7. Download Library Files to the lib Directory
+Create the lib directory on your CIRCUITPY drive.
 
+#### a. Download to the CIRCUITPY/lib directory:
+{material-regular}`download;1em;sd-text-success` [log_mqtt.py](../growbuddiesproject/growbuddies/CircuitPython/src/log_mqtt.py)
+#### b. Download the CircuitPython Libraries
+Based on the version of CircuitPython you installed on the QT Py, download the [corresponding CircuitPython Libraries](https://circuitpython.org/libraries).
+#### c. Copy Libraries to the CIRCUITPY/lib directory:
+The following libraries need to be copied to CIRCUITPY/lib:
+- adafruit_minimqtt
+- adafruit_logging.mpy
+- adafruit_scd4x.mpy
 
+(_code_doc)=
+## Code Documentation
+Starting at the `main()` function:
+```{eval-rst}
+.. automodule:: growbuddies.CircuitPython.src.code
+   :members: main
 
-### Wire the Components Together
-Wiring is the hardest part.
-```{figure} images/snifferbuddy_scd40_wiring.jpg
-:align: center
-:scale: 60
-
-SCD-40 Wired Up
-```
-```{div} sd-text-info
-- Photoresistor
-```
-```{div} sd-text-success
-- Wemos D1 ESP286
-```
-```{div} sd-text-danger
-- SCD-40
-```
-```{note} The images show that the photoresistor was placed in the bottom ring near the USB port opening. However, this causes interference between the wires and the placement of the ESP286 in the bottom ring. In future builds, I will use a ring similar to the one used for the SCD-40 to eliminate this interference.
 ```
 
-:::{figure} images/SnifferBuddy_wiring.jpg
-:align: center
-:scale: 100
 
-SnifferBuddy SCD-40 Wiring
-:::
-I decided to use the ESP826 chip and [Tasmota firmware](https://tasmota.github.io/docs/) for the SnifferBuddy because Tasmota was specifically designed to provide MQTT and OTA functionality for ESP8266-based ITEAD Sonokff devices. While I did encounter an issue with the Wemos D1 ESP286 when I was building the first SnifferBuddy, the ESP826 has proven to be an inexpensive and reliable choice. I ordered a bunch of ESP286s from [Aliexpress](https://www.aliexpress.us/item/2251832645039000.html). To further enhance the SnifferBuddy's capabilities, I also added a photoresistor to the top of the device. This allows me to determine whether the grow lights are on or off, which helps me to provide the appropriate daytime or nighttime care for my plants.
-
-I used a wired 4-pin JST SH connector to connect the Wemos D1 to the SCD sensor. The wiring process can be challenging, so I summarized my thoughts on it [in a separate document](wiring_doc). By soldering the SDA, SCL, 5V+, and GND lines to the Wemos D1 pins, I was able to establish connectivity for the I2C lines of the SCD-40. In addition, I wired up the photoresistor, although I should have used another ring for this.
-
-To measure the voltage of the photoresistor, I used a voltage divider circuit. This allows me to determine whether the LED lights are on or off, which is important for knowing when to perform certain activities, such as adding humidity, during the day or at night.  A pull-up resistor with a resistance value of 10K completes the circuit.
-
-
-### Install Tasmota
-Time to install Tasmota onto the ESP8286.  See [Tasmota Installation](tasmota_installation).
-
-#### Verify Install
-You can use a tool like [mqtt explorer](mqtt_explorer) to see if SnifferBuddy is sending out mqtt messages.
-
-:::{figure} images/jobwelldone.jpg
-:align: center
-:scale: 30
-
-Time to (HOPEFULLY) Celebrate.
-:::
-## Let's Use One {material-regular}`mood;1em;sd-text-success`
-SnifferBuddy publishes temperature, humidity, and CO2 level readings to an MQTT broker, making it suitable for use in any environment that can subscribe to MQTT messages. This allows SnifferBuddy to be easily integrated into a variety of systems and settings.
-
-Gus is an integral part of the GrowBuddies system. If you choose to build Gus, you will be able to use Gus to store and visualize SnifferBuddy's readings, including the calculated vapor pressure deficit (VPD) value. This allows you to easily track and analyze the environmental conditions in your grow area, helping you to optimize your plants' growth and health.
-```{button-ref} gus
-:outline:
-:color: success
-
-See Gus
+```{eval-rst}
+.. autofunction:: growbuddies.CircuitPython.src.code.load_config
+.. autofunction:: growbuddies.CircuitPython.src.code.connect_wifi
+.. autofunction:: growbuddies.CircuitPython.src.code.connect_mqtt
+.. autofunction:: growbuddies.CircuitPython.src.code.read_and_mqtt_scd4x_data
+.. autofunction:: growbuddies.CircuitPython.src.code.process_light_info
 ```

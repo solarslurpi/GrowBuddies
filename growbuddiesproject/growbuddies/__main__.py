@@ -18,6 +18,7 @@ import sys
 class Callbacks:
     def __init__(self):
         self.logger = LoggingHandler()
+        self.table_to_store_readings = ReadingsStore()
 
     def on_snifferbuddy_readings(self, mqtt_payload: str):
         """
@@ -26,11 +27,10 @@ class Callbacks:
         # 1. Convert mqtt payload string into a SnifferBuddy() class.
         s = SnifferBuddyReadings(mqtt_payload)
         if s.valid_packet:
-            self.logger.debug(f"SnifferBuddy Readings after a conversion from msg.payload {s.dict}")
-            # 2. Store the Readings into an influxdb measurement table.
-            table_to_store_readings = ReadingsStore()
-            # If successful and debug logging level is set, store_readings() will print out the success or failure message.
-            table_to_store_readings.store_readings(s.dict)
+            self.logger.debug(
+                f"SnifferBuddy Readings after a conversion from msg.payload {s.dict}"
+            )
+            self.table_to_store_readings.store_readings(s.dict)
 
     def on_snifferbuddy_status(self, status):
         """

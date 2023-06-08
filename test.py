@@ -6,7 +6,7 @@ COMPARISON_FUNCTIONS = {
 
 class PID(object):
     def __init__(self, PID_key: str):
-        self.maximum = .92
+        self.maximum = 0.92
         self.comparison_func = COMPARISON_FUNCTIONS.get(
             PID_key, lambda x, max_val: x > max_val
         )
@@ -17,6 +17,5 @@ class PID(object):
             return 0
 
 
-
 vpd_pid = PID("MistBuddy_PID_key")
-vpd_pid(.80)
+vpd_pid(0.80)

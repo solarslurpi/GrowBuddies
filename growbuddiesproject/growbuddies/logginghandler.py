@@ -55,7 +55,9 @@ class LoggingHandler:
         try:
             log_level = logging.getLevelName(log_level_str)
         except Exception as e:
-            raise Exception(f"Could not set up the logging level with {log_level} as the level name.  Error: {e}")
+            raise Exception(
+                f"Could not set up the logging level with {log_level} as the level name.  Error: {e}"
+            )
 
         # Multiple calls to getLogger() with the same name will always return a reference to the same Logger object.
         self.logger = logging.getLogger(__name__)
@@ -69,22 +71,30 @@ class LoggingHandler:
     def debug(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.debug(f"{colors.Green}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
+        self.logger.debug(
+            f"{colors.Green}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
+        )
 
     def info(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.info(f"{colors.Yellow}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
+        self.logger.info(
+            f"{colors.Yellow}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
+        )
 
     def warning(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.error(f"{colors.Red}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
+        self.logger.error(
+            f"{colors.Red}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
+        )
 
     def error(self, message):
         f = inspect.currentframe()
         i = inspect.getframeinfo(f.f_back)
-        self.logger.error(f"{colors.BIRed}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}")
+        self.logger.error(
+            f"{colors.BIRed}{i.filename}:{i.lineno}  {i.function}   ...{message}{colors.Original}"
+        )
 
     # def _get_Error_Bad_Soil_Moisture_Reading(self):
     #     return 2000

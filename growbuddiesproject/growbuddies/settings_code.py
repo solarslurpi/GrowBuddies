@@ -38,7 +38,9 @@ class Settings:
             with open(settings_filename) as json_file:
                 self.settings = json.load(json_file)
         except Exception as e:
-            raise Exception(f"Could not open the settings file named {settings_filename}.  Error: {e}")
+            raise Exception(
+                f"Could not open the settings file named {settings_filename}.  Error: {e}"
+            )
 
     def get(self, key, default=None) -> str:
         """The get() method is a convenient way to access the values stored in the growbuddies_settings.json file.
@@ -108,8 +110,12 @@ class Settings:
         callback_methods = {}
         for topic in callbacks_for_topic.keys():
             try:
-                callback_methods[topic] = getattr(instance_of_callbacks_class, callbacks_for_topic[topic])
+                callback_methods[topic] = getattr(
+                    instance_of_callbacks_class, callbacks_for_topic[topic]
+                )
             except AttributeError:
-                print(f"Callback for mqtt topic {topic}  not found.")
+                print(
+                    f"Just a FYI: No callback registered for topic {topic}  not found."
+                )
                 callback_methods[topic] = None
         return callback_methods

@@ -7,25 +7,35 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import os
 import sys
-# Add the code path
-sys.path.insert(0, os.path.abspath('../growbuddiesproject'))
 
-project = 'GrowBuddies'
-copyright = '2022, HappyDay'
-author = 'HappyDay'
-release = '2022.12.1'
+# Add the code path
+sys.path.insert(0, os.path.abspath("../growbuddiesproject"))
+
+
+
+project = "GrowBuddies"
+copyright = "2022, HappyDay"
+author = "HappyDay"
+release = "2022.12.1"
 
 # ignore files
-exclude_patterns = ["py_env/*", '**/_*']
+exclude_patterns = ["py_env/*", "**/_*"]
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ["sphinx.ext.autodoc", "sphinx.ext.autosectionlabel", "sphinx_design", "myst_parser", 'sphinx.ext.doctest', 'nbsphinx']
+extensions = [
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    'sphinx.ext.napoleon',
+    "sphinx.ext.autosectionlabel",
+    "sphinx_design",
+    "myst_parser",
+    "sphinx.ext.doctest",
+    "nbsphinx",
+]
 # Include doc strings for __init__ and __call__ methods.  The __call__ method is used in PID_code.py.
-autodoc_default_options = {
-    'special-members': '__init__,__call__'
-}
+autodoc_default_options = {"special-members": "__init__,__call__"}
 # Make sure the target is unique
 autosectionlabel_prefix_document = True
 
@@ -42,15 +52,15 @@ html_css_files = [
 ]
 
 # Ignore documentating these files.
-autodoc_mock_imports = ['influxdb', 'paho']
+autodoc_mock_imports = ["influxdb", "paho", "board", "analogio", 'adafruit_scd4x', 'wifi', 'socketpool', 'adafruit_minimqtt', 'adafruit_logging', 'log_mqtt', 'microcontroller', 'watchdog']
 
-templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+templates_path = ["_templates"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = "sphinx_rtd_theme"
 
 # NOT using any static CSS or such...
 # html_static_path = ['_static']

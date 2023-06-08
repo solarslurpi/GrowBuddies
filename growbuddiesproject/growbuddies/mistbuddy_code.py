@@ -80,9 +80,13 @@ class MistBuddy:
         self.mqtt_client.start()
         self._publish_power_plug_messages("ON")
         timer.start()
-        self.logger.debug(f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {seconds_on} seconds.")
+        self.logger.debug(
+            f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {seconds_on} seconds."
+        )
 
     def turn_off_mistBuddy(self) -> None:
         self._publish_power_plug_messages("OFF")
         self.mqtt_client.stop()
-        self.logger.debug("...Sent mqtt messages to the two mistBuddy plugs to turn OFF.")
+        self.logger.debug(
+            "...Sent mqtt messages to the two mistBuddy plugs to turn OFF."
+        )

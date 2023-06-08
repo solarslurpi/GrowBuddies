@@ -13,6 +13,18 @@ The documentation uses Sphinx.  I'm putting learnings on how to do non intuitive
 
 * [Sphinx Build Errors like Unexpected Unindent](https://www.tarantool.io/en/doc/latest/contributing/docs/sphinx-warnings/)
 
+## Kill sphinx process
+Sometimes exiting doesn't free up port 8000:
+```
+$ netstat -tulnp | grep :8000
+(Not all processes could be identified, non-owned process info
+ will not be shown, you would have to be root to see it all.)
+tcp        0      0 127.0.0.1:8000          0.0.0.0:*               LISTEN      20741/python3
+(.venv) pi@gus:~ $ kill -9 20741
+[1]+  Killed                  sphinx-autobuild docs docs/_build/html  (wd: ~/GrowBuddies/growbuddiesproject/growbuddies/CircuitPython/src)
+```
+
+
 ## Autobuild
 Autobuild brings WYSIWYG editing.  It is extremely useful when editing Sphinx docs!
 
@@ -87,7 +99,7 @@ Where the link is use \{ref\}\`Custom title \<anchor name\>\`.  Before the m(H1,
 For example, {ref}`Let's make a SnifferBuddy <make_snifferbuddy>` is a cross reference link to the section in SnifferBuddy with the steps to make a SnifferBuddy.
 
 ## new line in markdown
-I guess tools have a bunch of weird ways to do things.  The challenge is learning how they do them. From [the markdown guid](https://markdown-guide.readthedocs.io/en/latest/basics.html#line-return),
+I guess tools have a bunch of weird ways to do things.  The challenge is learning how they do them. From [the markdown guide](https://markdown-guide.readthedocs.io/en/latest/basics.html#line-return),
 
 _To force a line return, place two empty spaces at the end of a line._ Then hit a line return
 

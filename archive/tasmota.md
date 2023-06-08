@@ -101,7 +101,7 @@ https://github.com/Jason2866/ESP_Flasher/releases  - ESP Flasher - use this, put
 
 commands from https://cgomesu.com/blog/Esp32cam-tasmota-webcam-server/#installation
 
-### Semsors
+### Sensors
 Install the Tasnmota Sensors binary for the ESP286 if the sensor is included by default in the Sensors build (see [before installation](before_installation)).
 :::{figure} images/install_tasmota.jpg
 :align: center

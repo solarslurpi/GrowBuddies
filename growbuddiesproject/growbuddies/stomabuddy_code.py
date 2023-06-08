@@ -23,11 +23,12 @@ import threading
 
 
 class StomaBuddy:
-    def __init__(self):
+    def __init__(self, method_dict):
         self.logger = LoggingHandler()
 
         settings = Settings()
         settings.load()
+        self.method_dict = method_dict
         topics_and_methods = settings.get_callbacks("stomabuddy_mqtt", None)
         self.power_topic = list(topics_and_methods.keys())[0]
         self.logger.debug(f"The Power topic is: {self.power_topic}")
@@ -44,7 +45,15 @@ class StomaBuddy:
         Args:
             vpd (float): The most current vpd reading.
         """
+        # Do this first before any increments of Kp by the PID.
+        if self.method_dict:
+            pid_values = self.pid.current_values_dict
+            key, callback_method = list(self.method_dict.items())[0]
+            callback_method(pid_values)
+            self.logger.debug(f"...Callback method called: {key}")
+
         seconds_on = self.pid.calc_secs_on(co2_level)
+
         # Log the vpd and nSecondsON with error
         self.logger.debug(f"Turn co2 solenoid on for : {seconds_on} seconds. ")
         if seconds_on > 0:
@@ -57,9 +66,13 @@ class StomaBuddy:
         self.mqtt_client.start()
         self.mqtt_client.publish(self.power_topic, "ON", qos=2)
         timer.start()
-        self.logger.debug(f"...Sent mqtt message to topic: {self.power_topic} to turn ON for {seconds_on} seconds.")
+        self.logger.debug(
+            f"...Sent mqtt message to topic: {self.power_topic} to turn ON for {seconds_on} seconds."
+        )
 
     def turn_off_stomaBuddy(self) -> None:
         self.mqtt_client.publish(self.power_topic, "OFF", qos=2)
         self.mqtt_client.stop()
-        self.logger.debug(f"...Sent mqtt messages to topic: {self.power_topic} to turn OFF.")
+        self.logger.debug(
+            f"...Sent mqtt messages to topic: {self.power_topic} to turn OFF."
+        )

@@ -4,72 +4,56 @@
 % contain the root `toctree` directive.
 
 # Welcome to GrowBuddies! {material-regular}`yard;2em;sd-text-success`
-Hello, fellow indoor gardeners!
+GrowBuddies is a bunch of DIY devices for geeky gardeners. They work together to maximize the yield while minimizing the guesswork.
+## SnifferBuddy
+The core device is SnifferBuddy. SnifferBuddy tracks light, temperature, humidity, CO2, and calculates VPD, sending readings through MQTT over WiFi.
 
-The GrowBuddies project is designed to help geeky gardeners like us maximize the health and enjoyment of our indoor gardens.
+```{figure} images/snifferbuddy_in_tent.jpg
+:align: center
+:scale: 60
 
-::::{grid} 4
-:gutter: 2
-
-:::{grid-item-card} SnifferBuddy
-:link: snifferbuddy
-:link-type: doc
-
-```{image} images/dog.jpg
-:width: 200px
-:class: sd-m-auto sd-animate-grow50-rot20
+SnifferBuddy Monitors Temps, RH, CO2, VPD, and Light Level
 ```
-Sniffs out temperature, humidity, and CO2.
-:::
+It's compatible with MQTT ecosystems like node-red or AdafruitIO.
 
-:::{grid-item-card} MistBuddy
-:link: mistbuddy
-:link-type: doc
-```{image} images/whale.svg
-:width: 200px
-:class: sd-m-auto sd-animate-grow50-rot20
+
+```{button-ref} snifferbuddy.md
+:ref-type: myst
+:align: center
+:color: success
+:shadow:
+Let's Make One {material-regular}`build;1em;sd-text-white`
 ```
-Maintains the vpd Level.
-:::
-:::{grid-item-card} SnapBuddy
-:link: snapbuddy
-:link-type: doc
-```{image} images/snapbuddy_og_v.svg
-:width: 200px
-:class: sd-m-auto sd-animate-grow50-rot20
+
+## Gus
+Another option to process SnifferBuddy's MQTT messages is to build Gus.  Gus is a Raspberry Pi 3/4, running the Mosquitto MQTT broker.
+
+```{figure} images/Gus_2.jpg
+:align: center
+:scale: 60
+
+A Rasp Pi 3 Gus and a Rasp Pi 4 Gus
 ```
-Snaps a Time Lapse Image.
-:::
+ Gus can:
+ - receive and stores SnifferBuddy's MQTT messages in an influxdb database.
+ - plot MQTT messages within Grafana.
+ - manage an "ideal" vpd setpoint.
+ - manage a CO2 level setpoint.
 
-:::{grid-item-card} Gus
-:link: gus
-:link-type: doc
-```{image} images/hamster.jpg
-:width: 200px
-:class: sd-m-auto sd-animate-grow50-rot20
+ For example, the powerful Grafana graphing package is freely available on the Raspberry Pi.  We can use it to plot SnifferBuddy values that were stored within an influxdb table.
+
+
+```{figure} images/co2andvpdvalues.jpg
+:align: center
+:scale: 60
+
+Grafana Plots SnifferBuddy Data on Gus
 ```
-Rasp Pi Running Backend Services.
-:::
-::::
-
-
-Not only do GrowBuddies make gardening easier and more fun, but they also help ensure that your plants are healthy and happy.
-
-Stay tuned for more updates. In the meantime, happy gardening!
-
-
+Here we see the plot of CO2 (purple) and vpd (green).  It shows the vpd is staying around its setpoint of 1.0.  The CO2 is slowly rising to between 750 and 800 ppm.
 ```{eval-rst}
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
 
-   getting_started
-   gus
    snifferbuddy
-   mistbuddy
-   snapbuddy
-   PID Controller
-   tasmota
-   systemd
-   drgrowbuddy
-   troubleshooting
+   gus
 ```

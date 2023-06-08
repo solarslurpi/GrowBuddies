@@ -43,8 +43,13 @@ class CallbacksTensiometer:
 
     def on_calibrate_readings(self, tensiometer_reading):
         # Put the readings into a dictionary
-        readings_dict = {"tensiometer": int(tensiometer_reading), "capacitive ": int(current_reading)}
-        self.logger.debug(f"in on_calibrate_readings.  Tensiometer reading: {readings_dict} capacitive readings")
+        readings_dict = {
+            "tensiometer": int(tensiometer_reading),
+            "capacitive ": int(current_reading),
+        }
+        self.logger.debug(
+            f"in on_calibrate_readings.  Tensiometer reading: {readings_dict} capacitive readings"
+        )
         # Store reading into influxdb table.
         self.readings_store.store_readings(self.table_name, readings_dict)
 

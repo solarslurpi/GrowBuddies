@@ -1,15 +1,17 @@
 from PIL import Image
 from pathlib import Path
-# scale images to 256x256  
- 
+
+# scale images to 256x256
+
 
 def resize_images(dir_in: str = None, dir_out: str = None, size: tuple = (256, 256)):
-
     """
     Resize all images in a directory.
     """
     if dir_in is None or not Path(dir_in).exists():
-        raise ValueError(f"The input directory **{dir_in}** does not exist or was not specified.")
+        raise ValueError(
+            f"The input directory **{dir_in}** does not exist or was not specified."
+        )
     if dir_out is None:
         raise ValueError("The output directory was not specified.")
     dir_out_path = Path(dir_out)
@@ -24,16 +26,18 @@ def resize_images(dir_in: str = None, dir_out: str = None, size: tuple = (256, 2
         # Open the image
         with Image.open(img_path) as im:
             # Resize the image
-            im = im.resize(size, Image.LANCZOS )
+            im = im.resize(size, Image.LANCZOS)
             # Save the image
             img = dir_out_path / img_path.name
             im.save(img)
 
 
 def main():
-    resize_images(dir_in='datasets\healthy', dir_out='datasets\healthy_256', size=(256, 256))
+    resize_images(
+        dir_in="datasets\healthy", dir_out="datasets\healthy_256", size=(256, 256)
+    )
     print("DONE")
-  
+
 
 if __name__ == "__main__":
     main()

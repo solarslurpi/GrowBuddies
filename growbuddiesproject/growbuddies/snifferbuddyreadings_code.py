@@ -44,7 +44,9 @@ class SnifferBuddyReadings:
         else:
             # Create a comma-separated string of the sensor names
             sensor_names_str = ", ".join(sensor_names_known_set)
-            raise NameError(f"Could not find a valid sensor. Current valid sensors include {sensor_names_str}")
+            raise NameError(
+                f"Could not find a valid sensor. Current valid sensors include {sensor_names_str}"
+            )
 
     def _make_dict(self) -> dict:
         # At this point, I made this specific to the SnifferBuddy I built.  This way, I won't overcomplicate,

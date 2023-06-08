@@ -3,7 +3,7 @@
     "log_level": "DEBUG",
     "db_name": "gus",
     "dripbuddy_table_name": "dripbuddy_calibration",
-    "snifferbuddy_table_name": "MAY_1_TUNE",
+    "snifferbuddy_table_name": "MAY_7",
     "snifferbuddy_mqtt": {"snifferbuddy/reading": "on_snifferbuddy_readings",
                           "snifferbuddy/lwt": "on_snifferbuddy_status"},
     "dripbuddy_mqtt": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",
@@ -29,21 +29,23 @@
         "output_limits": [0, 10],
         "integral_limits":[0, 4],
         "maximum": 1.0,
-        "tune": {"increment": 0.0, "start_stop_json": "start_stop.json"},
+        "tune": {"increment": 0.0, "influxdb_table_name": ""},
         "comparison_function": "less_than",
-        "secs_between_pid": 25
+        "secs_between_pid": 25,
+        "pid_callback": ""
     },
 
     "StomaBuddy_PID_key": {
         "setpoint": 1000,
-        "Kp": 0.0,
-        "Ki": 0.0,
-        "Kd": 0,
+        "Kp": 0.25,
+        "Ki": 0.002,
+        "Kd": 0.0,
         "output_limits": [0, 8],
-        "integral_limits":[0, 4],
+        "integral_limits":[0, 2],
         "maximum": 1000,
-        "tune": {"increment": 0.01, "start_stop_json": "start_stop.json"},
+        "tune": {"increment": 0.0, "influxdb_table_name": "MAY_6a_KP_TUNE"},
         "comparison_function": "greater_than",
-        "secs_between_pid": 25
+        "secs_between_pid": 45,
+        "pid_callback": "on_pid_callback"
     }
 }

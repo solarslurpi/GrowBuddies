@@ -106,7 +106,9 @@ class MistBuddy:
         nSecondsON, error = self.pid(vpd)
 
         # Log the vpd and nSecondsON with error
-        self.logger.debug(f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}. The error is {error}")
+        self.logger.debug(
+            f"vpd: {vpd}   num seconds to turn humidifier on: {nSecondsON}. The error is {error}"
+        )
 
         # Only execute the mistBuddy if manage is true and nSecondsON is greater than 0
         if self.manage and nSecondsON > 0:
@@ -136,7 +138,9 @@ class MistBuddy:
         mqtt_client.publish(self.mister_power_topic, "ON")
         time.sleep(0.25)
         mqtt_client.stop()
-        self.logger.debug(f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds.")
+        self.logger.debug(
+            f"...Sent mqtt messages to the two mistBuddy plugs to turn ON for {nSecondsON} seconds."
+        )
         timer.start()
 
     def turn_off_mistBuddy(self) -> None:
@@ -151,4 +155,6 @@ class MistBuddy:
         mqtt_client.publish(self.mister_power_topic, "OFF")
         time.sleep(0.25)
         mqtt_client.stop()
-        self.logger.debug("...Sent mqtt messages to the two mistBuddy plugs to turn OFF.")
+        self.logger.debug(
+            "...Sent mqtt messages to the two mistBuddy plugs to turn OFF."
+        )

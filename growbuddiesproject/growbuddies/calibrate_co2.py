@@ -39,13 +39,20 @@ class Callbacks:
             self.co2_readings.append(s.co2)
 
             self.readings_received += 1
-            self.logger.debug(f"The number of readings received is {self.readings_received}")
+            self.logger.debug(
+                f"The number of readings received is {self.readings_received}"
+            )
             if self.readings_received >= self.max_readings:
                 # calculate the differences between the current and previous CO2 readings
-                diffs = [self.co2_readings[i] - self.co2_readings[i - 1] for i in range(1, len(self.co2_readings))]
+                diffs = [
+                    self.co2_readings[i] - self.co2_readings[i - 1]
+                    for i in range(1, len(self.co2_readings))
+                ]
 
                 # create a list of tuples that contains the current and previous CO2 readings, and their differences
-                co2_data = list(zip(self.co2_readings[1:], self.co2_readings[:-1], diffs))
+                co2_data = list(
+                    zip(self.co2_readings[1:], self.co2_readings[:-1], diffs)
+                )
 
                 # check if the file exists
                 file_exists = os.path.isfile("co2_data.csv")
@@ -102,7 +109,9 @@ class Callbacks:
         mqtt_client.publish("cmnd/stomabuddy/POWER", "OFF")
         time.sleep(0.25)
         mqtt_client.stop()
-        self.logger.debug("...Sent mqtt messages to the CO2 plug (stomabuddy) to turn OFF.")
+        self.logger.debug(
+            "...Sent mqtt messages to the CO2 plug (stomabuddy) to turn OFF."
+        )
 
 
 def main():

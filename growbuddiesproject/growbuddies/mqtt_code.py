@@ -64,7 +64,9 @@ class MQTTClient:
         # The client ID is a unique identifier that is used by the broker to identify this
         # client. If a client ID is not provided, a unique ID is generated and used instead.
 
-        self.client_id = "".join(random.choice(string.ascii_lowercase) for i in range(10))
+        self.client_id = "".join(
+            random.choice(string.ascii_lowercase) for i in range(10)
+        )
         self.host = get_hostname()
         self.callbacks_dict = callbacks_dict or {}
         try:
@@ -83,7 +85,9 @@ class MQTTClient:
             f"Connected to broker **{self.host}**.  The ClientID is {self.client_id}.  The result code is {str(rc)}"
         )
         if rc != 0:
-            self.logger.error(f"Received an unexpected error in on_connect.  The error is {rc_codes[rc]}")
+            self.logger.error(
+                f"Received an unexpected error in on_connect.  The error is {rc_codes[rc]}"
+            )
             return rc
         # Subscribe to the topics passed in the topics_and_callbacks_dict.
         for k in self.callbacks_dict:
@@ -92,7 +96,9 @@ class MQTTClient:
 
     def on_disconnect(self, client, userdata, rc) -> int:
         if rc != 0:
-            self.logger.error(f"Received an unexpected disconnect.  The error is {rc_codes[rc]}")
+            self.logger.error(
+                f"Received an unexpected disconnect.  The error is {rc_codes[rc]}"
+            )
         return rc
 
     def on_message(self, client, userdata, msg) -> None:
