@@ -14,3 +14,7 @@ docs/_templates/
 **/tests/*
 **/start_stop.json
 **/chunk_co2.py
+**/*.ipynb
+growbuddiesproject/growbuddies/resize_image.py
+growbuddiesproject/growbuddies/resize_image1.py
+pip_list.txt

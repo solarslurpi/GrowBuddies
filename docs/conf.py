@@ -16,7 +16,7 @@ sys.path.insert(0, os.path.abspath("../growbuddiesproject"))
 project = "GrowBuddies"
 copyright = "2022, HappyDay"
 author = "HappyDay"
-release = "2022.12.1"
+release = "2023.06.16"
 
 # ignore files
 exclude_patterns = ["py_env/*", "**/_*"]
@@ -29,11 +29,14 @@ extensions = [
     "sphinx.ext.viewcode",
     'sphinx.ext.napoleon',
     "sphinx.ext.autosectionlabel",
+    'sphinxcontrib.mermaid',
+    "sphinx_subfigure",
     "sphinx_design",
     "myst_parser",
     "sphinx.ext.doctest",
     "nbsphinx",
 ]
+myst_fence_as_directive = ["mermaid"]
 # Include doc strings for __init__ and __call__ methods.  The __call__ method is used in PID_code.py.
 autodoc_default_options = {"special-members": "__init__,__call__"}
 # Make sure the target is unique
@@ -62,5 +65,10 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 html_theme = "sphinx_rtd_theme"
 
-# NOT using any static CSS or such...
-# html_static_path = ['_static']
+# use a bit of custom CSS.
+html_static_path = ['_static']
+# These paths are either relative to html_static_path
+# or fully qualified paths (eg. https://...)
+html_css_files = [
+    'css/custom.css',
+]

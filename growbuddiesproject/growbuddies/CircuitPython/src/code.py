@@ -1,3 +1,12 @@
+#############################################################################
+# SPDX-FileCopyrightText: 2023 Margaret Johnson
+#
+# SPDX-License-Identifier: MIT
+#
+#############################################################################
+VERSION = 0.1
+CONFIG_FILE = "config.json"
+#############################################################################
 try:
     from typing import Dict, Any
 except:  # The typing library is not supported on CP.  It is here to support Sphinx documentation.
@@ -19,9 +28,6 @@ from log_mqtt import MqttHandler
 from microcontroller import watchdog as w
 from watchdog import WatchDogMode
 
-# CONFIG STUFF
-CONFIG_FILE = "config.json"
-
 
 # FUNCTION DEFINITIONS
 def connected(client: MQTT.MQTT, userdata: Dict[str, Any], flags: Dict[str, Any], rc: int) -> None:
@@ -38,6 +44,10 @@ def connected(client: MQTT.MQTT, userdata: Dict[str, Any], flags: Dict[str, Any]
     print(f"Flags: {flags}\nRC: {rc}\nUser Data: {userdata}")
     # Publish that we are up and running!
     client.publish(userdata["lwt_topic"], userdata["online_payload"], retain=True)
+
+
+def disconnected(client: MQTT.MQTT, userdata: Dict[str, Any], flags: Dict[str, Any], rc: int) -> None:
+    print("DISCONNECTED FROM MQTT BROKER....")
 
 
 def validate_config(config: Dict[str, Any]) -> bool:
@@ -163,12 +173,16 @@ def connect_wifi(ssid: str, password: str) -> None:
     """
     # CONNECT TO WIFI
     try:
-        print("Connecting to", ssid)
+        print(f"CONNECTING TO: {ssid}")
         wifi.radio.connect(ssid, password)
 
     except ConnectionError as e:
         print(f"Error: {e} ")
         sys.exit(1)
+
+
+def subscribed(client: MQTT.MQTT, userdata: Dict[str, Any], flags: Dict[str, Any], rc: int) -> None:
+    print("IN SUBSCRIBED FOR LWT MESSAGES")
 
 
 def connect_mqtt(config: Dict[str, Any]) -> MQTT.MQTT:
@@ -194,10 +208,13 @@ def connect_mqtt(config: Dict[str, Any]) -> MQTT.MQTT:
         "online_payload": config["online_payload"],
     }
     mqtt_client = MQTT.MQTT(
-        broker=config["mqtt_broker"], port=config["mqtt_port"], user_data=lwt_data, socket_pool=pool
+        broker=config["mqtt_broker"], port=config["mqtt_port"], keep_alive=300, user_data=lwt_data, socket_pool=pool
     )
     mqtt_client.will_set(config["lwt_topic"], config["offline_payload"], retain=True)
     mqtt_client.on_connect = connected
+    mqtt_client.on_disconnect = disconnected
+    mqtt_client.on_subscribe = subscribed
+
     try:
         mqtt_client.connect()
 
@@ -205,6 +222,7 @@ def connect_mqtt(config: Dict[str, Any]) -> MQTT.MQTT:
         print("Error connecting to MQTT broker:", e)
         while True:
             time.sleep(1)
+
     return mqtt_client
 
 
@@ -337,8 +355,9 @@ def read_and_mqtt_scd4x_data(
                 light_state = process_light_info(analog_in.value, config["light_threshold"])
                 sensor_data = build_sensor_data(config, light_state, scd4x)
                 publish_sensor_data(mqtt_client, config["sensor_type"], sensor_data, config["payload_topic"])
-
-                time.sleep(5)  # Rest, don't need so many readings published.
+                time.sleep(
+                    4
+                )  # Rest for a bit.  But less than the 5 sec default adafruit's minimqtt default keepalive of 5 secs.
                 w.feed()  # Haven't frozen yet!
     except:
         logger.error("Watchdog Expired.")
@@ -360,13 +379,19 @@ def main() -> None:
     A logger is set to the MQTT client so that log messages can be published over MQTT.
     """
     config = load_config()
+    # Check version.  We know about v 0.1
+    if config["version"] != VERSION:
+        print(
+            f"Error:  The version of the config file is {config['version']}.  The code is version {VERSION}. EXITING"
+        )
+        sys.exit(1)
     analog_in = analogio.AnalogIn(board.A0)
     # Retrieve the ssid and password from the config file and then connect to the wifi.
     connect_wifi(config["wifi_ssid"], config["wifi_password"])
     try:
         mqtt_client = connect_mqtt(config)
     except RuntimeError as e:
-        print(f"Error: {e}")
+        print(f"Error: {e}. EXITING")
         sys.exit(1)
     logger = set_mqtt_handler(mqtt_client, config["log_topic"], level=logging.DEBUG)
     read_and_mqtt_scd4x_data(config, analog_in, mqtt_client, logger)

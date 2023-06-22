@@ -1,2 +1,2 @@
 [console_scripts]
-store-readings = growbuddies.__main__:main
+store_readings = growbuddies.store_readings:main

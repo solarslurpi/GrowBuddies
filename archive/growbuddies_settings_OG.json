@@ -1,0 +1,46 @@
+{
+    "hostname": "gus",
+    "log_level": "DEBUG",
+    "db_name": "gus",
+    "snifferbuddy_table_name": "SnifferBuddy_Readings",
+    "snifferbuddy_mqtt": {"snifferbuddy/reading": "on_snifferbuddy_readings",
+                          "snifferbuddy/lwt": "on_snifferbuddy_status"},
+    "dripbuddy_table_name": "dripbuddy_calibration",
+    "dripbuddy_mqtt": {"tele/dripbuddy/SENSOR": "on_dripbuddy_readings",
+                       "tele/dripbuddy/LWT": "on_dripbuddy_status"},
+    "calibrate_mqtt": {"calibrate": "on_calibrate_readings"},
+    "mistbuddy_mqtt": {"cmnd/mistbuddy_fan/POWER": "",
+                        "cmnd/mistbuddy_mister/POWER": ""},
+    "stomabuddy_mqtt": {"cmnd/stomabuddy/POWER": ""},
+    "snapbuddy_mqtt": {"timelapse": "on_timelapse"},
+    "co2_setpoint": 1000,
+    "snapbuddy_settings_1": {"hostname": "snapbuddy1", "interval_secs": 3600, "timelapse_dir": "/home/pi/GrowBuddies/growbuddiesproject/growbuddies/timelapse/snapbuddy1"},
+
+    "MistBuddy_PID_key": {
+        "setpoint": 0.9,
+        "Kp": 180,
+        "Ki": 0.5,
+        "Kd": 0.1,
+        "output_limits": [0, 10],
+        "integral_limits":[0, 4],
+        "maximum": 1.0,
+        "tune": {"increment": 0.0, "influxdb_table_name": ""},
+        "comparison_function": "less_than",
+        "secs_between_pid": 25,
+        "pid_callback": ""
+    },
+
+    "StomaBuddy_PID_key": {
+        "setpoint": 1000,
+        "Kp": 0.25,
+        "Ki": 0.002,
+        "Kd": 0.0,
+        "output_limits": [0, 8],
+        "integral_limits":[0, 2],
+        "maximum": 1000,
+        "tune": {"increment": 0.0, "influxdb_table_name": "MAY_6a_KP_TUNE"},
+        "comparison_function": "greater_than",
+        "secs_between_pid": 45,
+        "pid_callback": "on_pid_callback"
+    }
+}

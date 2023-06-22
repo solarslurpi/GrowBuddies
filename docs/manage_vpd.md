@@ -1,101 +1,57 @@
-(mistbuddy_doc)=
+# Manage VPD Level
+manage_vpd is a python script that leverages the SystemD service to call into [MistBuddy](mistbuddy.md) to manage the [vpd](_vpd).
+## 0. Before Starting
+[The humidifier and Tasmotized plugs](_make_mistbuddy) need to be on with both plugs switched off but listening for MQTT messages.
 
-# MistBuddy
-:::{div}
-<img src="images/whale.svg" class="sd-avatar-md sd-border-3">
-:::
+## 1. Setup the Python Environment
+Hopefully, you have already set up the Python environment when [storing SnifferBuddy readings](setup_python_env).  If not, the steps are the same.
+(_manage_vpd_settings)=
+## 2. Edit the Settings File
+As with [SnifferBuddy](snifferbuddy), [there are settings](_growbuddies_settings) that may need to be changed. Here is the contents of the `growbuddies_settings.json` file:
 
-```{warning} MistBuddy is Under Construction!
+```{eval-rst}
+.. literalinclude:: ../growbuddiesproject/growbuddies/growbuddies_settings.json
+   :language: json
+   :emphasize-lines: 8-25
+
 ```
-## About {material-regular}`question_mark;1em;sd-text-success`
-:::{div}
-<img src="https://docs.google.com/drawings/d/e/2PACX-1vQnc4PqB6jgMzFOIMZqWpJ1dFUUdEsrNfNtB4n6q8jmW68PfWBYvIfANB0gqFjMqUh3rn0Cm_YLLthx/pub?w=984&amp;h=474&amp;align=middle">
-:::
-MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).   When the vpd level is too high, MistBuddy spouts out mist through her airhole for **just** the right amount of time.  When the vpd is too low or just right, MistBuddy shuts off until the vpd level is higher than the ideal vpd level (also known as the setpoint).
+The properties not highlighted are discussed during [the documentation for storing SnifferBuddy readings](_growbuddies_settings).
+The properties that might need to be changed include:
 
-```{note} Our indoor gardening environment is climate controlled.  The temperature with the LED lights on is around 75&#8457;.  While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd.
+| Property | Purpose |
+| -------- | ------- |
+| mistbuddy_mqtt | These contain the dictionary of MQTT topics used by MistBuddy.  Unlike SnifferBuddy's<br>snifferbuddy_mqtt property (see [SnifferBuddy's settings](_growbuddies_settings)), MistBuddy only publishes MQTT messages.<br>It does not provide any callbacks. This makes sense because MistBuddy listens for<br>SnifferBuddy's MQTT messages and might turn on or off the power via the<br>MistBuddy MQTT messaging. There is one topic for turning of the power<br>to the fan and one for turning of the power to the mister.
+
+## 3. Install the GrowBuddies Library
+If you haven't already, open a terminal within the Python Virtual Environment.
 ```
-
-### MistBuddy's Body
-
-MistBuddy's body is a DIY humidifier and two Tasmotized plugs.  Here's the one I built:
-
-```{figure} images/MistBuddy.jpeg
-:align: center
-:scale: 20
-
-MistBuddy Outer Shot
+pip install growbuddies
 ```
-
-```{figure} images/MistBuddy_inside.jpeg
-:align: center
-:scale: 20
-
-MistBuddy Inside Shot
+## 4. Start the manage_vpd Service
+REDO SEE SNIFFERBUDDY'S
+If you have a SnifferBuddy that is sending out MQTT messages and a Gus device that is running an MQTT broker and InfluxDB database,
+you can access the command line of the Gus device and type the following command:
+```bash
+.......
 ```
-```{figure} images/sonoffplugs.jpeg
-:align: center
-:scale: 50
+This will start running the [main function](growbuddies.store_readings.main) in the `store_readings.py` file.
 
-Tasmotized Sonoff Plugs Ready for Action
-```
+## 5. Run as a SystemD Service
+TBD
 
-Mistbuddy dispenses vapor at the end of the PVC tube by turning on a 12-head mister.  Water comes into the tub through a connection with our house's plumbing.  The water is kept to a constant level in the tub by a float valve.
+## 6. manage_vpd Code Walkthrough
+```{eval-rst}
+.. autofunction:: growbuddies.manage_vpd.main
+.. autoclass:: growbuddies.manage_vpd.Callbacks
+   :members: on_snifferbuddy_readings, on_snifferbuddy_status
 
 
-## Let's Make One {material-regular}`build;1em;sd-text-success`
-
-```{button-link} https://github.com/solarslurpi/GrowBuddies/discussions
-:outline:
-:color: success
-
- {octicon}`comment;1em;sd-text-success` Comments & Questions
 ```
 
-```{attention}
-Before MistBuddy can run, the following must happen:
-1. There must be a working SnifferBuddy and Gus.
-2. The steps below must be completed.
-```
-### 1. Gather The Materials
 
-The materials I used to make the humidifier in the image include:
-- A [Storage Tote from Home Depot](https://www.homedepot.com/p/HDX-14-Gal-Tough-Storage-Tote-in-Black-with-Yellow-Lid-SW111/314468098).
-- [2 in. PVC Pipe from Home Depot](https://www.homedepot.com/p/JM-EAGLE-2-in-x-10-ft-White-PVC-Schedule-40-DWV-Plain-End-Pipe-531137/100161954).
-- [2 in. PVC 90° elbow](https://www.homedepot.com/p/Charlotte-Pipe-2-in-PVC-DWV-90-Degree-Hub-x-Hub-Elbow-PVC003001000HD/203393418).
-- [Waterproof IP67 12v Fan](https://amzn.to/3WgADKK).  The first fan I used was a leftover fan.  It broke pretty soon.  I got this fan.  It is more powerful and waterproof.  It also has a nice, solid connector connecting the power source to the fan.  What's not to like?
-- [Power source for the fan](https://amzn.to/3VT9pKp).  This is a very compact power source that has the right connector to connect the fan.
-- [Mist maker from Aliexpress](https://www.aliexpress.com/item/3256803543458943.html?spm=a2g0o.order_list.0.0.57dd1802LzMQr6).  I did not do any measurements to determine the ideal amount of misters.  Perhaps less can be used.
-- Power source for the mist maker.   The    [Aliexpress listing](https://www.aliexpress.us/item/3256803543458943.html) notes a power source of 350W and 48V is needed.  I have an old power supply that is less powerful than this that works fine.
-:::{figure} images/power__supply.jpeg
-:align: center
-:scale: 30
 
-250W 48V
-:::
-- [Float Valve](https://www.youtube.com/watch?v=vmiO6Z_HLCE) to stop the constantly running water line from filling the tub.
-- [1/2" Barb to 1/2 " NPT female connector](https://amzn.to/3yzxlsG) _Note: The _connector fittings _assume_ 1/2"_ PEX connector to incoming water_.
-- Two [Sonoff [S31 plugs](https://amzn.to/3xnPWYc) need to be [flashed with Tasmota](flash_tasmota).  One plug is used to turn on/off the 48V power supply for the mister.  The other is to turn on/off the power supply to the fan.
-:::{figure} images/sonoffplugs.jpeg
-:align: center
-:scale: 50
 
-Tasmotized Sonoff Plugs Ready for Action
-:::
-### 2. Build
-#### Base and Continuous Fill
-For the base and continuous fill, get the popcorn ... it's time for a [How To YouTube Video on making a DIY Humidifier](https://www.youtube.com/watch?v=vmiO6Z_HLCE).
 
-The water level for the float valve is 1 cm above the sensor line.
-
-:::{figure} images/mister_water_level.jpg
-:align: center
-:scale: 80
-
-Mister Water Level
-:::
-#### Tasmotized Plugs
-MistBuddy sends mqtt messages to the mister and fan plugs.  The plugs run Tasmota which handles all the mqtt messages.  Two [Sonoff [S31 plugs](https://amzn.to/3xnPWYc) need to be [flashed with Tasmota](flash_tasmota).
 
 ## Software {material-regular}`terminal;1em;sd-text-success`
 

@@ -89,6 +89,7 @@ class PID(object):
             self.Kd = pid_settings["Kd"]
             self.maximum = pid_settings["maximum"]
             self.setpoint = pid_settings["setpoint"]
+            self.logger.debug(f"==> SetPoint: {self.setpoint} Kp: {self._Kp} Ki: {self.Ki} Kd: {self.Kd}")
             self.output_limits = tuple(pid_settings["output_limits"])
             self.tune_increment = pid_settings["tune"]["increment"]
 
@@ -177,12 +178,11 @@ class PID(object):
         self.logger.debug(
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
         )
-        # If the below is true, don't take action because the current value is higher than the setpoint by more than
-        # the maximum value. This is done because there is no actuator to remove CO2 or humidity in the system.
+        # If the below is true, don't take action because the current value is higher than the setpoint
         self.logger.debug(
-            f"current value: {current_value:.2f} > maximum value {self.maximum}? "
+            f"current value: {current_value:.2f} > setpoint value {self.setpoint}? "
         )
-        if self.comparison_func(current_value, self.maximum):
+        if self.comparison_func(current_value, self.setpoint):
             self.logger.debug("No actuator action needed.  Returning.")
             return 0.0
 

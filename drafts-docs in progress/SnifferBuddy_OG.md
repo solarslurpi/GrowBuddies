@@ -75,7 +75,7 @@ You should start seeing a lot of logging lines.  These give you a great idea wha
 ```
 
 ```{eval-rst}
-.. automodule:: growbuddies.__main__
+.. automodule:: growbuddies.store_readings
    :members:
 ```
 
