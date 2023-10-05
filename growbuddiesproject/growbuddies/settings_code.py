@@ -104,8 +104,6 @@ class Settings:
                     instance_of_callbacks_class, callbacks_for_topic[topic]
                 )
             except AttributeError:
-                print(
-                    f"Just a FYI: No callback registered for topic {topic}  not found."
-                )
+                print(f"Just a FYI: No callback registered for topic {topic}.")
                 callback_methods[topic] = None
         return callback_methods

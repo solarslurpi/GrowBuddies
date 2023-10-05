@@ -2,7 +2,7 @@
 (snifferbuddy_doc)=
 # SnifferBuddy
 ## About
-This guide details the process of assembling SnifferBuddy, configuring its software, and understanding its operation.  See [Store Readings](store_readings.md) to see how SnifferBuddies' data can then be used.
+SnifferBuddy, a puck-shaped device, measures ambient conditions—temperature, humidity, CO2, and light status—in the grow tent using an SCD4x sensor and a photoresistor. It calculates VPD and publishes the data via MQTT.
 
 ```{figure} images/SnifferBuddy_mqtt.png
 :align: center
@@ -10,11 +10,75 @@ This guide details the process of assembling SnifferBuddy, configuring its softw
 
 A SnifferBuddy with an SCD-40 Sensor Sending Readings over MQTT
 ```
+## Hardware
+Opening up the SnifferBuddy,
+```{figure} images/snifferbuddy_connected_scd4x.jpeg
+:align: center
+:height: 300
+
+Inside a SnifferBuddy
+```````
+We see it is made of:
+:::::{grid} 3
+
+::::{grid-item-card} QTPY ESP32-S2
+:img-top: images/qtpy_esp32-s2-icon.jpg
+:img-alt:
+
+[Link to Adafruit](https://www.adafruit.com/product/5325#technical-details)
+
+::::
+
+::::{grid-item-card} SCD4x
+:img-top: images/adafruit_products_SDC41_top.jpg
+
+[Adafruit SCD40](https://www.adafruit.com/product/5187)
++++
+[Aliexpress SCD4x](https://www.aliexpress.us/item/3256804035401013.html)
+
+
+::::
+::::{grid-item-card} JST SH 4-Pin Cable
+:img-top: https://cdn-shop.adafruit.com/970x728/4399-00.jpg
+
+[Adafruit 50mm](https://www.adafruit.com/product/5187)
+
+::::
+
+:::::
+
+:::::{grid} 3
+
+::::{grid-item-card} Photoresistor
+:img-top: https://m.media-amazon.com/images/I/51T9+GRwcvL._SX342_SY445_.jpg
+
+
+[30 (~ $.20 each)](https://www.amazon.com/eBoot-Photoresistor-Sensitive-Resistor-Dependent/dp/B01N7V536K/ref=sr_1_3?keywords=photoresistor&sr=8-3)
+
+::::
+
+::::{grid-item-card} 12K Resistor
+:img-top: https://m.media-amazon.com/images/I/51YOJThA2CL._SL1300_.jpg
+
+[Pack of 100](https://www.amazon.com/EDGELEC-Resistor-Tolerance-Resistance-Optional/dp/B07HDGQRSR/ref=sr_1_1_sspa?keywords=12k%2Bresistor&sr=8-1-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&th=1)
+
+
+::::
+::::{grid-item-card} Silicon Cable
+:img-top: https://m.media-amazon.com/images/I/61-4JvwAQ0L._AC_SY450_.jpg
+
+[30 AWG Silicon Wire](https://amzn.to/3LHvDw0)
+
+::::
+
+:::::
+
+This guide details the process of assembling SnifferBuddy, configuring its software, and understanding its operation.  See [Store Readings](store_readings.md) to see how SnifferBuddies' data can then be used.
 
 SnifferBuddy broadcasts MQTT messages packed with SCD-4x sensor data. Node-red, home assistant, and any software tuned to SnifferBuddy's MQTT topic can pick up and utilize this data. Additionally, another GrowBuddies device - Gus, a Raspberry Pi server, can archive SnifferBuddy data in an influx db while optionally controlling VPD and CO2 levels.
 Here is an example payload:
 ```
-{"scd41": {"vpd": 1.43, "temperature": 78.314, "name": "sunshine", "light": "OFF", "co2": 929, "humidity": 45.5017, "unit": "F", "version": 0.1}}
+{"scd40": {"vpd": 1.43, "temperature": 78.314, "name": "sunshine", "light": "OFF", "co2": 929, "humidity": 45.5017, "unit": "F", "version": 0.1}}
 ```
 ## Glossary
 - **MQTT (Message Queuing Telemetry Transport)**: A lightweight messaging protocol used for sending and receiving telemetry data in the form of messages between devices, servers, and applications. MQTT is especially useful in scenarios where network bandwidth is at a premium.
@@ -35,7 +99,7 @@ The hardware needed to build SnifferBuddy includes:
 | [SCD-40 BoB](https://www.adafruit.com/product/5187) | $44.95 | Excellent quality.  Provides accurate CO2 readings.  STEMMA connector makes it easy to connect to the QT PY.
 | [JST SH 4-Pin Cable](https://www.adafruit.com/product/4399) | $0.95 | Excellent quality. Connects the QT PY to the SCD-4x. No soldering required.
 | Photoresistor | pennies | At some point I bought [a pack of photoresistors on Amazon](https://www.amazon.com/s?k=photoresistor).
-| 10K  Resistor | pennies | As with photoresistors, I bought [a pack of resistors on Amazon](https://www.amazon.com/s?k=resistor).
+| 12K  Resistor | pennies | As with photoresistors, I bought [a pack of resistors on Amazon](https://www.amazon.com/s?k=resistor).
 | wiring | pennies | I like to use [silicone wires like this wire kit on Amazon](https://amzn.to/3C6chLU).
 | enclosure | pennies | The design is an evolution of the wonderful [Tiny-D1 modular case for Wemos D1 mini by sumpfing](https://www.thingiverse.com/thing:4084654).  Thank you!
 
@@ -47,7 +111,6 @@ The hardware needed to build SnifferBuddy includes:
 
 Top and Bottom Rings of the SnifferBuddy enclosure.
 ```
-#### a. Download the Files
 
 Print out these files on your 3D printer:
 - Top Ring: Print out [scd40-ring.3mf](../enclosures/SnifferBuddy/scd-40/scd40-ring.3mf).
@@ -68,6 +131,7 @@ Diagram of Photoresistor Wiring
 
 QT Py wired with the Photoresistor circuit.
 ```
+Use A2 as the pin to read for the photoresistor.
 - Connect the QT Py and the SCD40.
 ```{figure} images/snifferbuddy_connected_scd4x.jpeg
 :align: center
@@ -131,6 +195,23 @@ The following libraries need to be copied to CIRCUITPY/lib:
 - adafruit_scd4x.mpy
 ### 8. Plug In Your SnifferBuddy
 At this point, we're hoping everything "just works"!  Plug in your SnifferBuddy to a 5V USB port.  If SnifferBuddy is working, there will be entries in the MQTT broker.
+## Accuracy - SCD4x
+Section 1 of the [SCD4x datasheet](https://sensirion.com/media/documents/48C4B7FB/6426E14D/CD_DS_SCD40_SCD41_Datasheet_D1_052023.pdf) describes the lower and upper bounds that a CO2, relative humidity, or temperature reading will range based on the SCD4x's accuracy.  A python program, `calculate_scd40_bounds.py`, calculates these offsets given a value for the SCD40.  For example, if the temperature reads 70 degrees F, the actual value can range from 68.6 to 71.4 degrees based on the accuracy.
+
+## Adjusting Temperature and Relative Humidity Readings - SCD4x
+
+### On-Chip Signal Compensation
+A temperature offset is utilized to fine-tune the sensor's temperature and relative humidity (RH) output signals. The correlation between temperature and humidity necessitates an accurate temperature reading for a precise RH reading, given that moisture-carrying capacity of air is temperature-dependent. The [SCD4x datasheet](https://sensirion.com/media/documents/48C4B7FB/6426E14D/CD_DS_SCD40_SCD41_Datasheet_D1_052023.pdf) discusses the On-Chip Output Signal Compensation in section 3.6.  It's the way the chip compensates for temperature readings skewed due to self-heating from the sensor and nearby electronics, while also taking into account other influences like ambient temperature variations and airflow disruptions.   Initially, the temperature offset is set to 4°C to mitigate self-generated heat, with adjustable values between 0°C and 20°C to accommodate other environmental factors. Although a negative offset could technically be used if the sensor reads too cold, it's outside the recommended range.
+### Adjusting temperature readings
+1. Determine if a temperature offset is needed by placing an external reference temperature sensor with snifferbuddy and determine if after 24 hours.
+2. If the reading is significantly outside the bounds, consider changing the temperature offset.
+3. Place the SnifferBuddy and a reference temperature sensor at the place in the grow tent you wish to have SnifferBuddy hanging around. Wait 24 hours so both sensor aclimate.
+## Adjusting Light ON/OFF threshold
+A simple photoresistor is used to determine whether the light is on or off. CircuitPython maps photoresistor readings to values between 0 and 65535.  By default, light on happens when the photoresistor value is > 45,000.  This can be adjusted.
+1. Put SnifferBuddy where you want to hang it.
+2. Turn the light on. If SnifferBuddy sends readings that says the light is on, you are done.
+3. If SnifferBuddy says the light is off when it is on, send a calibrate light mqtt message.  By doing so, SnifferBuddy will adjust it's light threshold.
+
 ## Debug
 Sadly, it is a rare moment when something works the first time. Take a deep breath and let's get started!
 ### Check the Print Statements

@@ -12,7 +12,6 @@ import sys
 sys.path.insert(0, os.path.abspath("../growbuddiesproject"))
 
 
-
 project = "GrowBuddies"
 copyright = "2022, HappyDay"
 author = "HappyDay"
@@ -27,9 +26,9 @@ exclude_patterns = ["py_env/*", "**/_*"]
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.viewcode",
-    'sphinx.ext.napoleon',
+    "sphinx.ext.napoleon",
     "sphinx.ext.autosectionlabel",
-    'sphinxcontrib.mermaid',
+    "sphinxcontrib.mermaid",
     "sphinx_subfigure",
     "sphinx_design",
     "myst_parser",
@@ -55,7 +54,20 @@ html_css_files = [
 ]
 
 # Ignore documentating these files.
-autodoc_mock_imports = ["influxdb", "paho", "board", "analogio", 'adafruit_scd4x', 'wifi', 'socketpool', 'adafruit_minimqtt', 'adafruit_logging', 'log_mqtt', 'microcontroller', 'watchdog']
+autodoc_mock_imports = [
+    "influxdb",
+    "paho",
+    "board",
+    "analogio",
+    "adafruit_scd4x",
+    "wifi",
+    "socketpool",
+    "adafruit_minimqtt",
+    "adafruit_logging",
+    "log_mqtt",
+    "microcontroller",
+    "watchdog",
+]
 
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
@@ -66,9 +78,9 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "sphinx_rtd_theme"
 
 # use a bit of custom CSS.
-html_static_path = ['_static']
+html_static_path = ["_static"]
 # These paths are either relative to html_static_path
 # or fully qualified paths (eg. https://...)
 html_css_files = [
-    'css/custom.css',
+    "css/custom.css",
 ]

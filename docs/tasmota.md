@@ -1,5 +1,7 @@
 
 # Tasmota
+
+This documentation needs to be updated. The project evolved from being all about Tasmota to using Tasmotized plugs (because of mqtt).  One thing that needs to be added is sometimes the mqtt messages can fail to reach the power plugs. The problems with this is turning off either the humidifier or CO2 solenoid. One thing we do is to set a timeout
 (_install_mistbuddy_smartplugs)=
 ## Installing on the Sonoff Smart Plugs
 These directions assumed you have two [Sonoff S31 plugs](https://amzn.to/3xnPWYc) smart plugs.

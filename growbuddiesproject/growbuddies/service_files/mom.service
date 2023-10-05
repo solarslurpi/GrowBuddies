@@ -1,0 +1,11 @@
+
+[Unit]
+Description=Mom checks up on the GrowBuddies to make sure they are ok.
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/mom_code.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

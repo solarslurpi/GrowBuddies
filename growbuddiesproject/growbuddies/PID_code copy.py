@@ -14,19 +14,17 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 #
+from growbuddies.settings_code import Settings
 from growbuddies.logginghandler import LoggingHandler
-from growbuddies.store_readings import ReadingsStore
 import time
 import warnings
-import threading
-
+import json
 
 COMPARISON_FUNCTIONS = {
     "greater_than": lambda x, max_val: x > max_val,
     "less_than": lambda x, max_val: x < max_val,
 }
 
-TUNE_STABILITY_TIME = 60 * 15
 
 try:
     # Get monotonic time to ensure that time deltas are always positive
@@ -54,8 +52,14 @@ def _clamp(value, limits):
 
 
 class PID(object):
-    def __init__(self, pid_dict: dict):
+    def __init__(self, PID_key: str):
         self.logger = LoggingHandler()
+        if PID_key is None:
+            self.logger.error("No PID_KEY was passed in.")
+            raise ValueError(
+                "PID_key cannot be None.  Please see growbuddies_settings.json"
+            )
+        self.PID_key = PID_key
         self._min_output, self._max_output = None, None
         self._last_value = None
 
@@ -67,45 +71,53 @@ class PID(object):
 
         self._last_time = _current_time()
         self._last_output = None
-        self.pid_table = None
-        self.tune_timer = None
-
+        # Load the settings discussed above from growbuddies_settings.json.
+        settings = Settings()
+        settings.load()
+        pid_settings = settings.get(self.PID_key)
+        if pid_settings is None:
+            self.logger.error(
+                "The PID_KEY was invalid.  Please see growbuddies_settings.json."
+            )
+            raise KeyError(f"{self.PID_key} not found in settings dictionary")
 
         try:
-            self.Kp = pid_dict["Kp"]
-            self.Ki = pid_dict["Ki"]
-            self.Kd = pid_dict["Kd"]
-            self.setpoint = pid_dict["setpoint"]
+            self._Kp = pid_settings["Kp"]
+            self.Ki = pid_settings["Ki"]
+            self.Kd = pid_settings["Kd"]
+            self.maximum = pid_settings["maximum"]
+            self.setpoint = pid_settings["setpoint"]
             self.logger.debug(
-                f"==> SetPoint: {self.setpoint} Kp: {self.Kp} Ki: {self.Ki} Kd: {self.Kd}"
+                f"==> SetPoint: {self.setpoint} Kp: {self._Kp} Ki: {self.Ki} Kd: {self.Kd}"
             )
-            self.output_limits = tuple(pid_dict["output_limits"])
-            self.tune_increment = pid_dict["tune"]["increment"]
-            if len(pid_dict["tune"]["influxdb_table_name"]) >0:
-                self.pid_table = ReadingsStore(pid_dict["tune"]["influxdb_table_name"])
+            self.output_limits = tuple(pid_settings["output_limits"])
+            self.tune_increment = pid_settings["tune"]["increment"]
 
-            self.integral_limits = tuple(pid_dict["integral_limits"])
-
-            if pid_dict["comparison_function"] == "greater_than":
-                self.sign = 1
-            else:
-                self.sign = -1
-
-            if self.tune_increment:
-                self.start_timer()
+            self.integral_limits = tuple(pid_settings["integral_limits"])
+            self.comparison_func = COMPARISON_FUNCTIONS.get(
+                pid_settings["comparison_function"]
+            )
         except KeyError as e:
             self.logger.error(
-                f"ERROR: The {e} key was not found in pid_dict.  Please see growbuddies_settings.json."
+                f"ERROR: The {e} key was not found in the PID_KEY.  Please see growbuddies_settings.json."
             )
             raise e
+        # The maximum property is how much greater than the setpoint can the value go up to (I did this to somewhat
+        # accomodate drift.).  Thus, maximum must be greater than or equal to the setpoint
+        if self.maximum < self.setpoint:
+            self.logger.error(
+                f"ERROR: The maximum property: {self.maximum} "
+                f"is less than the setpoint: {self.setpoint}. "
+                f"The maximum property is what is the maximum "
+                f"value to be tolerated before adjusting."
+            )
 
-    def start_timer(self) -> None:
-        self.tune_timer = threading.Timer(TUNE_STABILITY_TIME, self.update_kp)
-        self.tune_timer.start()
+    def _on_exit(self):
+        if self.tune_increment > 0:
+            with open(self.tune_start_stop_json, "a") as f:
+                data = {"start_time": int(time.time())}
+                json.dump(data, f)
 
-    def update_kp(self) -> None:
-        self.Kp += self.tune_increment
-        self.start_timer()
 
     def calc_secs_on(self, current_value) -> float:
         """Update the PID controller with the vpd value just calculated from the latest SnifferBuddyReading and figure out
@@ -123,11 +135,14 @@ class PID(object):
             dt
         except NameError:
             dt = now - self._last_time if (now - self._last_time) else 1e-16
-        self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
+        # self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
         self._last_time = now
+        # If self.tune_increment is not 0, change the Kp value in support of tuning the Kp value, for example during Ziegler-Nichols tuning.
+        # Set tune = 0 in the json setting file to not adjust Kp. If tuning, Kp starts at 0, so incremented the value of Kp in order to
+        # generate initial output.
+        self._Kp += self.tune_increment
 
-
-        # self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
+        # self.logger.debug(f"K values: Kp {self._Kp} Ki {self.Ki}  Kd {self.Kd}")
         # Compute error terms - Note: The error continues to accumulate (integral and derivative) so that when
         # the error goes within the range that the actuator can address, the response will be faster.
         d_value = current_value - (
@@ -135,11 +150,23 @@ class PID(object):
         )
         error = self.setpoint - current_value
         self._compute_terms(d_value, error, dt)
+        # self.logger.debug(
+        #     f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
+        # )
+        self.logger.info(f"---> current_value: {current_value:.2f}")
+        # If the below is true, don't take action because the current value is higher than the setpoint
         self.logger.debug(
-            f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
+            f"current value: {current_value:.2f} > setpoint value {self.setpoint}? "
         )
+        if self.comparison_func(current_value, self.setpoint):
+            # self.logger.debug("No actuator action needed.  Returning.")
+            return 0.0
 
-        self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
+        # If self.tune_increment is not 0, change the Kp value in support of tuning the Kp value, for example during Ziegler-Nichols tuning.
+        # Set tune = 0 in the json setting file to not adjust Kp.
+        self._Kp += self.tune_increment
+
+        # self.logger.debug(f"K values: Kp {self._Kp} Ki {self.Ki}  Kd {self.Kd}")
 
         output = self._proportional + self._integral + self._derivative
 
@@ -148,39 +175,30 @@ class PID(object):
         self._last_value = current_value
         self._prev_error = error
         output = _clamp(output, self.output_limits)
-        if self.pid_table:
-            pid_table_row = {
-                'Kp': self.Kp,
-                'Ki': self.Ki,
-                'Kd': self.Kd,
-                'value': current_value
-            }
-            self.pid_table.store_readings(pid_table_row)
         return output
 
     def _compute_terms(self, d_value, error, dt):
         """Compute the integral and derivative terms.  Clamp the integral term to prevent it from growing too large."""
         # Compute integral and derivative terms
         # Since we are not using PID during the night, we reset the error terms and start over.
-        self._proportional = self.Kp * error
+        self._proportional = self._Kp * error
         self._integral += self.Ki * error * dt
         # I can see how the integral value forces the steady state the Kp gain brought closer to the setpoint.
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, having an ability to clamp the integral term seems to help.
-        self.logger.debug(f"*****>>> Integral value: {self._integral}")
-        self._integral = self.sign*_clamp(abs(self._integral), self.integral_limits)
-        self._derivative = self.sign*self.Kd * d_value / dt
-
+        self._integral = -_clamp(abs(self._integral), self.integral_limits)
+        self._derivative = -self.Kd * d_value / dt
 
     def __repr__(self):
         return (
             f"PID settings:\n"
-            f"  Kp = {self.Kp}\n"
+            f"  Kp = {self._Kp}\n"
             f"  Ki = {self.Ki}\n"
             f"  Kd = {self.Kd}\n"
             f"  setpoint = {self.setpoint}\n"
             f"  output_limits = ({self.output_limits}, {self.output_limits})\n"
             f"  integral_limits = ({self.integral_limits})\n"
+            f"  maximum_value = {self.maximum}\n"
             f"  tune = {self.tune_increment}\n"
             f"  comparison_function = {self.comparison_func}\n"
         )
@@ -193,7 +211,7 @@ class PID(object):
             "P": self._proportional,
             "I": self._integral,
             "D": self._derivative,
-            "Kp": self.Kp,
+            "Kp": self._Kp,
             "Ki": self.Ki,
             "Kd": self.Kd,
         }
@@ -209,12 +227,12 @@ class PID(object):
     @property
     def tunings(self):
         """The tunings used by the controller as a tuple: (Kp, Ki, Kd)."""
-        return self.Kp, self.Ki, self.Kd
+        return self._Kp, self.Ki, self.Kd
 
     @tunings.setter
     def tunings(self, tunings):
         """Set the PID tunings."""
-        self.Kp, self.Ki, self.Kd = tunings
+        self._Kp, self.Ki, self.Kd = tunings
 
     @property
     def output_limits(self):
@@ -243,4 +261,10 @@ class PID(object):
         self._integral = _clamp(self._integral, self.output_limits)
         self._last_output = _clamp(self._last_output, self.output_limits)
 
+    @property
+    def Kp(self):
+        return self._Kp
 
+    # @Kp.setter
+    # def Kp(self, value):
+    #     self._Kp = value

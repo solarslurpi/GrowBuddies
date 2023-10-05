@@ -12,22 +12,23 @@ class SnifferBuddyReadings:
     def __init__(self, mqtt_payload):
         # Set up logging.  LoggingHandler gives stack trace information.
         self.logger = LoggingHandler()
-        self.logger.debug("-> Initializing SnifferBuddy class.")
+        # self.logger.debug("-> Initializing SnifferBuddy class.")
         self.valid_packet = True
 
-        self.mqtt_payload = json.loads(mqtt_payload)
         # The air quality sensor's name in the mqtt message. If it isn't there, we assume
         # This payload is not from a SnifferBuddy.
         try:
-            self.sensor_name = self._find_sensor_name_in_payload()
+            # Convert the JSON string into a dictionary
+            mqtt_payload_dict = json.loads(mqtt_payload)
+            self.dict = self._make_dict(mqtt_payload_dict)
         except Exception as e:
             self.logger.error(f"Could not identify the air quality sensor.  Error: {e}")
             self.valid_packet = False
-        self.dict = self._make_dict()
 
-    def _find_sensor_name_in_payload(self) -> str:
+    def _find_sensor_name_in_payload(self, mqtt_payload_dict) -> str:
         sensor_names_known_set = set(["scd30", "scd40", "scd41"])
-        sensor_name_in_mqtt = next(iter(self.mqtt_payload))
+        # Get the first key in the dictionary (which is the sensor name)
+        sensor_name_in_mqtt = next(iter(mqtt_payload_dict))
         if sensor_name_in_mqtt in sensor_names_known_set:
             return sensor_name_in_mqtt
         else:
@@ -37,18 +38,23 @@ class SnifferBuddyReadings:
                 f"Could not find a valid sensor. Current valid sensors include {sensor_names_str}"
             )
 
-    def _make_dict(self) -> dict:
-        # At this point, I made this specific to the SnifferBuddy I built.  This way, I won't overcomplicate,
-        sensor_data = self.mqtt_payload[self.sensor_name]
+    def _make_dict(self, mqtt_payload_dict) -> dict:
+        # check to make sure the dictionary is valid.
+        try:
+            sensor_name = self._find_sensor_name_in_payload(mqtt_payload_dict)
+        except Exception as e:
+            self.logger.error(f" Error: {e}")
+        # Simplify the dictionary to the core properties.
+        sensor_data = mqtt_payload_dict[sensor_name]
         return {
             "name": sensor_data["name"],
-            "version": sensor_data['version'],
+            "version": sensor_data["version"],
             "co2": sensor_data["co2"],
             "humidity": sensor_data["humidity"],
             "light": sensor_data["light"],
             "temperature": sensor_data["temperature"],
+            "unit": sensor_data["unit"],
             "vpd": sensor_data["vpd"],
-
         }
 
     @property

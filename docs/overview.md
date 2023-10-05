@@ -1,0 +1,4 @@
+
+GrowBuddies are DIY devices that when used together will help improve the quality of your grow by taking the guess work out of dialing in environmental settings in an indoor grow tent.  They allow a grower not only a peace of mind knowing their plants are being treated to ideal condition but also can be left alone for these times when you can't be around the grow tent.
+
+SnifferBuddy is a round puck that hangs out in a Grow Tent reading the air temperature, relative humidity, CO2 level.  Based on the air temperature, relative humidity, and assumption that the leaf temperature is about 2 degrees F less than the air temperature, SnifferBuddy calculates the vpd value.  The readings for air temperature, relative humidity, CO2 level and vpd value are then sent to a locally configured mqtt broker.  The mqtt broker that is commonly used is running on Gus, the GrowBuddy that handles all the backend services on a Raspberry Pi.

@@ -51,17 +51,6 @@ class MistBuddy:
         self.fan_power_topic = topics_and_methods.popitem()[0]
         # We use the mqtt client to send power on and off messages to the mistbuddy plugs.
         self.mqtt_client = MQTTClient("MistBuddy")
-
-        mistbuddy_pid_settings = settings.get("MistBuddy_PID_key")
-        if mistbuddy_pid_settings is None:
-            self.logger.error(
-                "The PID_KEY was invalid.  Please see growbuddies_settings.json."
-            )
-            raise KeyError("MistBuddy_PID_key not found in settings dictionary")
-
-        self.hysteresis_band = mistbuddy_pid_settings["hysteresis_band"]
-        self.update_interval = mistbuddy_pid_settings["update_interval"]
-        self.setpoint = mistbuddy_pid_settings["setpoint"]
         # These are used in the _pid() routine.
         self.pid = PID("MistBuddy_PID_key")
 
@@ -70,31 +59,8 @@ class MistBuddy:
         # We use a rolling window and then an average of the values in logic control.  This makes having multiple snifferbuddies less chaotic.
         ROLLING_WINDOW_SIZE = 5
         self.vpd_values = deque(maxlen=ROLLING_WINDOW_SIZE)
-        self.stop_thread = False
-        self.adjust_humidity_thread = None
 
-    def start(self):
-        self.stop_thread = False
-        self.adjust_humidity_thread = threading.Thread(target=self.periodic_adjustment)
-        self.adjust_humidity_thread.start()
-
-
-    def update_vpd(self, vpd):
-        """Updates the latest VPD value and calculates the mean based on received MQTT message."""
-        self.vpd_values.append(vpd)
-        self.average_vpd = sum(self.vpd_values) / len(self.vpd_values) if self.vpd_values else 0
-        return self.average_vpd
-
-    def periodic_adjustment(self):
-        print(f"Periodic adjustment is running in thread ID: {threading.get_ident()}")
-        while not self.stop_thread:
-            if self.average_vpd:
-                self.adjust_humidity(self.average_vpd)
-                time.sleep(self.update_interval)
-
-
-
-    def adjust_humidity(self, vpd_mean: float) -> None:
+    def adjust_humidity(self, vpd: float) -> None:
         """
         Adjust the humidity based on an average VPD reading over the
         secs_between_pid tuning.
@@ -102,16 +68,13 @@ class MistBuddy:
         Args:
             vpd (float): Vapor Pressure Deficit value.
         """
+        # Use an average from a rolling window.
+        self.vpd_values.append(vpd)
+        vpd_mean = sum(self.vpd_values)/len(self.vpd_values) if self.vpd_values else 0
         seconds_on = self.pid.calc_secs_on(vpd_mean)
-        # accomodate the dead zone.
-        if vpd_mean <= (self.setpoint - self.hysteresis_band):
-            self.turn_off_mistBuddy()
-            self.logger.debug(f"The vpd mean: {vpd_mean} is lower than it should be.  Turning o")
-        elif vpd_mean >= (self.setpoint + self.hysteresis_band):
-            if seconds_on > 0.0:
-                self.turn_on_mistBuddy(seconds_on)
-                self.logger.debug(f"seconds on: {seconds_on} average vpd value: {vpd_mean}")
-
+        if seconds_on > 0.0:
+            self.turn_on_mistBuddy(seconds_on)
+        self.logger.debug(f"vpd from snifferbuddy: {vpd} average vpd value: {vpd_mean}")
     def _publish_power_plug_messages(self, power_state: int) -> None:
         """
         Publish MQTT messages to control power state of MistBuddy plugs.

@@ -1,0 +1,13 @@
+
+
+
+[Unit]
+Description=Writes out the mqtt debug messages sent out by growbuddies like SnifferBuddy
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/log_handler.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

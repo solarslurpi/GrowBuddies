@@ -128,7 +128,8 @@ class MQTTClient:
     def publish(self, topic, message, qos=1):
         """Publishes an MQTT message to the MQTT broker.  The MistBuddy method :py:meth:`mistbuddy.mistbuddy_code.turn_on_mistBuddy`
         uses this method to publish MQTT messages to the MistBuddy topic."""
-        self.client.publish(topic, message, qos)
+        rc = self.client.publish(topic, message, qos)
+        return rc
 
     def disconnect(self):
         self.client.disconnect()

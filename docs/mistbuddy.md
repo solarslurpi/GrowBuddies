@@ -1,11 +1,6 @@
 (mistbuddy_doc)=
 # MistBuddy
 
-```{mermaid}
-    sequenceDiagram
-
-```
-
 MistBuddy in Action:
 
 :::::{grid} 10
@@ -26,9 +21,6 @@ MistBuddy in Action:
 :::::
 
 If you squint closely at the upper left of the grow tent you can see mist puffing out of the long PVC.  That's MistBuddy doing it's thing.
-
-## About
-This guide details the process of building MistBuddy, configuring its software, and understanding its operation.
 
 MistBuddy has a whale of a good time maintaining a grow tent's ideal [vpd level](https://www.canr.msu.edu/floriculture/uploads/files/Water%20VPD.pdf).   When the vpd level is too high, MistBuddy spouts out mist for **just** the right amount of time.  When the vpd is too low or just right, MistBuddy shuts off until the vpd level is higher than the vpd level setpoint.  Our indoor gardening environment is climate controlled.  The temperature with the LED lights stays at a stress free level of between 75&#8457; and 85&#8457;.  While vpd is dependent on both temperature and humidity, MistBuddy only changes the humidity to adjust the vpd.
 
@@ -74,10 +66,12 @@ I found this [YouTube video best explained (at least to the way I see things) wa
 The term **"Tasmotized"** is often used in the hobbyist community to refer to a device that has been flashed or reprogrammed with the Tasmota firmware. This is often done to extend the capabilities of the device or to make it compatible with a wider range of home automation software.
 (_make_mistbuddy)=
 ## Make MistBuddy
+MistBuddy consists of a humidifier and two Tasmotized smart plugs.
+### HUMIDIFIER
+The humidifier is an evolution of the one in the YouTube video _[How to Build a Homemade Humidifier Using Ultrasonic Misters / fogger](https://www.youtube.com/watch?v=vmiO6Z_HLCE)_.
+#### Get the parts together
 
-### 1. HUMIDIFIER: Get the parts together
-
-The humidifier is an evolution of the one in the YouTube video _[How to Build a Homemade Humidifier Using Ultrasonic Misters / fogger](https://www.youtube.com/watch?v=vmiO6Z_HLCE)_.  The supplies needed to build this component of MistBuddy include:
+  The supplies needed to build this component of MistBuddy include:
 
 | Component | Cost | Reason |
 |-----------|------|--------|
@@ -120,7 +114,7 @@ Power Supply
 
 :::::
 
-### 2. Make the Humidifier
+#### Make the Humidifier
 Mistbuddy dispenses vapor at the end of the PVC tube by turning on a multi-head mister.  Water comes into the tub through a connection with our house's plumbing.  The water is kept to a constant level in the tub by a float valve.
 
 :::::{grid} 12
@@ -170,7 +164,9 @@ Mister Water Level
 
 :::::
 
-## 3. TASMOTIZED SMART PLUGS: Get the parts together
+### Tasmotized Smart Plugs
+[Tasmota](https://tasmota.github.io/docs/) has enabled us to build low-cost sensor and camera devices that primarily use MQTT to transmit sensor readings.  Certain Smart Plugs work with Tasmota.  MistBuddy relies on two Smart Plugs that will listen for MQTT messages from MistBuddy.  This way, the fan and the power supply of the humidifier can be turned off and on.
+#### Get the parts together
 | Component | Cost | Reason |
 |-----------|------|--------|
 | Sonoff Plugs |$30 for 4 | Two [Sonoff S31 plugs](https://amzn.to/3xnPWYc).
@@ -195,13 +191,18 @@ Sonoff Plugs
 :::::
 
 ## 4. Make Tasmotized Plugs
-The MistBuddy Python code sends mqtt messages to the mister and fan plugs.  The plugs run Tasmota which handles all the mqtt messages.  Two [Sonoff S31 plugs](https://amzn.to/3xnPWYc) need to be [flashed with Tasmota](_install_mistbuddy_smartplugs).  Alternatively, find two already Tasmotized plugs.
+The MistBuddy Python code sends mqtt messages to the mister and fan plugs.  The plugs run Tasmota which handles all the mqtt messages.  Two [Sonoff S31 plugs](https://amzn.to/3xnPWYc) need to be [flashed with Tasmota](_install_mistbuddy_smartplugs).  Alternatively, find two already Tasmotized plugs that can connect to a local mqtt broker.
 
 ## Code Documentation
 
 The general MistBuddy flow is:
 - a Python script like manage_vpd sets up MQTT and callbacks to receive SnifferBuddy messages.
 - The SnifferBuddy MQTT message comes in.  The Python script's callback receives the SnifferBuddy readings.
+```{eval-rst}
+.. autoclass:: growbuddies.mistbuddy_code.MistBuddy
+   :members: __init__, adjust_humidity, turn_on_mistBuddy, turn_off_mistBuddy
 
+
+```
 
 

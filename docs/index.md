@@ -5,38 +5,44 @@
 
 # Welcome to GrowBuddies! {material-regular}`yard;2em;sd-text-success`
 
-```{mermaid}
+GrowBuddies are wifi enabled DIY devices and services that manage the vpd and CO2 levels in a grow tent.
+(following the diagram)
+1) One or more **SnifferBuddies** publish CO2, temperature, relative humidity, and calculated vpd values over MQTT.
+2) The **ClimateRegulator** service running on **Gus**, a Raspberry Pi server:
+- Maintains a running window of readings.  SnifferBuddy readings are coded to be sent over MQTT every 20 seconds.  However, sometimes one or more messages get back up and are sent at once, or each SnifferBuddy is getting a slightly different reading (e.g.: for temperature), or the microclimates within the grow tent cause different readings.  For whatever reason, the code in the ClimateRegulator service subscribes to SnifferBuddy MQTT messages containing the sensor values.  When a message comes in, the ClimateRegulator places it within a running window in which an average is determined. The size of the running window is determined from a property in the `growBuddies_settings.json` file.
 
-sequenceDiagram
-   participant Alice
-   participant Bob
-   Alice->John: Hello John, how are you?
-```
-
-
-
-GrowBuddies is a bunch of DIY devices for geeky gardeners. They work together to maximize the yield while minimizing the guesswork.
-```{note} Currently, knowledge of Python is required.  It also doesn't hurt to know how to solder. It would be wonderful if you would share your thoughts on how GrowBuddies can improve.
-
-```{button-link} https://github.com/solarslurpi/GrowBuddies/issues
-:ref-type: myst
-:align: center
-:color: success
-:shadow:
-Leave a Comment
-```
-
-```
-## SnifferBuddy
-The core device is SnifferBuddy. SnifferBuddy tracks light, temperature, humidity, CO2, and calculates VPD, sending readings through MQTT over WiFi.
+The GrowBuddies include:
+- **SnifferBuddy**: Monitors the temperature, relative humidity, CO2, and calculates VPD.  These values are sent over wifi using the popular MQTT protocol.
 
 ```{figure} images/snifferbuddy_in_tent.jpg
 :align: center
-:scale: 60
+:scale: 40
 
 SnifferBuddy Monitors Temps, RH, CO2, VPD, and Light Level
 ```
-It's compatible with MQTT ecosystems like node-red or AdafruitIO.
+- **MistBuddy**: Takes the SnifferBuddy readings and uses a PID controller to determine how many seconds to turn it's humidifier on.  Once MistBuddy figures out how many seconds to turn on the humidifier, it sends MQTT messages to two MQTT capable power  plugs - one to turn on the mister, the other to turn on the fan.  After the number of seconds have passed, MistBuddy sends MQTT messages to turn off the MQTT capable power plugs.
+```{figure} images/MistBuddy_misting.jpg
+:align: center
+:scale: 40
+
+If you squint closely at the upper left of the grow tent you can see mist puffing out of the long PVC.
+```
+:::::{grid} 10
+
+::::{grid-item}
+:columns: 2
+
+::::
+
+::::{grid-item}
+:columns: 6
+
+:::{card}
+:img-background: images/MistBuddy_misting.jpg
+:::
+
+::::
+:::::
 
 
 ```{button-link} snifferbuddy.md
@@ -105,6 +111,7 @@ Let's Make One
    :maxdepth: 2
 
    growbuddies
-   store_readings
-   manage_vpd
+   code
+   PID_tuning
+
 ```

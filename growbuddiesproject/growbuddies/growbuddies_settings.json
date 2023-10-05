@@ -5,21 +5,35 @@
     "snifferbuddy_table_name": "SnifferBuddy_Readings",
     "snifferbuddy_mqtt": {"snifferbuddy/reading": "on_snifferbuddy_readings",
                           "snifferbuddy/lwt": "on_snifferbuddy_status"},
-    "mistbuddy_mqtt": {"cmnd/mistbuddy_fan/POWER": "",
-                        "cmnd/mistbuddy_mister/POWER": ""},
+    "debug_mqtt": {"log/debug_msg":"on_debug_msg"},
+    "rolling_window_size": 3,
+
 
 
     "MistBuddy_PID_key": {
-        "setpoint": 0.9,
+        "setpoint": 1.0,
         "Kp": 180,
-        "Ki": 0.5,
-        "Kd": 0.1,
+        "Ki": 0,
+        "Kd": 0,
         "output_limits": [0, 10],
         "integral_limits":[0, 4],
         "maximum": 1.0,
-        "tune": {"increment": 0.0, "influxdb_table_name": ""},
+        "tune": {"increment": 2, "influxdb_table_name": "mistbuddy_tune"},
         "comparison_function": "less_than",
-        "secs_between_pid": 25,
-        "pid_callback": ""
+        "update_interval": 20,
+        "mqtt": ["cmnd/mistbuddy_fan/POWER","cmnd/mistbuddy_mister/POWER"]
+    },
+
+    "StomaBuddy_PID_key": {
+        "setpoint": 1000,
+        "Kp": 0.04,
+        "Ki":0.00008,
+        "Kd":0.00005,
+        "output_limits": [0, 30],
+        "integral_limits":[0, 2],
+        "tune": {"increment": 0, "influxdb_table_name": ""},
+        "comparison_function": "greater_than",
+        "update_interval": 20,
+        "mqtt": ["cmnd/stomabuddy/POWER"]
     }
 }

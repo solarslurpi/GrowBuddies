@@ -101,8 +101,5 @@ TBD
 ## 6. Store_readings Code Walkthrough
 ```{eval-rst}
 .. autofunction:: growbuddies.store_readings.main
-.. autoclass:: growbuddies.store_readings.Callbacks
-   :members: on_snifferbuddy_readings, on_snifferbuddy_status
-
-
+.. autofunction:: growbuddies.store_readings.store_readings
 ```
