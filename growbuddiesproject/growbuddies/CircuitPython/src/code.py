@@ -1,5 +1,5 @@
 
-# Version 0.15
+# Version 0.16
 
 import analogio
 import board
@@ -17,11 +17,12 @@ from watchdog import WatchDogMode
 DEBUG=False  # Set to False to turn of debug print statements.
 
 # I guess using globals are bad..but hmmm....TODO: Put into a class or two?
-light_on_pin = analogio.AnalogIn(board.A0)
+# CHECK WHICH PIN IS BEING USED!!!!
+light_on_pin = analogio.AnalogIn(board.A3)
 i2c = board.STEMMA_I2C()
 scd4x = adafruit_scd4x.SCD4X(i2c)
-pool_udp = socketpool.SocketPool(wifi.radio)
-sock_udp = pool_udp.socket(pool_udp.AF_INET, pool_udp.SOCK_DGRAM) # UDP, and we'l reuse it each time
+#pool_udp = socketpool.SocketPool(wifi.radio)
+#sock_udp = pool_udp.socket(pool_udp.AF_INET, pool_udp.SOCK_DGRAM) # UDP, and we'l reuse it each time
 
 try:
     from config import config
@@ -41,15 +42,15 @@ def debug_print(*args):
      #   send_udp_message(message)  # Assuming send_udp_message expects a string
 
 #####################################################################
-def send_udp_message(msg: str) -> None:
-    global sock_udp, host, port
-    debug_print(f"Sending to {host}:{port} message: {msg}")
-    bmsg = bytes(msg, 'utf-8')
-    try:
-        if sock_udp:
-            sock_udp.sendto(bmsg, (host,port) )  # send UDP packet to udp_host:port
-    except NameError as e:
-        print(f"NameError caught: {e}")
+# def send_udp_message(msg: str) -> None:
+#     global sock_udp, host, port
+#     debug_print(f"Sending to {host}:{port} message: {msg}")
+#     bmsg = bytes(msg, 'utf-8')
+#     try:
+#         if sock_udp:
+#             sock_udp.sendto(bmsg, (host,port) )  # send UDP packet to udp_host:port
+#     except NameError as e:
+#         print(f"NameError caught: {e}")
 #    except socket.gaierror as e:
 #        print(f"Error resolving hostname: {e}")
 
@@ -67,16 +68,17 @@ def connect_wifi(ssid: str, password: str) -> None:
         sys.exit(1)  # TODO: This doesn't seem to be the best way to exit...
 #####################################################################
 def connect_mqtt() -> MQTT.MQTT:
-    global pool
-
-    broker = config.get("mqtt_broker", "gus.local")
+    global pool, host
+    mqtt_broker = "192.168.68.113"
+    # broker = config.get("mqtt_broker", "gus.local")
     port = config.get("mqtt_port",1883)
-    debug_print(f"BROKER: {broker}  PORT: {port}")
+    #mqtt_port = 1883
+    #debug_print(f"BROKER: {broker}  PORT: {port}")
     pool_mqtt = socketpool.SocketPool(wifi.radio)
 
 
     mqtt_client = MQTT.MQTT(
-        broker= broker,
+        broker= mqtt_broker,
         port=1883,
         keep_alive=120,
         socket_pool=pool_mqtt,
@@ -98,7 +100,7 @@ def connect_mqtt() -> MQTT.MQTT:
     # mqtt_client.on_message = process_calibrate_message
 
     try:
-        mqtt_client.connect(host=config.get("host_name","gus"))
+        mqtt_client.connect(host=host)
     except Exception as e:
         debug_print("Error connecting to MQTT broker:", e)
         raise e
@@ -197,7 +199,7 @@ def calibrate(param_type, calibration_value):
 #####################################################################
 def read_and_publish_scd4x_data(mqtt_client):
     # Sadly, the sensor seems to freeze up at random times around 24 hours....
-    w.timeout = 40  # After 40 seconds without finishing the loop will cause a reboot.
+    w.timeout = 20  # After x seconds without finishing the loop will cause a reboot.
     w.mode = WatchDogMode.RESET # Reboot
     scd4x.start_periodic_measurement()
     debug_print("Waiting for first measurement....")

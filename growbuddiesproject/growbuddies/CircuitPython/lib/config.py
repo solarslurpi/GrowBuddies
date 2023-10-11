@@ -1,9 +1,9 @@
 config = {
-  "name": "sunshine",
-  "version": 0.15,
+  "name": "A DEVICE NAME",
+  "version": 0.16,
   "wifi_ssid": "YOUR-SSID",
   "wifi_password": "YOUR_PWD",
-  "host_ip": "1YOUR RASP PI IP ADDRESS",
+  "host_ip": "YOUR RASP PI IP ADDRESS",
   "mqtt_broker": "gus",
   "mqtt_port": 1883,
   "temperature_unit": "F",
