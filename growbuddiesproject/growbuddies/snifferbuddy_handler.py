@@ -5,10 +5,10 @@
 #
 #############################################################################
 from typing import Optional, Tuple, Union
-from growbuddies.logginghandler import LoggingHandler
-from growbuddies.mqtt_code import MQTTService
-from growbuddies.snifferbuddyreadings_code import SnifferBuddyReadings
-from growbuddies.settings_code import Settings
+from logginghandler import LoggingHandler
+from mqtt_code import MQTTService
+from snifferbuddyreadings_code import SnifferBuddyReadings
+from settings_code import Settings
 import sys
 import queue
 

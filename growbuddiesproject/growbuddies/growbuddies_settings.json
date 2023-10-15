@@ -2,15 +2,9 @@
     "hostname": "gus",
     "log_level": "DEBUG",
     "db_name": "gus",
-    "snifferbuddy_table_name": "SnifferBuddy_Readings",
-    "snifferbuddy_mqtt": {"snifferbuddy/reading": "on_snifferbuddy_readings",
-                          "snifferbuddy/lwt": "on_snifferbuddy_status"},
-    "debug_mqtt": {"log/debug_msg":"on_debug_msg"},
-    "rolling_window_size": 3,
 
-
-
-    "MistBuddy_PID_key": {
+    "MistBuddy_PID_config": {
+        "name": "mistbuddy",
         "setpoint": 1.0,
         "Kp": 180,
         "Ki": 0,
@@ -18,22 +12,25 @@
         "output_limits": [0, 10],
         "integral_limits":[0, 4],
         "maximum": 1.0,
-        "tune": {"increment": 2, "influxdb_table_name": "mistbuddy_tune"},
+        "tune_increment": 2,
         "comparison_function": "less_than",
-        "update_interval": 20,
-        "mqtt": ["cmnd/mistbuddy_fan/POWER","cmnd/mistbuddy_mister/POWER"]
+        "mqtt": ["cmnd/mistbuddy_fan/POWER","cmnd/mistbuddy_mister/POWER"],
+        "incoming_udp_port": 8094,
+        "tune_udp_port": 9094
     },
 
-    "StomaBuddy_PID_key": {
+    "StomaBuddy_PID_config": {
+        "name": "stomabuddy",
         "setpoint": 1000,
         "Kp": 0.04,
         "Ki":0.00008,
         "Kd":0.00005,
         "output_limits": [0, 30],
         "integral_limits":[0, 2],
-        "tune": {"increment": 0, "influxdb_table_name": ""},
+        "tune_increment": 0,
         "comparison_function": "greater_than",
-        "update_interval": 20,
-        "mqtt": ["cmnd/stomabuddy/POWER"]
+        "mqtt": ["cmnd/stomabuddy/POWER"],
+        "incoming_udp_port": 8095,
+        "tune_udp_port": 9095
     }
 }

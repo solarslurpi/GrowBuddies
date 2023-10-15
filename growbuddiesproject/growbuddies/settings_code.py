@@ -31,6 +31,7 @@ class Settings:
             raise Exception(
                 f"Could not open the settings file named {settings_filename}.  Error: {e}"
             )
+        return self.settings
 
     def get(self, key, default=None) -> str:
         """The get() method is a convenient way to access the values stored in the growbuddies_settings.json file.

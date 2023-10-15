@@ -1,0 +1,13 @@
+
+
+
+[Unit]
+Description=MistBuddy adjusts the humidifier based on the vpd
+After=mosquitto.service
+
+[Service]
+Type=idle
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/manage_vpd.py
+Restart=always
+[Install]
+WantedBy=multi-user.target

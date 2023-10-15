@@ -6,8 +6,8 @@ import paho.mqtt.client as mqtt
 import threading
 import random
 import string
-from growbuddies.settings_code import Settings
-from growbuddies.logginghandler import LoggingHandler
+from settings_code import Settings
+from logginghandler import LoggingHandler
 
 #
 

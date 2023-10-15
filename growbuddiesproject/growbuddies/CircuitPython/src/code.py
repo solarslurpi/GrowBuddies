@@ -1,5 +1,5 @@
 
-# Version 0.16
+# Version 0.17
 
 import analogio
 import board
@@ -14,7 +14,7 @@ import adafruit_minimqtt.adafruit_minimqtt as MQTT
 from microcontroller import watchdog as w
 from watchdog import WatchDogMode
 
-DEBUG=False  # Set to False to turn of debug print statements.
+DEBUG=True  # Set to False to turn of debug print statements.
 
 # I guess using globals are bad..but hmmm....TODO: Put into a class or two?
 # CHECK WHICH PIN IS BEING USED!!!!
@@ -278,22 +278,22 @@ def calc_vpd(air_T_celsius: float, RH: float) -> float:
 #####################################################################
 def publish_reading_dict(reading:Dict, mqtt_client) -> None:
 
-    sensor_type = config.get("sensor_type","")
-    if sensor_type:
-        reading = {sensor_type: reading}
-        payload_topic = config.get("payload_topic","")
-        debug_print(f" Payload topic: {payload_topic}")
-        if payload_topic:
-            payload = json.dumps(reading)
-            try:
-                mqtt_client.publish(payload_topic, payload, qos=0)
-                debug_print("Published:", payload)
-            except Exception as e:
-                # I've noticed when the broker is flaky or rebooted, this can happen. So <CTRL><D>
-                #supervisor.reload()
-                debug_print(f"Could not publish to the topic: {payload_topic}. ERROR: {e}")
-    else:
-        debug_print(f"Invalid sensor type")
+    # sensor_type = config.get("sensor_type","")
+    # if sensor_type:
+    # reading = {sensor_type: reading}
+    payload_topic = config.get("payload_topic","")
+    debug_print(f" Payload topic: {payload_topic}")
+    if payload_topic:
+        payload = json.dumps(reading)
+        try:
+            mqtt_client.publish(payload_topic, payload, qos=0)
+            debug_print("Published:", payload)
+        except Exception as e:
+            # I've noticed when the broker is flaky or rebooted, this can happen. So <CTRL><D>
+            #supervisor.reload()
+            debug_print(f"Could not publish to the topic: {payload_topic}. ERROR: {e}")
+    # else:
+    #     debug_print(f"Invalid sensor type")
 
 
 def main() -> None:

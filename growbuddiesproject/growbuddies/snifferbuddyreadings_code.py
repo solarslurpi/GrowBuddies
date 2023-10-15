@@ -4,7 +4,7 @@
 # SPDX-License-Identifier: MIT
 #
 #############################################################################
-from growbuddies.logginghandler import LoggingHandler
+from logginghandler import LoggingHandler
 import json
 
 

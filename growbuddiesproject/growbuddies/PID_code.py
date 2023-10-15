@@ -14,8 +14,9 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 #
-from growbuddies.logginghandler import LoggingHandler
-from growbuddies.store_readings import ReadingsStore
+from logginghandler import LoggingHandler
+#from store_readings import ReadingsStore
+
 import time
 import warnings
 import threading
@@ -26,7 +27,7 @@ COMPARISON_FUNCTIONS = {
     "less_than": lambda x, max_val: x < max_val,
 }
 
-TUNE_STABILITY_TIME = 60 * 15
+TUNE_STABILITY_TIME =  60 * 15
 
 try:
     # Get monotonic time to ensure that time deltas are always positive
@@ -54,7 +55,7 @@ def _clamp(value, limits):
 
 
 class PID(object):
-    def __init__(self, pid_dict: dict):
+    def __init__(self, pid_dict: dict, callback: None):
         self.logger = LoggingHandler()
         self._min_output, self._max_output = None, None
         self._last_value = None
@@ -69,6 +70,8 @@ class PID(object):
         self._last_output = None
         self.pid_table = None
         self.tune_timer = None
+        self.callback = callback
+
 
 
         try:
@@ -80,9 +83,7 @@ class PID(object):
                 f"==> SetPoint: {self.setpoint} Kp: {self.Kp} Ki: {self.Ki} Kd: {self.Kd}"
             )
             self.output_limits = tuple(pid_dict["output_limits"])
-            self.tune_increment = pid_dict["tune"]["increment"]
-            if len(pid_dict["tune"]["influxdb_table_name"]) >0:
-                self.pid_table = ReadingsStore(pid_dict["tune"]["influxdb_table_name"])
+            self.tune_increment = pid_dict.get("tune_increment","")
 
             self.integral_limits = tuple(pid_dict["integral_limits"])
 
@@ -92,20 +93,28 @@ class PID(object):
                 self.sign = -1
 
             if self.tune_increment:
-                self.start_timer()
+                self.first_update = True
+                self.logger.debug(f"--> tune increment is: {self.tune_increment}")
+
         except KeyError as e:
             self.logger.error(
                 f"ERROR: The {e} key was not found in pid_dict.  Please see growbuddies_settings.json."
             )
             raise e
+    def start_tuning(self):
+        tune_thread = threading.Thread(target=self.update_kp)
+        tune_thread.start()
 
-    def start_timer(self) -> None:
-        self.tune_timer = threading.Timer(TUNE_STABILITY_TIME, self.update_kp)
-        self.tune_timer.start()
 
+    # This method will run in the tune_thread, thus not blocking...
     def update_kp(self) -> None:
-        self.Kp += self.tune_increment
-        self.start_timer()
+        while True:
+            if not self.first_update:
+                self.Kp += self.tune_increment
+            self.first_update = False
+            self.logger.debug(f"IN UPDATE_KP.  kp = {self.Kp}")
+            self.callback(self.Kp)
+            time.sleep(TUNE_STABILITY_TIME)
 
     def calc_secs_on(self, current_value) -> float:
         """Update the PID controller with the vpd value just calculated from the latest SnifferBuddyReading and figure out
@@ -138,7 +147,11 @@ class PID(object):
         self.logger.debug(
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
         )
-
+        # If the error is positive, the vpd value is going below the setpoint
+        # We handle when the vpd value is too high (with a humidifier).  We
+        # do not use a dehumidifier, so one way...
+        if error > 0.0:
+            return 0
         self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
 
         output = self._proportional + self._integral + self._derivative
@@ -148,14 +161,6 @@ class PID(object):
         self._last_value = current_value
         self._prev_error = error
         output = _clamp(output, self.output_limits)
-        if self.pid_table:
-            pid_table_row = {
-                'Kp': self.Kp,
-                'Ki': self.Ki,
-                'Kd': self.Kd,
-                'value': current_value
-            }
-            self.pid_table.store_readings(pid_table_row)
         return output
 
     def _compute_terms(self, d_value, error, dt):

@@ -10,9 +10,9 @@ SnifferBuddy device sending MQTT messages and an MQTT broker (Gus). Run the scri
 the command line (within your virtual environment) by typing `store-readings`.  For continuous running, use SystemD with the `store_readings.service` file.
 
 """
-from growbuddies.snifferbuddy_handler import SnifferBuddyHandler
-from growbuddies.influxdb_code import ReadingsStore
-from growbuddies.logginghandler import LoggingHandler
+from snifferbuddy_handler import SnifferBuddyHandler
+from influxdb_code import ReadingsStore
+from logginghandler import LoggingHandler
 import time
 
 logger = LoggingHandler()
