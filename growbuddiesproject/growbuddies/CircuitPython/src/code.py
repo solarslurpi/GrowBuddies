@@ -3,6 +3,7 @@
 
 import analogio
 import board
+import gc
 import json
 import math
 import socketpool
@@ -10,15 +11,24 @@ import supervisor
 import time
 import wifi
 import adafruit_scd4x
+import adafruit_logging as logging
 import adafruit_minimqtt.adafruit_minimqtt as MQTT
 from microcontroller import watchdog as w
+import microcontroller
 from watchdog import WatchDogMode
 
-DEBUG=True  # Set to False to turn of debug print statements.
+DEBUG=True   # Set to False to turn of debug print statements.
+
+
+
+START_TIME = time.monotonic()
+
+# Sadly, the sensor seems to freeze up at random times around 24 hours....
+microcontroller.on_next_reset(microcontroller.RunMode.NORMAL)
 
 # I guess using globals are bad..but hmmm....TODO: Put into a class or two?
 # CHECK WHICH PIN IS BEING USED!!!!
-light_on_pin = analogio.AnalogIn(board.A3)
+light_on_pin = analogio.AnalogIn(board.A2)
 i2c = board.STEMMA_I2C()
 scd4x = adafruit_scd4x.SCD4X(i2c)
 #pool_udp = socketpool.SocketPool(wifi.radio)
@@ -69,20 +79,20 @@ def connect_wifi(ssid: str, password: str) -> None:
 #####################################################################
 def connect_mqtt() -> MQTT.MQTT:
     global pool, host
-    mqtt_broker = "192.168.68.113"
-    # broker = config.get("mqtt_broker", "gus.local")
+    broker = config.get("mqtt_broker", "gus.local")
     port = config.get("mqtt_port",1883)
-    #mqtt_port = 1883
-    #debug_print(f"BROKER: {broker}  PORT: {port}")
+    debug_print(f"BROKER: {broker}  PORT: {port}")
     pool_mqtt = socketpool.SocketPool(wifi.radio)
 
 
     mqtt_client = MQTT.MQTT(
-        broker= mqtt_broker,
-        port=1883,
+        broker= broker,
+        port=port,
         keep_alive=120,
         socket_pool=pool_mqtt,
     )
+    if DEBUG:
+        mqtt_client.enable_logger(logging, logging.DEBUG, "MyLogger")
     # The LWT message is only sent if the client disconnects abnormally.
     # Process: 1) Publisher sets last will message 2) Broker detects connection break 3) Broker sends last will message to topic subscribers.
     # The broker waits for one and a half keepAlive periods before disconnecting the client and then sending the LastWillMessage.
@@ -103,7 +113,7 @@ def connect_mqtt() -> MQTT.MQTT:
         mqtt_client.connect(host=host)
     except Exception as e:
         debug_print("Error connecting to MQTT broker:", e)
-        raise e
+        supervisor.reload()
 
     return mqtt_client
 
@@ -198,7 +208,7 @@ def calibrate(param_type, calibration_value):
 
 #####################################################################
 def read_and_publish_scd4x_data(mqtt_client):
-    # Sadly, the sensor seems to freeze up at random times around 24 hours....
+
     w.timeout = 20  # After x seconds without finishing the loop will cause a reboot.
     w.mode = WatchDogMode.RESET # Reboot
     scd4x.start_periodic_measurement()
@@ -223,6 +233,7 @@ def read_and_publish_scd4x_data(mqtt_client):
                 publish_reading_dict(reading_dict, mqtt_client)
         else:
             debug_print("No scd4x data ready")
+        publish_stats(mqtt_client)
         time.sleep(5)  # Takes a bit for each reading.
         w.feed()  # Let the watchdog timer know we are not frozen.
 #####################################################################
@@ -294,6 +305,27 @@ def publish_reading_dict(reading:Dict, mqtt_client) -> None:
             debug_print(f"Could not publish to the topic: {payload_topic}. ERROR: {e}")
     # else:
     #     debug_print(f"Invalid sensor type")
+#####################################################################
+def publish_stats(mqtt_client):
+    elapsed_secs_since_start = int(time.monotonic() - START_TIME)
+    temp_c = microcontroller.cpu.temperature
+    gc.collect()
+    free_memory = gc.mem_free()
+    debug_print(f"Elapsed seconds since start: {elapsed_secs_since_start}.")
+    debug_print(f"Temperature: {temp_c}")
+    debug_print(f"Free memory: {free_memory}")
+    stats_reading = {
+    "name": config.get("name", "??"),
+    "elapsed_secs_since_start": elapsed_secs_since_start,
+    "cpu_temp": temp_c,
+    "free_memory": free_memory,
+    }
+    stats_topic = config.get("stats_topic","snifferbuddy/stats")
+    debug_print(f"Payload topic for stats is: {stats_topic}")
+    if stats_topic:
+        payload = json.dumps(stats_reading)
+        mqtt_client.publish(stats_topic, payload, qos=0)
+        debug_print("Published:", payload)
 
 
 def main() -> None:
@@ -308,7 +340,8 @@ def main() -> None:
 
     debug_print("Waiting to connect to mqtt broker")
     mqtt_client = connect_mqtt()
-    scd4x_reading = read_and_publish_scd4x_data(mqtt_client)
+    read_and_publish_scd4x_data(mqtt_client)
 #####################################################################
 if __name__ == "__main__":
     main()
+

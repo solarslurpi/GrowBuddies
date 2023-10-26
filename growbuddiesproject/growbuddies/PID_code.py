@@ -71,8 +71,7 @@ class PID(object):
         self.pid_table = None
         self.tune_timer = None
         self.callback = callback
-
-
+        self.comparison_function = COMPARISON_FUNCTIONS[pid_dict.get("comparison_function")]
 
         try:
             self.Kp = pid_dict["Kp"]
@@ -86,7 +85,8 @@ class PID(object):
             self.tune_increment = pid_dict.get("tune_increment","")
 
             self.integral_limits = tuple(pid_dict["integral_limits"])
-
+            self.num_bias_seconds = pid_dict["num_bias_seconds_on"]
+            self.num_bias_seconds = self.num_bias_seconds if self.num_bias_seconds > 0 else 0
             if pid_dict["comparison_function"] == "greater_than":
                 self.sign = 1
             else:
@@ -147,11 +147,12 @@ class PID(object):
         self.logger.debug(
             f"error: {error:.2f}, P: {self._proportional:.2f}, I: {self._integral:.2f}, D: {self._derivative:.2f}"
         )
-        # If the error is positive, the vpd value is going below the setpoint
-        # We handle when the vpd value is too high (with a humidifier).  We
-        # do not use a dehumidifier, so one way...
-        if error > 0.0:
-            return 0
+        # In the case of stomabuddy, if the current_value is over the setpoint, there is too much co2.  Don't add more.
+        # In the case of mistbuddy, if the current_value is less than the setpoint, there is too much humidity.  Don't turn on the mister and fan.
+        if self.comparison_function(current_value,self.setpoint):
+            self.logger.debug(f"The current value: {current_value}. The setpoint value: {self.setpoint}")
+            self.logger.debug(f"Turning ON for {self.num_bias_seconds} bias seconds to maintain stable point.")
+            return self.num_bias_seconds
         self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
 
         output = self._proportional + self._integral + self._derivative

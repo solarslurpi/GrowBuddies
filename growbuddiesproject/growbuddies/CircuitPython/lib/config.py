@@ -1,13 +1,14 @@
 config = {
-  "name": "A DEVICE NAME",
+  "name": "FILL",
   "version": 0.17,
-  "wifi_ssid": "YOUR-SSID",
-  "wifi_password": "YOUR_PWD",
-  "host_ip": "YOUR RASP PI IP ADDRESS",
+  "wifi_ssid": "FILL",
+  "wifi_password": "FILL",
+  "host_ip": "gus",
   "mqtt_broker": "gus",
   "mqtt_port": 1883,
   "temperature_unit": "F",
-  "sensor_type": "scd41",
+  "sensor_type": "scd40",
   "light_threshold":  45000,
-  "payload_topic": "snifferbuddy/reading"
+  "payload_topic": "snifferbuddy/reading",
+  "stats_topic": "snifferbuddy/stats"
 }

@@ -7,6 +7,7 @@ After=mosquitto.service
 
 [Service]
 Type=idle
-ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/manage_CO2.py
+ExecStart=/home/pi/GrowBuddies/.venv/bin/python  /home/pi/GrowBuddies/growbuddiesproject/growbuddies/manage_co2.py
 Restart=always
 [Install]
+WantedBy=multi-user.target
