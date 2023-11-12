@@ -90,9 +90,9 @@ class MQTTClient:
             )
             return rc
         # Subscribe to the topics passed in the topics_and_callbacks_dict.
-        for k in self.callbacks_dict:
-            self.client.subscribe(k)
-        return rc
+        # for k in self.callbacks_dict:
+        #     self.client.subscribe(k)
+        # return rc
 
     def on_disconnect(self, client, userdata, rc) -> int:
         if rc != 0:
@@ -116,14 +116,15 @@ class MQTTClient:
         message matches a key in the dict.
 
         """
-        try:
-            for k in self.callbacks_dict:
-                if k == msg.topic:
-                    self.callbacks_dict[k](msg.payload.decode("utf-8"))
-        except KeyError as e:
-            self.logger.error(
-                f"There was a KeyError when attempting to call one of the callback functions.  The error is {e}"
-            )
+        self.logger.debug(f"Received MQTT message: {msg.payload.decode('utf-8')}")
+        # try:
+        #     for k in self.callbacks_dict:
+        #         if k == msg.topic:
+        #             self.callbacks_dict[k](msg.payload.decode("utf-8"))
+        # except KeyError as e:
+        #     self.logger.error(
+        #         f"There was a KeyError when attempting to call one of the callback functions.  The error is {e}"
+        #     )
 
     def publish(self, topic, message, qos=1):
         """Publishes an MQTT message to the MQTT broker.  The MistBuddy method :py:meth:`mistbuddy.mistbuddy_code.turn_on_mistBuddy`

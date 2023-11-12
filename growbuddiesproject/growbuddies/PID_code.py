@@ -15,19 +15,15 @@
 # DEALINGS IN THE SOFTWARE.
 #
 from logginghandler import LoggingHandler
-#from store_readings import ReadingsStore
+# from store_readings import ReadingsStore
 
 import time
 import warnings
 import threading
+from common import COMPARISON_FUNCTIONS
 
 
-COMPARISON_FUNCTIONS = {
-    "greater_than": lambda x, max_val: x > max_val,
-    "less_than": lambda x, max_val: x < max_val,
-}
-
-TUNE_STABILITY_TIME =  60 * 15
+TUNE_STABILITY_TIME = 60 * 15
 
 try:
     # Get monotonic time to ensure that time deltas are always positive
@@ -71,7 +67,9 @@ class PID(object):
         self.pid_table = None
         self.tune_timer = None
         self.callback = callback
-        self.comparison_function = COMPARISON_FUNCTIONS[pid_dict.get("comparison_function")]
+        self.comparison_function = COMPARISON_FUNCTIONS[
+            pid_dict.get("comparison_function")
+        ]
 
         try:
             self.Kp = pid_dict["Kp"]
@@ -82,11 +80,13 @@ class PID(object):
                 f"==> SetPoint: {self.setpoint} Kp: {self.Kp} Ki: {self.Ki} Kd: {self.Kd}"
             )
             self.output_limits = tuple(pid_dict["output_limits"])
-            self.tune_increment = pid_dict.get("tune_increment","")
+            self.tune_increment = pid_dict.get("tune_increment", "")
 
             self.integral_limits = tuple(pid_dict["integral_limits"])
             self.num_bias_seconds = pid_dict["num_bias_seconds_on"]
-            self.num_bias_seconds = self.num_bias_seconds if self.num_bias_seconds > 0 else 0
+            self.num_bias_seconds = (
+                self.num_bias_seconds if self.num_bias_seconds > 0 else 0
+            )
             if pid_dict["comparison_function"] == "greater_than":
                 self.sign = 1
             else:
@@ -101,10 +101,10 @@ class PID(object):
                 f"ERROR: The {e} key was not found in pid_dict.  Please see growbuddies_settings.json."
             )
             raise e
+
     def start_tuning(self):
         tune_thread = threading.Thread(target=self.update_kp)
         tune_thread.start()
-
 
     # This method will run in the tune_thread, thus not blocking...
     def update_kp(self) -> None:
@@ -132,9 +132,10 @@ class PID(object):
             dt
         except NameError:
             dt = now - self._last_time if (now - self._last_time) else 1e-16
-        self.logger.debug(f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading.")
+        self.logger.debug(
+            f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading."
+        )
         self._last_time = now
-
 
         # self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
         # Compute error terms - Note: The error continues to accumulate (integral and derivative) so that when
@@ -149,9 +150,13 @@ class PID(object):
         )
         # In the case of stomabuddy, if the current_value is over the setpoint, there is too much co2.  Don't add more.
         # In the case of mistbuddy, if the current_value is less than the setpoint, there is too much humidity.  Don't turn on the mister and fan.
-        if self.comparison_function(current_value,self.setpoint):
-            self.logger.debug(f"The current value: {current_value}. The setpoint value: {self.setpoint}")
-            self.logger.debug(f"Turning ON for {self.num_bias_seconds} bias seconds to maintain stable point.")
+        if self.comparison_function(current_value, self.setpoint):
+            self.logger.debug(
+                f"The current value: {current_value}. The setpoint value: {self.setpoint}"
+            )
+            self.logger.debug(
+                f"Turning ON for {self.num_bias_seconds} bias seconds to maintain stable point."
+            )
             return self.num_bias_seconds
         self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
 
@@ -174,9 +179,8 @@ class PID(object):
         # However, the Ki terms seems to grow to a devastatingly large number which causes oscillation.  From
         # watching the vpd values, having an ability to clamp the integral term seems to help.
         self.logger.debug(f"*****>>> Integral value: {self._integral}")
-        self._integral = self.sign*_clamp(abs(self._integral), self.integral_limits)
-        self._derivative = self.sign*self.Kd * d_value / dt
-
+        self._integral = self.sign * _clamp(abs(self._integral), self.integral_limits)
+        self._derivative = self.sign * self.Kd * d_value / dt
 
     def __repr__(self):
         return (
@@ -248,5 +252,3 @@ class PID(object):
 
         self._integral = _clamp(self._integral, self.output_limits)
         self._last_output = _clamp(self._last_output, self.output_limits)
-
-

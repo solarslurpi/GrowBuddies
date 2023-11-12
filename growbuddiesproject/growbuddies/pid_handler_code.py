@@ -12,7 +12,6 @@ from mqtt_code import MQTTClient
 import json
 import re
 import socket
-import threading
 
 
 MistBuddy_PID_config = "MistBuddy_PID_config"
@@ -22,10 +21,6 @@ class PIDHandler:
     def __init__(self, PID_config: str = None) -> None:
         if PID_config not in (MistBuddy_PID_config, StomaBuddy_PID_config):
             raise ValueError(f" Error: {PID_config} is not valid.  Valid configuration names are {MistBuddy_PID_config} and {StomaBuddy_PID_config}.")
-        if "mistbuddy" in PID_config.lower():
-            self.value_to_tune = "vpd"
-        else:
-            self.value_to_tune = "co2"
         self.logger = LoggingHandler()
         settings = Settings()
         self.config = settings.load()
@@ -65,7 +60,7 @@ class PIDHandler:
             # Step 1: Decode the bytes
             decoded_str = packet.decode()
             # Step 2: Constructing Regular Expressions
-            # The regex patterns capture the values of vpd_mean and light_mean
+            # The regex patterns capture the values
             value_regex = re.compile(fr'{self.telegraf_fieldname}=([\d.]+)')
             light_regex = re.compile(r'light_mean=(\d)')
 

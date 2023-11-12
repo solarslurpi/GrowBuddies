@@ -1,5 +1,5 @@
 {
-    "hostname": "gus",
+    "hostname": "gus.local",
     "log_level": "DEBUG",
     "db_name": "gus",
 
@@ -15,7 +15,8 @@
         "comparison_function": "less_than",
         "mqtt": ["cmnd/mistbuddy_fan/POWER","cmnd/mistbuddy_mister/POWER"],
         "incoming_udp_port": 8094,
-        "tune_udp_port": 9094,
+        "PID_values_port": 8095,
+        "auso": 8096,
         "telegraf_fieldname": "vpd_mean",
         "num_bias_seconds_on": 0
     },
@@ -31,9 +32,10 @@
         "tune_increment": 0,
         "comparison_function": "greater_than",
         "mqtt": ["cmnd/stomabuddy/POWER"],
-        "incoming_udp_port": 8095,
-        "tune_udp_port": 9094,
-        "telegraf_fieldname": "co2_mean",
+        "incoming_udp_port": 8094,
+        "PID_values_port": 8095,
+        "calibrate_udp_out_port": 8096,
+        "telegraf_fieldname": "CO2_mean",
         "num_bias_seconds_on": 0
     }
 }

@@ -2,16 +2,13 @@
 
     "terminal.integrated.env.linux": "/home/pi/growbuddies/py_env/bin",
     "[python]": {
-        "editor.defaultFormatter": "ms-python.black-formatter",
-        "editor.formatOnSave": true
+        "editor.defaultFormatter": "charliermarsh.ruff",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+          }
     },
-    "python.linting.flake8Args": [
-        "--max-line-length=500",
-        "--ignore=W605,E402,E731",
-    ],
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "python.formatting.provider": "none",
-    "editor.formatOnSave": true,
+
     "python.testing.pytestArgs": [
         "code"
     ],

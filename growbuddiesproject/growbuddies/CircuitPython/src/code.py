@@ -1,6 +1,5 @@
 
-# Version 0.17
-
+# Version 0.18
 import analogio
 import board
 import gc
@@ -13,35 +12,33 @@ import wifi
 import adafruit_scd4x
 import adafruit_logging as logging
 import adafruit_minimqtt.adafruit_minimqtt as MQTT
-from microcontroller import watchdog as w
 import microcontroller
-from watchdog import WatchDogMode
+import watchdog
+from msg_nums import Messages
 
-DEBUG=True   # Set to False to turn of debug print statements.
-
-
+DEBUG=False   # Set to False to turn of debug print statements.
 
 START_TIME = time.monotonic()
+wdt = microcontroller.watchdog
 
-# Sadly, the sensor seems to freeze up at random times around 24 hours....
-microcontroller.on_next_reset(microcontroller.RunMode.NORMAL)
 
 # I guess using globals are bad..but hmmm....TODO: Put into a class or two?
 # CHECK WHICH PIN IS BEING USED!!!!
 light_on_pin = analogio.AnalogIn(board.A2)
 i2c = board.STEMMA_I2C()
 scd4x = adafruit_scd4x.SCD4X(i2c)
-#pool_udp = socketpool.SocketPool(wifi.radio)
-#sock_udp = pool_udp.socket(pool_udp.AF_INET, pool_udp.SOCK_DGRAM) # UDP, and we'l reuse it each time
+pool = socketpool.SocketPool(wifi.radio)
+sock_udp = pool.socket(pool.AF_INET, pool.SOCK_DGRAM) # UDP, and we'l reuse it each time
 
 try:
     from config import config
 except ImportError:
-    debug_print("There is config info missing.  We need the config.py config file!")
+    debug_print("There is config info missing.  We need the cohnfig.py config file!")
     raise
 
-host = config.get("host_name","gus.local")
-port = config.get("udp_port",49152)
+host = config.get("host","gus.local")
+
+udp_monitor_port = config.get("monitor_port",8096)
 #####################################################################
 def debug_print(*args):
 
@@ -51,18 +48,17 @@ def debug_print(*args):
      #   message = ' '.join(map(str, args))  # Convert all arguments to strings and join them
      #   send_udp_message(message)  # Assuming send_udp_message expects a string
 
-#####################################################################
-# def send_udp_message(msg: str) -> None:
-#     global sock_udp, host, port
-#     debug_print(f"Sending to {host}:{port} message: {msg}")
-#     bmsg = bytes(msg, 'utf-8')
-#     try:
-#         if sock_udp:
-#             sock_udp.sendto(bmsg, (host,port) )  # send UDP packet to udp_host:port
-#     except NameError as e:
-#         print(f"NameError caught: {e}")
-#    except socket.gaierror as e:
-#        print(f"Error resolving hostname: {e}")
+########################################g#############################
+def send_udp_message(msg_no:int) -> None:
+    global sock_udp, host, udp_monitor_port
+    message = f"snifferbuddy_monitor,name={config.get("name", "??")} msg_num={msg_no}i"
+    if sock_udp:
+        debug_print(f"=====> Sending message {message} over udp")
+        debug_print(f" HOST: {host} PORT: {udp_monitor_port}")
+        try:
+            sock_udp.sendto(bytes(message, 'utf-8'), (host, udp_monitor_port))
+        except Exception as e:
+            debug_print(f"ERROR: {e} could not send udp monitor message")
 
 
 #####################################################################
@@ -70,7 +66,7 @@ def connect_wifi(ssid: str, password: str) -> None:
     try:
         debug_print(f"CONNECTING TO: {ssid}")
         wifi.radio.connect(ssid, password)
-        debug_print(f"SUCCESSFULLY CONNECTED. {wifi.radio.ipv4_address}")
+
 
 
     except ConnectionError as e:
@@ -82,17 +78,16 @@ def connect_mqtt() -> MQTT.MQTT:
     broker = config.get("mqtt_broker", "gus.local")
     port = config.get("mqtt_port",1883)
     debug_print(f"BROKER: {broker}  PORT: {port}")
-    pool_mqtt = socketpool.SocketPool(wifi.radio)
 
 
     mqtt_client = MQTT.MQTT(
         broker= broker,
         port=port,
         keep_alive=120,
-        socket_pool=pool_mqtt,
+        socket_pool=pool,
     )
     if DEBUG:
-        mqtt_client.enable_logger(logging, logging.DEBUG, "MyLogger")
+        mqtt_client.enable_logger(logging, logging.INFO, "MyLogger")
     # The LWT message is only sent if the client disconnects abnormally.
     # Process: 1) Publisher sets last will message 2) Broker detects connection break 3) Broker sends last will message to topic subscribers.
     # The broker waits for one and a half keepAlive periods before disconnecting the client and then sending the LastWillMessage.
@@ -110,8 +105,11 @@ def connect_mqtt() -> MQTT.MQTT:
     # mqtt_client.on_message = process_calibrate_message
 
     try:
+        send_udp_message(Messages.MSG_MQTT_PRE_CONNECT)
         mqtt_client.connect(host=host)
+        send_udp_message(Messages.MSG_MQTT_CONN_SUCCESS)
     except Exception as e:
+        send_udp_message(Messages.MSG_SOFT_REBOOT)
         debug_print("Error connecting to MQTT broker:", e)
         supervisor.reload()
 
@@ -208,40 +206,55 @@ def calibrate(param_type, calibration_value):
 
 #####################################################################
 def read_and_publish_scd4x_data(mqtt_client):
+    global wdt
+    try:
+         # After x seconds without finishing the loop will RAISE and exception.
 
-    w.timeout = 20  # After x seconds without finishing the loop will cause a reboot.
-    w.mode = WatchDogMode.RESET # Reboot
-    scd4x.start_periodic_measurement()
-    debug_print("Waiting for first measurement....")
-    reading_count = 0
-    # The datasheet recommended skipping at least the first two readings as the sensor adjusts.
-    skip_readings = 3
+        scd4x.start_periodic_measurement()
+        debug_print("Waiting for first measurement....")
+        reading_count = 0
+        # The datasheet recommended skipping at least the first two readings as the sensor adjusts.
+        skip_readings = 3
+        wdt.timeout = 20
+        wdt.mode = watchdog.WatchDogMode.RAISE
 
-    while True:
-        # The loop() method checks incoming and process outgoing MQTT messages and works to
-        # keep the connection between the broker and mqtt client alive.
-        try:
-            mqtt_client.loop()
-        except Exception as e:
-            debug_print(f"Error on call to mqtt_client.loop(). ERROR: {e}")
-            supervisor.reload() # <CTRL-D>
-        if scd4x.data_ready:
-            reading_count += 1
-            debug_print(f"reading count: {reading_count}")
-            if reading_count > skip_readings:
-                reading_dict = build_reading_dict()
-                publish_reading_dict(reading_dict, mqtt_client)
-        else:
-            debug_print("No scd4x data ready")
-        publish_stats(mqtt_client)
-        time.sleep(5)  # Takes a bit for each reading.
-        w.feed()  # Let the watchdog timer know we are not frozen.
+        while True:
+
+            # The loop() method checks incoming and process outgoing MQTT messages and works to
+            # keep the connection between the broker and mqtt client alive.
+            try:
+                # Poll the message queue
+                mqtt_client.loop()
+            except (ValueError, RuntimeError, MMQTTException) as e:
+                send_udp_message(Messages.MSG_MQTT_LOOP_ERROR)
+                debug_print(f"Error --> {e} <-- in call to mqtt_client.loop(). Reconnecting to mqtt_client", e)
+                mqtt_client.reconnect()
+            if scd4x.data_ready:
+                reading_count += 1
+                debug_print(f"reading count: {reading_count}")
+                if reading_count > skip_readings:
+                    reading_dict = build_reading_dict()
+                    publish_reading_dict(reading_dict, mqtt_client)
+            else:
+                debug_print("No scd4x data ready")
+            publish_stats(mqtt_client)
+            send_udp_message(Messages.MSG_READ_PUB_LOOP)
+            time.sleep(5)  # Takes a bit for each reading.
+            send_udp_message(Messages.MSG_AFTER_SLEEP)
+            wdt.feed()  # Let the watchdog timer know we are not frozen.
+    except watchdog.WatchDogTimeout as e:
+        debug_print("Watchdog timer timed out in read/publish")
+        send_udp_message(Messages.MSG_WATCHDOG)
+    #    time.delay(3)
+        supervisor.reload()
+    except Exception as e:
+        debug_print(f"Exception {e} in read_and_publish_scd4x_data")
 #####################################################################
 def build_reading_dict():
     vpd = calc_vpd(scd4x.temperature, scd4x.relative_humidity)
     light_threshold = config.get('light_threshold',45000)
     light_state = 1 if light_on_pin.value > light_threshold else 0
-    debug_print(f"light_on_pin.value: {light_on_pin.value} light_threshold: {light_threshold}")
+    debug_print(f"!!!!***** light_on_pin.value: {light_on_pin.value} light_threshold: {light_threshold}")
     temp_unit = config.get("temperature_unit","F")
     debug_print(f"temp_unit: {temp_unit}")
     if temp_unit and temp_unit == "F":
@@ -297,11 +310,9 @@ def publish_reading_dict(reading:Dict, mqtt_client) -> None:
     if payload_topic:
         payload = json.dumps(reading)
         try:
-            mqtt_client.publish(payload_topic, payload, qos=0)
+            publish_message(mqtt_client, payload_topic, payload)
             debug_print("Published:", payload)
         except Exception as e:
-            # I've noticed when the broker is flaky or rebooted, this can happen. So <CTRL><D>
-            #supervisor.reload()
             debug_print(f"Could not publish to the topic: {payload_topic}. ERROR: {e}")
     # else:
     #     debug_print(f"Invalid sensor type")
@@ -324,8 +335,23 @@ def publish_stats(mqtt_client):
     debug_print(f"Payload topic for stats is: {stats_topic}")
     if stats_topic:
         payload = json.dumps(stats_reading)
-        mqtt_client.publish(stats_topic, payload, qos=0)
+        publish_message(mqtt_client, stats_topic, payload)
         debug_print("Published:", payload)
+
+#####################################################################
+def publish_message(mqtt_client, topic, payload):
+    # Have this function to control errors...
+#    global wdt_mqtt_publish
+#    wdt_mqtt_publish.timeout = 5
+    try:
+        # Attempt to publish the message
+        mqtt_client.publish(topic, payload, qos=0)
+        # Assume `is_published` or equivalent method is available to check if the message has been sent.
+#    except watchdog.WatchDogTimeout as e:
+    except Exception as e:
+        debug_print("Watchdog timer timed out in publish_message()")
+        send_udp_message(Messages.MSG_WATCHDOG)
+        supervisor.reload()
 
 
 def main() -> None:
