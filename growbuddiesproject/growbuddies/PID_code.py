@@ -50,7 +50,7 @@ def _clamp(value, limits):
     return value
 
 
-class PID(object):
+class PID_Control(object):
     def __init__(self, pid_dict: dict, callback: None):
         self.logger = LoggingHandler()
         self._min_output, self._max_output = None, None

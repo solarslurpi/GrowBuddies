@@ -23,7 +23,7 @@ PAUSE_SECONDS = 60  # Number of seconds to wait after an activation in case the 
 ACCEPTABLE_DEVIATION = (
     0.01  # Amount a value can be from the baseline to trigger an activation.
 )
-BASELINE_READINGS = 1
+BASELINE_READINGS = 3
 
 BASELINE_TIMEOUT = 900  # 15 minutes.
 
