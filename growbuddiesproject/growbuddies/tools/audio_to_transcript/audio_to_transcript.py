@@ -1,7 +1,11 @@
 import glob
+import re
 import os
 import time
 from faster_whisper import WhisperModel
+# yt_dlp is a fork of youtube-dl that has stayed current with the latest YouTube isms.  Youtube-dl is no longer
+# supported so use yt_dlp.  It is more feature rich and up-to-date.
+import yt_dlp as youtube_dl
 from common import MODEL_SIZES, COMPUTE_TYPES
 
 TYPICAL_TRANSCRIPTION_TIME = (
@@ -29,12 +33,42 @@ class AudioToTranscript:
         if self.progress_callback:
             progress_percentage = self._figure_percent_complete(start_time)
             self.progress_callback("Loading Whisper Model...",progress_percentage)
-        model = WhisperModel(self.model_name, compute_type=self.compute_type)
+        model = WhisperModel(self.model_name, compute_type=self.compute_type, device="cuda")
         if self.progress_callback:
             progress_percentage = self._figure_percent_complete(start_time)
             self.progress_callback("Whisper model has been loaded...",progress_percentage)
         for audio_file in audio_files_list:
             self._process_audio_file(audio_file, transcript_folder, model, start_time)
+
+    def download_youtube_audio(self, youtube_url: str, download_folder: str) -> str:
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': os.path.join(download_folder, 'temp.%(ext)s'),
+            'postprocessors': [{
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }],
+            'verbose': True
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([youtube_url])
+            info = ydl.extract_info(youtube_url, download=False)
+            try:
+                original_filename = os.path.join(download_folder, 'temp.mp3')
+                new_filename = os.path.join(download_folder, self._sanitize_title(info['title']) + '.mp3')
+                os.rename(original_filename, new_filename)
+
+            except Exception as e:
+                print(f"An error occurred: {e}")
+        return new_filename
+
+    def _sanitize_title(self,title: str) -> str:
+            # Replace spaces with underscores
+        sanitized_title = title.replace(' ', '_')
+        # Remove unwanted characters using regular expression
+        sanitized_title = re.sub(r'[^\w\s-]', '', sanitized_title)
+        return sanitized_title 
 
     def _set_audios_list(self, audio_file_or_dir):
         if os.path.isdir(audio_file_or_dir):
