@@ -1,27 +1,18 @@
+#############################################################################
+# SPDX-FileCopyrightText: 2024 Margaret Johnson
 #
-# The PID controller returns how many seconds to turn the DIY humidifier on.
+# SPDX-License-Identifier: MIT
 #
-# Copyright 2023 Happy Day
-
-# Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"),
-# to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
-# and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-# The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
-#
+#############################################################################
 from logginghandler import LoggingHandler
-# from store_readings import ReadingsStore
 
 import time
 import warnings
-import threading
-from common import COMPARISON_FUNCTIONS
 
+COMPARISON_FUNCTIONS = {
+    "greater_than": lambda x, max_val: x > max_val,
+    "less_than": lambda x, max_val: x < max_val,
+}
 
 TUNE_STABILITY_TIME = 60 * 15
 
@@ -51,8 +42,9 @@ def _clamp(value, limits):
 
 
 class PID_Control(object):
-    def __init__(self, pid_dict: dict, callback: None):
+    def __init__(self, pid_dict: dict, callback=None):
         self.logger = LoggingHandler()
+
         self._min_output, self._max_output = None, None
         self._last_value = None
 
@@ -64,12 +56,6 @@ class PID_Control(object):
 
         self._last_time = _current_time()
         self._last_output = None
-        self.pid_table = None
-        self.tune_timer = None
-        self.callback = callback
-        self.comparison_function = COMPARISON_FUNCTIONS[
-            pid_dict.get("comparison_function")
-        ]
 
         try:
             self.Kp = pid_dict["Kp"]
@@ -79,8 +65,11 @@ class PID_Control(object):
             self.logger.debug(
                 f"==> SetPoint: {self.setpoint} Kp: {self.Kp} Ki: {self.Ki} Kd: {self.Kd}"
             )
+            self.comparison_func = COMPARISON_FUNCTIONS[
+                pid_dict.get("comparison_function")
+            ]
+
             self.output_limits = tuple(pid_dict["output_limits"])
-            self.tune_increment = pid_dict.get("tune_increment", "")
 
             self.integral_limits = tuple(pid_dict["integral_limits"])
             self.num_bias_seconds = pid_dict["num_bias_seconds_on"]
@@ -91,10 +80,19 @@ class PID_Control(object):
                 self.sign = 1
             else:
                 self.sign = -1
-
-            if self.tune_increment:
-                self.first_update = True
-                self.logger.debug(f"--> tune increment is: {self.tune_increment}")
+            self.tune_increment = pid_dict.get("tune_increment", "")
+            self.logger.debug(f"--> tune increment is: {self.tune_increment}")
+            # Whether the code is to follow Zieglers-Nichols continually increase Kp (Ku)
+            # is determined by whether the tune_increment is greater than 0 in
+            # growbuddies_settings.json
+            if self.tune_increment > 0:
+                self.callback = callback
+                # Usually Kp is set to zero as the starting off points.  Sometimes
+                # Kp is set to a non-zero value to jump start where Kp will most likely
+                # end up.
+                self.Kp = pid_dict.get("tune_start", 0)
+                self.Ki = 0
+                self.Kd = 0
 
         except KeyError as e:
             self.logger.error(
@@ -102,19 +100,22 @@ class PID_Control(object):
             )
             raise e
 
-    def start_tuning(self):
-        tune_thread = threading.Thread(target=self.update_kp)
-        tune_thread.start()
+    # def start_tuning(self):
+    #     tune_thread = threading.Thread(target=self.update_kp)
+    #     tune_thread.start()
 
-    # This method will run in the tune_thread, thus not blocking...
-    def update_kp(self) -> None:
-        while True:
-            if not self.first_update:
-                self.Kp += self.tune_increment
-            self.first_update = False
-            self.logger.debug(f"IN UPDATE_KP.  kp = {self.Kp}")
-            self.callback(self.Kp)
-            time.sleep(TUNE_STABILITY_TIME)
+    # # This method will run in the tune_thread, thus not blocking...
+    # def update_kp(self) -> None:
+    # start with 0 k's.  Ki, Kd stay 0'd Kp will get incremented
+    # When calculating the number of seconds.
+
+    # while True:
+    #     # if not self.first_update:
+    #     self.Kp += self.tune_increment
+    #     # self.first_update = False
+    #     self.logger.debug(f"IN UPDATE_KP.  kp = {self.Kp}")
+    #     self.callback(self.Kp)
+    #     time.sleep(TUNE_STABILITY_TIME)
 
     def calc_secs_on(self, current_value) -> float:
         """Update the PID controller with the vpd value just calculated from the latest SnifferBuddyReading and figure out
@@ -136,8 +137,12 @@ class PID_Control(object):
             f"--> In the PID CONTROLLER.  {dt} seconds have elapsed since the last reading."
         )
         self._last_time = now
+        # if we're doing Ziegler's Nichols tuning.....just increase Kp.
+        if self.tune_increment > 0:
+            self.Kp += self.tune_increment
+            self.callback(self.Kp)
+            # Write self.Kp to a udp port
 
-        # self.logger.debug(f"K values: Kp {self.Kp} Ki {self.Ki}  Kd {self.Kd}")
         # Compute error terms - Note: The error continues to accumulate (integral and derivative) so that when
         # the error goes within the range that the actuator can address, the response will be faster.
         d_value = current_value - (
@@ -150,7 +155,7 @@ class PID_Control(object):
         )
         # In the case of stomabuddy, if the current_value is over the setpoint, there is too much co2.  Don't add more.
         # In the case of mistbuddy, if the current_value is less than the setpoint, there is too much humidity.  Don't turn on the mister and fan.
-        if self.comparison_function(current_value, self.setpoint):
+        if self.comparison_func(current_value, self.setpoint):
             self.logger.debug(
                 f"The current value: {current_value}. The setpoint value: {self.setpoint}"
             )

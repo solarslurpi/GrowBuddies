@@ -1,97 +1,211 @@
 #############################################################################
-# SPDX-FileCopyrightText: 2023 Margaret Johnson
+# SPDX-FileCopyrightText: 2024 Margaret Johnson
 #
 # SPDX-License-Identifier: MIT
 #
 #############################################################################
-
-from PID_code import PID
+from PID_code import PID_Control
 from logginghandler import LoggingHandler
-from settings_code import Settings
 from mqtt_code import MQTTClient
-import json
+from settings_code import Settings
 import re
 import socket
+import threading
 
-
-MistBuddy_PID_config = "MistBuddy_PID_config"
-StomaBuddy_PID_config = "StomaBuddy_PID_config"
 
 class PIDHandler:
-    def __init__(self, PID_config: str = None) -> None:
-        if PID_config not in (MistBuddy_PID_config, StomaBuddy_PID_config):
-            raise ValueError(f" Error: {PID_config} is not valid.  Valid configuration names are {MistBuddy_PID_config} and {StomaBuddy_PID_config}.")
-        self.logger = LoggingHandler()
-        settings = Settings()
-        self.config = settings.load()
-        self.pid_settings_dict = self.config.get(PID_config,"")
-        self.telegraf_fieldname = self.pid_settings_dict.get("telegraf_fieldname")
-        self.pid = PID(self.pid_settings_dict, self._handle_tuning)
-        self.name = self.pid_settings_dict.get("name")
-        self.mqtt_client = MQTTClient("PID_Tuning")
-        self.mqtt_power_topics = self.pid_settings_dict.get("mqtt","")
-        self.incoming_udp_port = self.pid_settings_dict.get("incoming_udp_port","")
-        # Create a UDP socket in the casethe PID is in tuning mode (i.e.: tune_increment > 0 in growbuddysettings.json)
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.address = ('localhost',self.pid_settings_dict.get("tune_udp_port"))
-        self.logger.debug(f"Finished PIDHandler init. PID_config is {self.pid_settings_dict}")
+    def __init__(self) -> None:
+        """
+        Initializes the PIDHandler with configurations loaded from growbuddies_settings.json. The focus is on the pid_configs section of growbuddies_settings.  There are pid configurations for each grow tent/location.
 
+        The method sets up logging, loads the configuration settings, and initializes the PID controllers and associated threads based on the active configurations. A configuration is determined to be active if the active key within the dictionary for a particular config is true.
+
+        Raises:
+            RuntimeError: If there is an error loading the configuration settings.
+        """
+
+        self.logger = LoggingHandler()
+        self.mqtt_client = MQTTClient()
+        self.mqtt_client.start()
+        try:
+            settings = Settings()
+            self.config = settings.load()
+        except Exception as e:
+            self.logger.error(f"Failed to load settings: {e}")
+            raise RuntimeError(f"Error loading settings: {e}")
+        # Validate that essential configurations are present
+        if "global_settings" not in self.config or "pid_configs" not in self.config:
+            raise RuntimeError("Essential configuration sections missing")
+        callback = None
+        self.tune_increment = self.config
+
+        self.incoming_udp_port = self.config["global_settings"].get("pid_port", 8095)
+        self.pid_controllers_dict = {}  # Store pid controller instances key by location.
+        self.pid_threads = []  # Each pid controller has its own thread.
+        # Loop through each location's configurations
+        for location, configs in self.config["pid_configs"].items():
+            # Loop through each PID config within the tent
+            for config_name, pid_config in configs.items():
+                # Check if the PID config is active
+                if pid_config.get("active", False):
+                    if pid_config.get("tune_increment", 0) > 0:
+                        self.tune_udp_port = self.config["global_settings"].get(
+                            "tune_port", 8096
+                        )
+                        callback = self._public_Ku
+                    else:
+                        callback = None
+                    controller = PID_Control(pid_config, callback)
+                    value_name = pid_config.get("telegraf_fieldname")
+                    unique_pid_controller_name = location + "-" + value_name
+                    self.pid_controllers_dict[unique_pid_controller_name] = {
+                        "controller": controller,
+                        "value_name": value_name,
+                        "mqtt_topics": pid_config.get("mqtt_power_topics"),
+                    }
+                    self.logger.info(
+                        f"Setting up PID controller for {unique_pid_controller_name}"
+                    )
+
+                else:
+                    self.logger.info(
+                        f"PID controller for {location} with config: {config_name} is inactive"
+                    )
 
     def start(self):
-        # If this is for a tuning run, start tuning
-        if self.pid_settings_dict.get("tune_increment") > 0:
-            self.pid.start_tuning()
-        values_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        #optval = 1
-        # Set the SO_REUSEPORT option at the socket level (SOL_SOCKET) to the value stored in optval (which is 1, meaning 'enabled').
-        # Enabling the SO_REUSEPORT socket option before binding allows multiple instances to bind to the same UDP.
-        # I tried this and although both apps can bind to the same topic, the first app that bound to the port got the packets.  The
-        # second lost out, receiving no packets.  Bummer.
-        #values_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, optval)
-        host = '127.0.0.1'
-        values_socket.bind((host, self.incoming_udp_port))
-        self.logger.debug(f" Listening on port {self.incoming_udp_port}")
-        while True:
-            # NOTE: This code is brittle if the format of the udp packet changes,
-            # This code breaks.  I'm trying to accomodate telegraf...
-            # Using recv (if only the data is required)
+        """
+        Starts the PID handling process by initiating a separate thread to manage the PID controller.
 
-            packet = values_socket.recv(1024)
+        This method creates a new thread targeting the listen_for_packets method. The thread
+        is set as non-daemon to ensure it runs continuously in the background for the lifetime of the application.
+
+        Raises:
+            RuntimeError: If there is an error in creating or starting the thread.
+        """
+        try:
+            thread = threading.Thread(target=self.listen_for_packets)
+            thread.daemon = False
+            thread.start()
+        except Exception as e:
+            self.logger.error(f"Failed to start PID handling thread: {e}")
+            raise RuntimeError(f"Error starting PID handling thread: {e}")
+
+    def listen_for_packets(self):
+        """
+        There is an aggregator set up in Telegraf that provides the average value after a time period of vpd and co2 based on the location of the snifferbuddy.  Telegraf sends the average values it calculated over the udp port identified in the "global_settings" section of growbuddies_settings.json as the 'pid_port' key.
+
+        This method continuously listens for these incoming UDP packets and dispatches them to the appropriate PID controller.
+
+        Raises:
+            RuntimeError: If there is an error setting up or binding the UDP socket.
+        """
+        host = "127.0.0.1"
+        try:
+            values_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            values_socket.bind((host, self.incoming_udp_port))
+            self.logger.debug(f" Listening on port {self.incoming_udp_port}")
+        except Exception as e:
+            self.logger.error(f"Failed to set up or bind UDP socket: {e}")
+            raise RuntimeError(f"Socket setup/bind error: {e}")
+        while True:
+            try:
+                packet = values_socket.recv(1024)
+            except Exception as e:
+                self.logger.error(f"Error receiving UDP packet: {e}")
+                continue
             # Step 1: Decode the bytes
             decoded_str = packet.decode()
-            # Step 2: Constructing Regular Expressions
-            # The regex patterns capture the values
-            value_regex = re.compile(fr'{self.telegraf_fieldname}=([\d.]+)')
-            light_regex = re.compile(r'light_mean=(\d)')
+            # Packets include the location attribute (e.g.: tent one, tent two)
+            location_match = re.search(r"location=([^,]+)", decoded_str)
+            if location_match:
+                location = location_match.group(1)
+                # Dispatch to the correct PID controller based on location
+                for key in self.pid_controllers_dict:
+                    key_location, _ = key.split("-", 1)
+                    if key_location == location:
+                        controller = self.pid_controllers_dict[key]["controller"]
+                        value_name = self.pid_controllers_dict[key]["value_name"]
+                        mqtt_topics = self.pid_controllers_dict[key]["mqtt_topics"]
+                        self.dispatch_to_controller(
+                            controller, value_name, mqtt_topics, decoded_str
+                        )
+                    else:
+                        self.logger.error(
+                            f"No PID controller found for location: {location}"
+                        )
 
+    def dispatch_to_controller(self, controller, value_name, mqtt_topics, decoded_str):
+        """
+        Dispatches the incoming data to the specified PID controller based on the value name.
+
+        This method parses the decoded string to extract relevant values using regular expressions and then
+        calls the adjust_PID method to calculate and adjust the control as necessary.
+
+        Args:
+            controller (PID_Control): The PID controller instance to which the data is dispatched.
+            value_name (str): The name of the value field to look for in the decoded string.
+            decoded_str (str): The incoming data string to be parsed for values.
+
+        Raises:
+            ValueError: If the required values are not found in the decoded string.
+        """
+        try:
+            value_regex = re.compile(rf"{value_name}=([\d.]+)")
+            light_regex = re.compile(r"light_mean=(\d)")
+            location_regex = re.compile(r"location=([^,]+)")
             # Step 3: Applying Regular Expressions
             value_match = value_regex.search(decoded_str)
             light_match = light_regex.search(decoded_str)
-
-            # Ensure the regex found matches before attempting to access groups
-            if value_match and light_match:
-                # Step 4: Converting the Values
-                value = float(value_match.group(1))
-                light_on = int(light_match.group(1))  # This will be 1 or 0 as per the regex pattern
-            self.logger.debug(f"Value: {value} Light On: {light_on}")
+            location_match = location_regex.search(decoded_str)
+            if not (value_match and light_match and location_match):
+                raise ValueError("Required values not found in the incoming packet.")
+            value = float(value_match.group(1))
+            light_on = int(
+                light_match.group(1)
+            )  # This will be 1 or 0 as per the regex pattern
+            location = location_match.group(1)
+            self.logger.debug(
+                f"Location: {location} Value: {value} Light On: {light_on}"
+            )
             if light_on:
-                self.adjust_PID(value)
+                self.adjust_PID(value, controller, mqtt_topics)
+        except ValueError as e:
+            self.logger.error(f"Dispatch error: {e}")
+        except Exception as e:
+            self.logger.error(f"Unexpected error in dispatch_to_controller: {e}")
 
-
-
-    def adjust_PID(self, value):
-
-        seconds_on = self.pid.calc_secs_on(value)
-        if seconds_on > 0.0:
-            self.turn_on_power(seconds_on)
-
-
-    def turn_on_power(self, seconds_on: float) -> None:
+    def adjust_PID(self, value, controller, mqtt_topics):
         """
-        Turn on MistBuddy for a specified duration.
+        Adjusts the PID controller based on the provided value.
+
+        This method calculates the control action using the PID controller's calc_secs_on method
+        and then acts on the control output (e.g., turns on power to the actuators) if necessary.
 
         Args:
-            seconds_on (float): Duration to turn on MistBuddy in seconds.
+            value (float): The input value to the PID controller.
+            controller (PID_Control): The PID controller instance to be adjusted.
+
+        Raises:
+            RuntimeError: If there is an error in calculating the PID output.
+        """
+        try:
+            seconds_on = controller.calc_secs_on(value)
+            if seconds_on > 0.0:
+                self.turn_on_power(seconds_on, mqtt_topics)
+        except Exception as e:
+            self.logger.error(f"Error adjusting PID: {e}")
+            raise RuntimeError(f"PID adjustment error: {e}")
+
+    def turn_on_power(self, seconds_on: float, mqtt_topics) -> None:
+        """
+        Sends MQTT messages to turn on the power of the Tasmotized plugs used for MistBuddy and CO2Buddy for a specified duration.
+
+        Args:
+            seconds_on (float): The duration, in seconds, for which the power should be turned on.
+
+        Raises:
+            CommunicationError: If there is a failure in sending control commands.
+            RuntimeError: If there is any other unexpected error.
         """
         # I was challenged because the power would be turned on but not off.  This got me to think there
         # was something wrong with threading.  But then I noticed the tasmotized devices were occassionally
@@ -99,45 +213,76 @@ class PIDHandler:
         # gus.local was working until it is not.... so I had to hard code the ip address.  Yuk.
 
         # Set up a timer with the callback on completion.
-        self.mqtt_client.start()
-#        timer = threading.Timer(seconds_on, self.turn_off_power)
-        # Start the client here, then stop in turn_off_mistbuddy
-        self.logger.debug(f"POWER ON FOR {seconds_on} SECONDS")
-        self._publish_power_plug_messages(seconds_on)
-        self.mqtt_client.stop()
-#        timer.start()
+        try:
+            self.logger.debug(f"POWER ON FOR {seconds_on} SECONDS")
+            self._publish_power_plug_messages(seconds_on, mqtt_topics)
+        except Exception as e:
+            self.logger.error(f"Unexpected error in turn_on_power: {e}")
+            raise RuntimeError(f"Unexpected error: {e}")
 
-   # def turn_off_power(self) -> None:
-   #     self.mqtt_client.start()
-   #     self._publish_power_plug_messages(0)
-   #     self.mqtt_client.stop()
-   #     self.logger.debug("POWER OFF")
+    #        timer.start()
 
-    def _publish_power_plug_messages(self, seconds_on: float) -> None:
+    # def turn_off_power(self) -> None:
+    #     self.mqtt_client.start()
+    #     self._publish_power_plug_messages(0)
+    #     self.mqtt_client.stop()
+    #     self.logger.debug("POWER OFF")
+
+    def cleanup(self):
         """
-        Publish MQTT messages to control the power state.
+        Cleans up the resources used by PIDHandler.
+
+        This method stops the MQTT client, waits for all PID controller threads to complete, and ensures
+        that all resources are properly released. It should be called before terminating the application
+        or when the PIDHandler is no longer needed.
+        """
+        # Stopping the MQTT client
+        self.mqtt_client.stop()
+        self.logger.debug("MQTT client stopped.")
+
+        # Joining all non-daemon threads to ensure they complete before exiting
+        for thread in self.pid_threads:
+            if thread.is_alive():
+                self.logger.debug(f"Waiting for thread {thread.name} to complete.")
+                thread.join()
+
+        # Additional cleanup actions can be added here
+        self.logger.debug("All threads have been terminated. Cleanup complete.")
+
+    def _publish_power_plug_messages(self, seconds_on: float, mqtt_topics) -> None:
+        """
+        Publish MQTT messages to control the power state. The method uses Tasmota's PulseTime command as a timer amount for how long to keep the power plug on.  For a quick timer, set the PulseTime between 1 and 111.  Each number represents 0.1 seconds.  If the PulseTime is set to 10, the power plug stays on for 1 second.  Longer times use setting values between 112 to 649000.  PulseTime 113 means 13 seconds: 113 - 100. PulseTime 460 = 460-100 = 360 seconds = 6 minutes.
 
         Args:
             power_state (int): Desired power state, either 1 (for on) or 0.
         """
-        for power_command in self.mqtt_power_topics:
-            self.mqtt_client.publish(power_command,1, qos=1)
+        for power_command in mqtt_topics:
+            self.mqtt_client.publish(power_command, 1, qos=1)
             # Split the topic by the '/'
-            parts = power_command.split('/')
+            parts = power_command.split("/")
             # Replace the last part with 'PulseTime'
             parts[-1] = "PulseTime"
             # Join the parts back together to form the new topic
-            pulsetime_command = '/'.join(parts)
-            pulsetime_on = seconds_on * 10
-            self.mqtt_client.publish(pulsetime_command,pulsetime_on, qos=1)
-            self.logger.debug(f"Topic {power_command} was turned on for {seconds_on} seconds.")
+            pulsetime_command = "/".join(parts)
+            # We will use numbers between 112 and 64900 for the PulseTime (e.g.: 112 - 100 = 12 seconds)
+            pulsetime_on = seconds_on + 100
+            self.logger.debug(
+                f"PulseTime: {pulsetime_on} Number seconds on: {pulsetime_on - 100}"
+            )
+            self.mqtt_client.publish(pulsetime_command, pulsetime_on, qos=1)
+            self.logger.debug(
+                f"Topic {power_command} was turned on for {seconds_on} seconds."
+            )
 
-
-    def _handle_tuning(self,value: float) -> None:
-        data_dict = {"Kp": value, "name": self.name}
-        json_data = json.dumps(data_dict)
-        # Convert the JSON string to bytes (required for sending over UDP)
-        json_data_bytes = json_data.encode('utf-8')
-        self.sock.sendto(json_data_bytes, self.address)
-        self.logger.debug(f"-> wrote value {value} to address {self.address}")
-
+    def _public_Ku(self, Ku):
+        # Put the value into inline Influxdb format for Telegraf to pick up.
+        influxdb_line = f"Ku_values Ku={Ku}"
+        # Open the tuning socket.
+        Ku_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            Ku_socket.sendto(influxdb_line.encode(), ("localhost", self.tune_udp_port))
+        except socket.error as e:
+            self.logger.error(f"Error sending tuning data to InfluxDB: {e}")
+        finally:
+            Ku_socket.close()
+        return

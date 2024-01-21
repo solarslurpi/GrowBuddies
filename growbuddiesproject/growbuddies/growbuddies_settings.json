@@ -1,41 +1,44 @@
 {
-    "hostname": "gus.local",
-    "log_level": "DEBUG",
-    "db_name": "gus",
-
-    "MistBuddy_PID_config": {
-        "name": "mistbuddy",
-        "setpoint": 1.0,
-        "Kp": 92.4,
-        "Ki": 30.8,
-        "Kd": 23.1,
-        "output_limits": [0, 10],
-        "integral_limits":[0, 4],
-        "tune_increment": 0,
-        "comparison_function": "less_than",
-        "mqtt_power_topics": ["cmnd/mistbuddy_fan/POWER","cmnd/mistbuddy_mister/POWER"],
-        "incoming_port": 8094,
-        "mean_values_input_port": 8095,
-        "store_readings_output_port": 8096,
-        "telegraf_fieldname": "vpd_mean",
-        "num_bias_seconds_on": 0
+    "global_settings": {
+        "hostname": "gus.local",
+        "log_level": "DEBUG",
+        "db_name": "gus",
+        "pid_port": 8095,
+        "tune_port": 8096
     },
+    "pid_configs": {
+        "tent_one": {
+            "MistBuddy": {
+                "active": true,
+                "setpoint": 1.0,
+                "Kp": 100.0,
+                "Ki": 0.8,
+                "Kd": 5,
+                "output_limits": [0, 50],
+                "integral_limits": [0, 30],
+                "tune_start": 0,
+                "tune_increment": 0,
+                "comparison_function": "less_than",
+                "mqtt_power_topics": ["cmnd/mistbuddy_fan/POWER", "cmnd/mistbuddy_mister/POWER"],
+                "telegraf_fieldname": "vpd_mean",
+                "num_bias_seconds_on": 20
+            },
+            "CO2Buddy": {
+                "active": true,
+                "setpoint": 1000,
+                "Kp": 0.1,
+                "Ki": 0.01,
+                "Kd": 0.01,
+                "output_limits": [0, 15],
+                "integral_limits": [0, 12],
+                "tune_start": 0,
+                "tune_increment": 0,
+                "comparison_function": "greater_than",
+                "mqtt_power_topics": ["cmnd/stomabuddy/POWER"],
+                "telegraf_fieldname": "CO2_mean",
+                "num_bias_seconds_on": 0
+            }
+        }
 
-    "StomaBuddy_PID_config": {
-        "name": "stomabuddy",
-        "setpoint": 1000,
-        "Kp": 0.01,
-        "Ki":0.0,
-        "Kd":0.0,
-        "output_limits": [0, 19],
-        "integral_limits":[0, 2],
-        "tune_increment": 0,
-        "comparison_function": "greater_than",
-        "mqtt_power_topics": ["cmnd/stomabuddy/POWER"],
-        "incoming_port": 8094,
-        "mean_values_input_port": 8095,
-        "store_readings_output_port": 8096,
-        "telegraf_fieldname": "CO2_mean",
-        "num_bias_seconds_on": 0
     }
 }

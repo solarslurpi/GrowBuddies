@@ -35,9 +35,25 @@ rc_codes = {
 
 
 def get_hostname():
-    settings = Settings()
-    settings.load()
-    return settings.get("hostname")
+    """
+    Retrieves the hostname from the growbuddies_settings.json.
+
+    Returns:
+        str: The hostname if found in the settings.
+
+    Raises:
+        RuntimeError: If the settings file cannot be loaded or if the hostname is not found.
+    """
+    try:
+        settings = Settings()
+        config = settings.load()
+        # Ensuring that the necessary keys exist
+        if "global_settings" in config and "hostname" in config["global_settings"]:
+            return config["global_settings"]["hostname"]
+        else:
+            raise KeyError("Hostname key not found in global settings.")
+    except Exception as e:
+        raise RuntimeError(f"Failed to retrieve hostname: {e}")
 
 
 class MQTTClient:

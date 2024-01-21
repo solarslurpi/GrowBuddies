@@ -51,7 +51,8 @@ class LoggingHandler:
         settings = Settings()
         settings.load()
         # Extract the logging level
-        log_level_str = settings.get("log_level")
+        global_settings = settings.get("global_settings")
+        log_level_str = global_settings.get("log_level")
         try:
             log_level = logging.getLevelName(log_level_str)
         except Exception as e:
